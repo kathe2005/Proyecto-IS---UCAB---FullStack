@@ -1,0 +1,14 @@
+# Ignorar carpetas generadas automáticamente
+
+# CARPETAS DE ANGULAR
+/frontend-ucab/node_modules
+/frontend-ucab/dist
+/frontend-ucab/.angular
+
+# CARPETAS DE SPRING BOOT / MAVEN
+/server/target
+/server/bin
+
+# Archivos del IDE
+.vscode/
+*.iml
