@@ -1,4 +1,4 @@
-package com.proyectIS.proyect;
+package com.ucab.estacionamiento;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
