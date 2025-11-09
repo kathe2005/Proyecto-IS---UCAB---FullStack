@@ -3,55 +3,113 @@ import { Component } from '@angular/core';
 import { ClienteService } from '../service/cliente.service'; 
 import { Cliente } from '../models/cliente'; 
 import { FormsModule } from '@angular/forms'; 
+import { Observable } from 'rxjs'
 
 @Component({
-  selector: 'app-registro-cliente',
-  templateUrl: './registro-cliente.component.html',
-  standalone: true, 
-  imports: [FormsModule, CommonModule], 
+    selector: 'app-registro-cliente',
+    templateUrl: './registro-cliente.component.html',
+    styleUrls: ['./registro-cliente.component.css'],
+    standalone: true, 
+    imports: [FormsModule, CommonModule], 
 })
 
 
 export class RegistroClienteComponent {
     
-    // 1. VARIABLE DE ESTADO para los datos del formulario (el modelo que enviamos)
-    cliente: Cliente = { 
+    // Modelo de datos para el formulario 
+    nuevoCliente: Cliente = { 
         usuario:'',
         contrasena: '',
+        confirmarContrasena:'',
         nombre: '', 
         apellido: '', 
         cedula: '', 
         email: '', 
-        tipoPersona: 'UCAB' // Valor por defecto
+        tipoPersona: '',
+        direccion: '',
+        telefono: '',
     };
 
-    // 2. VARIABLE DE ESTADO para el manejo de errores (¡La que necesitabas!)
-    errorMessage: string = ''; 
+    //Variables de control Adicionales 
+    confirmarContraseña: string = ''; 
+    errorMensaje: string | null = null; 
+    isProcessing: boolean = false; 
 
-    // Inyección de Dependencias: Traemos el servicio de comunicación HTTP
-    constructor(private clienteService: ClienteService) { } 
+    //Cliente que recibimos de SpringBoot (La pantalla de confirmacion)
+    clienteConfirmado: Cliente | null = null;
 
-    /**
-     * Método que se llama al enviar el formulario.
-     * Implementa la lógica de manejo de errores.
-     */
-    registrarCliente(): void {
-        this.errorMessage = ''; // Limpiar el error de un intento anterior
+    //Estado para controllar qué pantalla se muestra 
+    paso: 'registro' | 'cargando' | 'confirmacion' = 'registro'; 
 
-        // Llamamos al servicio (la conexión al Backend)
-        this.clienteService.guardarCliente(this.cliente).subscribe({
-            next: (clienteGuardado: Cliente) => {
-                // Si todo va bien (código 201 Created de Spring Boot)
-                alert(`Cliente ${clienteGuardado.nombre} registrado con éxito.`);
-                // Opcional: limpiar el formulario o redirigir
-            },
-            error: (err: Error) => {
-                // Si el Backend falla (ej. "El dominio del correo no coincide")
-                console.error('Error del Servidor:', err);
-                
-                // 3. Asignamos el mensaje limpio que capturamos en el Service
-                this.errorMessage = err.message; 
-            }
-        });
+    constructor(private clienteService: ClienteService){}
+
+    ngOnInit(): void{
+        this.nuevoCliente.tipoPersona = ''; 
     }
+
+    onSubmit()
+    {
+        this.errorMensaje = null; 
+        
+        //Validación de coincidencia de contraseñas
+        if(this.nuevoCliente.contrasena !== this.confirmarContraseña)
+        {
+            this.errorMensaje = ' La contraseña y la confirmación no coinciden';
+            return; 
+        }
+
+        //Validacion de tipo de persona
+        if(!this.nuevoCliente.tipoPersona)
+        {
+            this.errorMensaje = ' Debe seleccionar si es UCAB o VISITANTE'; 
+            return; 
+        }
+
+        //Preparación para el envio
+        this.isProcessing = true; 
+        this.paso = 'cargando'; 
+        console.log('iniciando registro...'); 
+
+
+        //Cambiamos a la pantalla de Cargando 
+        this.paso = 'cargando';
+        console.log('Iniciando registro...');
+
+        //Llamamos al servicio de Sprint Boot 
+        this.clienteService.registrarCliente(this.nuevoCliente)
+            .subscribe({
+                next: (clienteRespuesta) =>
+                {
+                    console.log("Datos recibidos de Spring Boot: ", clienteRespuesta);
+
+                    // Guardamos los datos recibidos y pasamos la información 
+                    this.clienteConfirmado = clienteRespuesta; 
+                    this.paso = 'confirmacion'; 
+                    this.isProcessing = false; 
+                    
+                }, 
+                error: (err) => 
+                    {
+                        console.error('Error de registro: ', err); 
+                        this.errorMensaje = err.error?.mensaje || "Hubo un error desconocido al registrar"; 
+                        this.paso = 'registro'; 
+                        this.isProcessing = false; 
+                    }                 
+            }); 
+
+    }
+
+    //Metodo para modificar 
+    modificarDatos()
+    {
+        this.paso = 'registro'; 
+        this.errorMensaje = null; 
+    }
+
+    finalizarRegistro()
+    {
+        console.log("Registro de cliente confirmado y finalizado"); 
+        alert('Registro y confirmación finalizados. Redirigiendo...'); 
+    }
+
 }

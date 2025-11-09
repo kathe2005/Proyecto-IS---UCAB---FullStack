@@ -10,23 +10,48 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.beans.factory.annotation.Autowired; 
-import org.springframework.http.HttpStatus; 
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity; 
 
+
+
+
 @RestController //Indica que esta clase maneja peticiones REST
-@RequestMapping("/api/clientes")
+@RequestMapping("/api/clientes") //URL base para todos los metodos 
 @CrossOrigin(origins = {"http://localhost:4200","http://localhost:57145", "http://localhost:59035","http://localhost:59110"}, methods = {RequestMethod.GET, RequestMethod.POST})
 
 public class Clientecontroller {
     
-    @Autowired
-    private ClienteService clienteService; 
+    private final ClienteService clienteService; 
 
-    @PostMapping("/registrar")
-    public ResponseEntity<Cliente> registrarCliente ( @RequestBody Cliente clienteRecibido )
+    
+    public Clientecontroller(ClienteService clienteService)
     {
-        Cliente nuevoCliente = clienteService.guardarCliente(clienteRecibido); 
-        return new ResponseEntity<>(nuevoCliente, HttpStatus.CREATED); 
+        this.clienteService = clienteService; 
+    }
+
+    @Autowired
+    //Endpoint para el registro con JSON 
+    @PostMapping("/registrar")
+    public ResponseEntity<Cliente> registrarCliente ( @RequestBody Cliente cliente)
+    {
+        System.out.println("Recibida peticion de registro para: " + cliente.getemail());
+
+        try {
+            //llama al servicio 
+            Cliente clienteRegistrado = clienteService.registrarCliente(cliente); 
+            return new ResponseEntity<> (clienteRegistrado, HttpStatus.CREATED); 
+        } 
+        catch (IllegalArgumentException e) {
+            //Errores de validacion 
+            System.out.println("Error de validacion: " + e.getMessage());
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST); 
+        }
+        catch (Exception e)
+        {
+            //Otros errores 
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 }
 

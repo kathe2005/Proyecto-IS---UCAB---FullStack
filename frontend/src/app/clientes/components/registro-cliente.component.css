@@ -1,0 +1,199 @@
+/* ------------------------------------------- */
+/* LAYOUT Y TARJETA PRINCIPAL (La 'Carta' Flotante) */
+/* ------------------------------------------- */
+.main-container {
+    /* Centra la tarjeta en la página */
+    display: flex;
+    justify-content: center;
+    align-items: flex-start; /* Alineación al inicio para formularios largos */
+    min-height: 100vh; 
+    padding: 30px;
+    background-color: #f4f6f8; /* Fondo suave fuera de la tarjeta */
+    font-family: 'Arial', sans-serif;
+}
+
+.registro-card, .loading-screen, .confirmation-card {
+    /* Estilo de la tarjeta flotante */
+    max-width: 750px;
+    width: 100%;
+    padding: 40px;
+    background-color: white;
+    border-radius: 12px; /* Esquinas suaves */
+    box-shadow: 0 10px 30px rgba(18, 59, 103, 0.05); /* Sombra muy sutil */
+}
+
+h2 {
+    color: #123B67; /* Un azul oscuro, limpio */
+    font-size: 24px;
+    font-weight: 600;
+    margin-bottom: 25px;
+}
+
+/* ------------------------------------------- */
+/* ESTILOS DE GRUPOS Y LEYENDAS (Segmentation) */
+/* ------------------------------------------- */
+fieldset {
+    border: none;
+    padding: 0;
+    margin-bottom: 30px;
+}
+
+/* Simula los encabezados grises del formulario (ej. "YOUR PERSONAL DETAILS") */
+legend {
+    font-size: 11px;
+    color: #5A697B; /* Gris medio */
+    text-transform: uppercase;
+    font-weight: 600;
+    margin-bottom: 15px;
+    padding: 0;
+    border: none;
+}
+
+/* Grid para campos de dos columnas (Nombre/Apellido) */
+form {
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.form-group {
+    width: 100%;
+    margin-bottom: 20px;
+}
+
+.form-group.half-width {
+    width: calc(50% - 15px); /* Dos columnas con un espacio entre ellas */
+    margin-right: 30px;
+}
+
+.form-group.half-width:nth-child(even) {
+    margin-right: 0;
+}
+
+/* ------------------------------------------- */
+/* ESTILOS DE INPUTS Y BOTONES */
+/* ------------------------------------------- */
+.form-group label {
+    display: block;
+    margin-bottom: 5px;
+    font-size: 14px;
+    color: #333;
+    font-weight: 500;
+}
+
+.form-group input, .form-group select {
+    width: 100%;
+    padding: 10px 12px;
+    border: 1px solid #E0E4E7; /* Borde muy claro */
+    border-radius: 8px; /* Bordes redondeados */
+    box-sizing: border-box;
+    font-size: 15px;
+    color: #444;
+    transition: border-color 0.2s;
+}
+
+.form-group input:focus, .form-group select:focus {
+    border-color: #007bff; /* Borde azul al enfocar */
+    outline: none;
+    box-shadow: 0 0 0 1px rgba(0, 123, 255, 0.2);
+}
+
+/* Botón de Envío (El acento verde del Next Button de la imagen) */
+.submit-button {
+    background-color: #28a745; /* Tono verde */
+    color: white;
+    padding: 12px 25px;
+    border: none;
+    border-radius: 8px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    width: auto;
+    float: right; /* Alineado a la derecha */
+    margin-top: 30px;
+    transition: background-color 0.3s;
+}
+
+.submit-button:hover:not(:disabled) {
+    background-color: #1e7e34;
+}
+
+.submit-button:disabled {
+    background-color: #90d39e;
+    cursor: not-allowed;
+}
+
+/* ------------------------------------------- */
+/* MENSAJES DE ERROR Y ALERTA */
+/* ------------------------------------------- */
+.alert-message {
+    padding: 12px;
+    margin-bottom: 20px;
+    border-radius: 6px;
+    font-size: 14px;
+    font-weight: 500;
+}
+
+.error-alert {
+    background-color: #fff0f0;
+    color: #cc0000;
+    border: 1px solid #ffcccc;
+}
+
+/* ------------------------------------------- */
+/* PANTALLAS DE CARGA Y CONFIRMACIÓN */
+/* ------------------------------------------- */
+.loading-screen, .confirmation-card {
+    text-align: center;
+    padding: 50px;
+}
+
+/* Estilos de la tabla resumen de confirmación */
+.data-summary {
+    text-align: left;
+    margin-top: 20px;
+    padding: 20px;
+    border: 1px solid #e0e4e7;
+    border-radius: 8px;
+    background-color: #fcfcfc;
+}
+
+.data-row {
+    display: flex;
+    justify-content: space-between;
+    padding: 8px 0;
+    border-bottom: 1px dashed #eee;
+    font-size: 15px;
+}
+
+.data-row:last-child {
+    border-bottom: none;
+}
+
+.data-row strong {
+    color: #123B67;
+}
+
+.actions {
+    margin-top: 30px;
+    text-align: center;
+}
+
+.actions button {
+    padding: 10px 20px;
+    margin: 0 10px;
+    border-radius: 6px;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.btn-primary {
+    background-color: #007bff;
+    color: white;
+    border: none;
+}
+
+.btn-secondary {
+    background-color: #f0f0f0;
+    color: #333;
+    border: 1px solid #ccc;
+}
