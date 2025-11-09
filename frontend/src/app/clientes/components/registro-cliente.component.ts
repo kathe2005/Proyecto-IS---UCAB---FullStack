@@ -1,3 +1,4 @@
+import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
 import { ClienteService } from '../service/cliente.service'; 
 import { Cliente } from '../models/cliente'; 
@@ -7,9 +8,7 @@ import { FormsModule } from '@angular/forms';
   selector: 'app-registro-cliente',
   templateUrl: './registro-cliente.component.html',
   standalone: true, 
-  imports: [
-      FormsModule
-    ], 
+  imports: [FormsModule, CommonModule], 
 })
 
 

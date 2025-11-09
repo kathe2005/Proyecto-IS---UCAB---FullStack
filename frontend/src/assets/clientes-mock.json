@@ -1,0 +1,20 @@
+[
+{
+    "usuario": "jmagaly",
+    "contrasena": "password123",
+    "nombre": "Yajaira",
+    "apellido": "Magaly",
+    "cedula": "11918254",
+    "email": "yajaira@ucab.edu.ve",
+    "tipoPersona": "UCAB" 
+},
+{
+    "usuario": "briceño01",
+    "contrasena": "pass456",
+    "nombre": "Bricelio",
+    "apellido": "Gomez",
+    "cedula": "12345678",
+    "email": "bricelio.g@visitante.com",
+    "tipoPersona": "VISITANTE"
+}
+]
