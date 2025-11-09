@@ -46,53 +46,42 @@ public class Cliente {
 
 
     //Usuario 
-    public String getusuario(){   return usuario;    }
-    public void setusuario(String usuario){   this.usuario = usuario;   }
+    public String getUsuario(){   return usuario;    }
+    public void setUsuario(String usuario){   this.usuario = usuario;   }
 
     //Contraseña 
-    public String getcontrasena(){   return contrasena;    }
-    public void setcontrasena(String contrasena){   this.contrasena = contrasena;   }
+    public String getContrasena(){   return contrasena;    }
+    public void setContrasena(String contrasena){   this.contrasena = contrasena;   }
 
     //Confirma Contraseña 
-    public String getconfirmcontrasena(){   return confirmcontrasena;    }
-    public void setconfirmcontrasena(String confirmcontrasena){   this.confirmcontrasena = confirmcontrasena;   }
+    public String getConfirmcontrasena(){   return confirmcontrasena;    }
+    public void setConfirmcontrasena(String confirmcontrasena){   this.confirmcontrasena = confirmcontrasena;   }
 
     //Nombre
-    public String getnombre(){   return nombre;    }
-    public void setnombre(String nombre){   this.nombre = nombre;   }
+    public String getNombre(){   return nombre;    }
+    public void setNombre(String nombre){   this.nombre = nombre;   }
 
     //Apellido
-    public String getapellido(){   return apellido;    }
-    public void setapellido(String apellido){   this.apellido = apellido;   }
+    public String getApellido(){   return apellido;    }
+    public void setApellido(String apellido){   this.apellido = apellido;   }
 
     //Cedula
-    public String getcedula(){   return cedula;    }
-    public void setcedula(String cedula){   this.cedula = cedula;   }
+    public String getCedula(){   return cedula;    }
+    public void setCedula(String cedula){   this.cedula = cedula;   }
     
     //Email 
-    public String getemail(){   return email;    }
-    public void setemail(String email){   this.email = email;   }
+    public String getEmail(){   return email;    }
+    public void setEmail(String email){   this.email = email;   }
 
     //Tipo de Persona
-    public String gettipoPersona(){   return tipoPersona;    }
-    public void settipoPersona(String tipoPersona){   this.tipoPersona = tipoPersona;   }
+    public String getTipoPersona(){   return tipoPersona;    }
+    public void setTipoPersona(String tipoPersona){   this.tipoPersona = tipoPersona;   }
 
     //Telefono
-    public String gettelefono(){   return telefono;    }
-    public void settelefono(String telefono){   this.telefono = telefono;   }
+    public String getTelefono(){   return telefono;    }
+    public void setTelefono(String telefono){   this.telefono = telefono;   }
 
     //Direccion
-    public String getdireccion(){   return direccion;    }
-    public void setdireccion(String direccion){   this.direccion = direccion;  }
-
-    //Impresion en consola
-    @Override
-    public String toString() {
-            return "Usuario{" +
-                    "id=" + id +
-                    ", nombre='" + nombre + '\'' +
-                    ", email='" + email + '\'' +
-                    '}';
-    }
-
+    public String getDireccion(){   return direccion;    }
+    public void setDireccion(String direccion){   this.direccion = direccion;  }
 }

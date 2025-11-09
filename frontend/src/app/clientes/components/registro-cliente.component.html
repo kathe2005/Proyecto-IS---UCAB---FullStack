@@ -92,6 +92,13 @@
 
             </form>
 
+            <div class="actions">
+
+                <button (click)="onSubmit()" class="btn btn-primary">
+                    Registrar 
+                </button>
+
+            </div>
 
         </div> }
 
@@ -120,16 +127,19 @@
                     <div class="data-row"><strong>Usuario:</strong> <span>{{ clienteConfirmado?.usuario }}</span></div>
                     <div class="data-row"><strong>Dirección:</strong> <span>{{ clienteConfirmado?.direccion }}</span></div>
                     <div class="data-row"><strong>Teléfono:</strong> <span>{{ clienteConfirmado?.telefono }}</span></div>
+                    <div class="data-row"><strong>Contraseña:</strong> <span>{{ clienteConfirmado?.contrasena }}</span></div>
+                    <div class="data-row"><strong>Confirmar Contraseña::</strong> <span>{{ clienteConfirmado?.confirmarContrasena }}</span></div>
+
                 </div>
 
             <div class="actions">
 
                 <button (click)="modificarDatos()" class="btn btn-secondary">
-                    ✏️ Modificar Datos
+                    Modificar 
                 </button>
 
                 <button (click)="finalizarRegistro()" class="btn btn-primary">
-                    Finalizar y Continuar 🛒
+                    Finalizar y Continuar 
                 </button>
             </div>
 

@@ -43,7 +43,7 @@ public class ClienteRepository {
         //Iteramos la lista para buscar email
         for (Cliente u: BD_clientes)
         {
-            if (u.getusuario().equalsIgnoreCase(usuarioBuscado))
+            if (u.getUsuario().equalsIgnoreCase(usuarioBuscado))
             {
                 return Optional.of(u); 
             }
@@ -60,7 +60,7 @@ public class ClienteRepository {
         //Iteramos la lista para buscar email
         for (Cliente u: BD_clientes)
         {
-            if (u.getcontrasena().equalsIgnoreCase(contrasenaBuscado))
+            if (u.getContrasena().equalsIgnoreCase(contrasenaBuscado))
             {
                 return Optional.of(u); 
             }
@@ -78,7 +78,7 @@ public class ClienteRepository {
         //Iteramos la lista para buscar email
         for (Cliente u: BD_clientes)
         {
-            if (u.getnombre().equalsIgnoreCase(nombreBuscado))
+            if (u.getNombre().equalsIgnoreCase(nombreBuscado))
             {
                 return Optional.of(u); 
             }
@@ -96,7 +96,7 @@ public class ClienteRepository {
         //Iteramos la lista para buscar email
         for (Cliente u: BD_clientes)
         {
-            if (u.getapellido().equalsIgnoreCase(apellidoBuscado))
+            if (u.getApellido().equalsIgnoreCase(apellidoBuscado))
             {
                 return Optional.of(u); 
             }
@@ -114,7 +114,7 @@ public class ClienteRepository {
         //Iteramos la lista para buscar cedula
         for (Cliente u: BD_clientes)
         {
-            if (u.getcedula().equalsIgnoreCase(cedulaBuscada))
+            if (u.getCedula().equalsIgnoreCase(cedulaBuscada))
             {
                 return Optional.of(u); 
             }
@@ -132,7 +132,7 @@ public class ClienteRepository {
         //Iteramos la lista para buscar email
         for (Cliente u: BD_clientes)
         {
-            if (u.getemail().equalsIgnoreCase(emailBuscado))
+            if (u.getEmail().equalsIgnoreCase(emailBuscado))
             {
                 return Optional.of(u); 
             }
@@ -149,7 +149,7 @@ public class ClienteRepository {
         //Iteramos la lista para buscar email
         for (Cliente u: BD_clientes)
         {
-            if (u.getdireccion().equalsIgnoreCase(direccionBuscado))
+            if (u.getDireccion().equalsIgnoreCase(direccionBuscado))
             {
                 return Optional.of(u); 
             }
@@ -167,7 +167,7 @@ public class ClienteRepository {
         //Iteramos la lista para buscar email
         for (Cliente u: BD_clientes)
         {
-            if (u.gettelefono().equalsIgnoreCase(telefonoBuscado))
+            if (u.getTelefono().equalsIgnoreCase(telefonoBuscado))
             {
                 return Optional.of(u); 
             }

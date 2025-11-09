@@ -32,66 +32,66 @@ public class ClienteService {
     {
 
         //Validar dominio 
-        clasificarDominio(nuevoCliente.getemail());
+        clasificarDominio(nuevoCliente.getEmail());
 
-        validarEmailPorTipoPersona(nuevoCliente.gettipoPersona(), nuevoCliente.getemail());
+        validarEmailPorTipoPersona(nuevoCliente.getTipoPersona(), nuevoCliente.getEmail());
 
         //Validar formato de la cedula 
-        validarFormatoCedula(nuevoCliente.getcedula()); 
+        validarFormatoCedula(nuevoCliente.getCedula()); 
 
         //Validar formato del telefono 
-        validarFormatoTelefono(nuevoCliente.gettelefono());
+        validarFormatoTelefono(nuevoCliente.getTelefono());
 
         //Validar formato de la contraseña 
-        validarFormatoContrasena(nuevoCliente.getcontrasena());
+        validarFormatoContrasena(nuevoCliente.getContrasena());
 
 
         //Validacion de unicidad 
         //Usuario 
-        if(clienteRepository.findByUsuario(nuevoCliente.getusuario()).isPresent())
+        if(clienteRepository.findByUsuario(nuevoCliente.getUsuario()).isPresent())
         {
             throw new IllegalArgumentException("Su usuario se encuentra registrado debe ingresar otro para continuar"); 
         }
 
         //Contrasena 
-        if(clienteRepository.findByContrasena(nuevoCliente.getcontrasena()).isPresent())
+        if(clienteRepository.findByContrasena(nuevoCliente.getContrasena()).isPresent())
         {
             throw new IllegalArgumentException("Su contraseña se encuentra registrada debe ingresar otro para continuar"); 
         }
 
         //Nombre 
-        if(clienteRepository.findByNombre(nuevoCliente.getnombre()).isPresent())
+        if(clienteRepository.findByNombre(nuevoCliente.getNombre()).isPresent())
         {
             throw new IllegalArgumentException("Los nombres se encuentra registrada debe ingresar otro para continuar"); 
         }
 
 
         //Apellido 
-        if(clienteRepository.findByApellido(nuevoCliente.getapellido()).isPresent())
+        if(clienteRepository.findByApellido(nuevoCliente.getApellido()).isPresent())
         {
             throw new IllegalArgumentException("Los apellidos se encuentra registrada debe ingresar otro para continuar"); 
         }
 
         //Cedula 
-        if(clienteRepository.findByCedula(nuevoCliente.getcedula()).isPresent())
+        if(clienteRepository.findByCedula(nuevoCliente.getCedula()).isPresent())
         {
             throw new IllegalArgumentException("Su cedula se encuentra registrada"); 
         }
 
         //Email
-        if(clienteRepository.findByEmail(nuevoCliente.getemail()).isPresent())
+        if(clienteRepository.findByEmail(nuevoCliente.getEmail()).isPresent())
         {
             throw new IllegalArgumentException("Su correo se encuentra registrado debe ingresar otro para continuar"); 
         }
 
         //Direccion 
-        if(clienteRepository.findByDireccion(nuevoCliente.getdireccion()).isPresent())
+        if(clienteRepository.findByDireccion(nuevoCliente.getDireccion()).isPresent())
         {
             throw new IllegalArgumentException("Su direccion se encuentra registrada"); 
         }
 
         //Telefono 
-        if(clienteRepository.findByTelefono(nuevoCliente.gettelefono()).isPresent())
+        if(clienteRepository.findByTelefono(nuevoCliente.getTelefono()).isPresent())
         {
             throw new IllegalArgumentException("Su telefono se encuentra registrado"); 
         }
@@ -99,62 +99,62 @@ public class ClienteService {
 
         //Validar espacios en blanco 
         //Usuario 
-        validarSinEspacios(nuevoCliente.getusuario(), "usuario");
+        validarSinEspacios(nuevoCliente.getUsuario(), "usuario");
 
         //Contraseña 
-        validarSinEspacios(nuevoCliente.getcontrasena(), "contrasena");
+        validarSinEspacios(nuevoCliente.getContrasena(), "contrasena");
 
         //Confirmar Contraseña 
-        validarSinEspacios(nuevoCliente.getconfirmcontrasena(), "contrasena");
+        validarSinEspacios(nuevoCliente.getConfirmcontrasena(), "confirmarContrasena");
 
         //Email
-        validarSinEspacios(nuevoCliente.getemail(), "email");
+        validarSinEspacios(nuevoCliente.getEmail(), "email");
         
 
 
         //Validaciones de campos obligatorios y no puede estar vacío.
-        if(nuevoCliente.getusuario() == null || nuevoCliente.getusuario().isEmpty())
+        if(nuevoCliente.getUsuario() == null || nuevoCliente.getUsuario().isEmpty())
         {
             throw new IllegalArgumentException("El usuario no puede estar vacio"); 
         }
 
-        if(nuevoCliente.getcontrasena() == null || nuevoCliente.getcontrasena().isEmpty())
+        if(nuevoCliente.getContrasena() == null || nuevoCliente.getContrasena().isEmpty())
         {
             throw new IllegalArgumentException("La contraseña no puede estar vacio"); 
         }
 
-        if(nuevoCliente.getconfirmcontrasena() == null || nuevoCliente.getconfirmcontrasena().isEmpty())
+        if(nuevoCliente.getConfirmcontrasena() == null || nuevoCliente.getConfirmcontrasena().isEmpty())
         {
             throw new IllegalArgumentException("La confirmacion de la contraseña no puede estar vacio"); 
         }
 
-        if (nuevoCliente.getcontrasena() != nuevoCliente.getconfirmcontrasena())
+        if (nuevoCliente.getContrasena() != nuevoCliente.getConfirmcontrasena())
         {
             throw new IllegalArgumentException("La confirmacion de la contraseña debe ser igual a la contraseña"); 
         }
 
 
-        if(nuevoCliente.getnombre() == null || nuevoCliente.getnombre().isEmpty())
+        if(nuevoCliente.getNombre() == null || nuevoCliente.getNombre().isEmpty())
         {
             throw new IllegalArgumentException("El nombre no puede estar vacio"); 
         }
 
-        if(nuevoCliente.getapellido() == null || nuevoCliente.getapellido().isEmpty())
+        if(nuevoCliente.getApellido() == null || nuevoCliente.getApellido().isEmpty())
         {
             throw new IllegalArgumentException("El apellido no puede estar vacio"); 
         }
 
-        if(nuevoCliente.getcedula() == null || nuevoCliente.getcedula().isEmpty())
+        if(nuevoCliente.getCedula() == null || nuevoCliente.getCedula().isEmpty())
         {
             throw new IllegalArgumentException("La cedula no puede estar vacio"); 
         }
 
-        if(nuevoCliente.getemail() == null || nuevoCliente.getemail().isEmpty())
+        if(nuevoCliente.getEmail() == null || nuevoCliente.getEmail().isEmpty())
         {
             throw new IllegalArgumentException("El email no puede estar vacio"); 
         }
 
-        if(nuevoCliente.gettipoPersona() == null || nuevoCliente.gettipoPersona().isEmpty())
+        if(nuevoCliente.getTipoPersona() == null || nuevoCliente.getTipoPersona().isEmpty())
         {
             throw new IllegalArgumentException("El tipo de persona no puede estar vacio"); 
         }
@@ -189,8 +189,6 @@ public class ClienteService {
         }
 
         //Verificar espacios intermedios 
-        // 1. trim() elimina los espacios iniciales/finales.
-        // 2. contains(" ") verifica si AÚN queda algún espacio dentro de la cadena.
         if (valor.trim().contains(""))
         {
             throw new IllegalArgumentException(nombreCampo + " no puede contener espacios en blanco"); 
