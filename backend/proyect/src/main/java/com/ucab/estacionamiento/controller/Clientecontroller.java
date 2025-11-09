@@ -9,9 +9,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.beans.factory.annotation.Autowired; 
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity; 
+//import org.springframework.beans.factory.annotation.Autowired; 
+//import org.springframework.http.HttpStatus;
+//import org.springframework.http.ResponseEntity; 
 
 
 
@@ -30,10 +30,14 @@ public class Clientecontroller {
         this.clienteService = clienteService; 
     }
 
-    @Autowired
+    
     //Endpoint para el registro con JSON 
     @PostMapping("/registrar")
-    public ResponseEntity<Cliente> registrarCliente ( @RequestBody Cliente cliente)
+
+
+
+    /*
+     *     public ResponseEntity<Cliente> registrarCliente ( @RequestBody Cliente cliente)
     {
         System.out.println("Recibida peticion de registro para: " + cliente.getemail());
 
@@ -53,6 +57,15 @@ public class Clientecontroller {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
+     */
+
+    public Cliente registrarCliente(@RequestBody Cliente cliente) { 
+        return clienteService.registrarCliente(cliente);
+    }
+
+
 }
+
+
 
 

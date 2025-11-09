@@ -183,7 +183,7 @@ public class ClienteService {
     private void validarSinEspacios(String valor, String nombreCampo)
     {
         //Si el valor esta vacio
-        if (valor == null || valor.trim().isEmpty())
+        if (valor.trim().contains(""))
         {
             throw new IllegalArgumentException(nombreCampo + " no puede estar vacio"); 
         }
