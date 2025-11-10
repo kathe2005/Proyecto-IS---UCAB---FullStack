@@ -39,7 +39,7 @@ export class RegistroClienteComponent {
     clienteConfirmado: Cliente | null = null;
 
     //Estado para controllar qué pantalla se muestra 
-    paso: 'registro' | 'cargando' | 'confirmacion' = 'registro'; 
+    paso: 'credenciales' | 'datos_personales' | 'contacto_ubicacion' | 'registrar' | 'cargando' |'confirmacion' = 'credenciales'; 
 
     constructor(private clienteService: ClienteService){}
 
@@ -47,23 +47,70 @@ export class RegistroClienteComponent {
         this.nuevoCliente.tipoPersona = ''; 
     }
 
+    siguientepaso()
+    {
+        this.errorMensaje = null;
+        if (this.paso === 'credenciales')
+        {
+            //Validación de coincidencia de contraseñas
+            if(this.nuevoCliente.contrasena !== this.nuevoCliente.confirmarContrasena)
+            {
+                this.errorMensaje = 'Las contraseñas no coinciden. Por favor revisalas';
+                return; 
+            }
+            this.paso = 'datos_personales'; 
+        }
+        else if (this.paso === 'datos_personales')
+        {
+
+              //Validacion de tipo de persona
+            if(!this.nuevoCliente.tipoPersona)
+            {
+                this.errorMensaje = ' Debe seleccionar si es UCAB o VISITANTE'; 
+                return; 
+            }
+
+            //
+            if(!this.nuevoCliente.cedula || !this.nuevoCliente.nombre || !this.nuevoCliente.apellido)
+            {
+                this.errorMensaje = ' Debes completar la cedula, el nombre y el apellido para continuar'; 3
+                return; 
+            }
+
+
+            this.paso = 'contacto_ubicacion';
+        }
+        else if(this.paso === 'contacto_ubicacion')
+        {
+            this.onSubmit(); 
+        }
+        else 
+        {
+            console.warn(' Intento de navegacion en un estado desconocido ' + this.paso); 
+        }
+
+    }
+
+    pasoAnterior()
+    {
+        this.errorMensaje = null; 
+
+        if (this.paso === 'datos_personales')
+        {
+            this.paso = 'credenciales'; 
+        }
+        else if(this.paso === 'contacto_ubicacion')
+        {
+            this.paso = 'datos_personales'; 
+        }
+    }
+
     onSubmit()
     {
         this.errorMensaje = null; 
-        
-        //Validación de coincidencia de contraseñas
-        if(this.nuevoCliente.contrasena !== this.confirmarContraseña)
-        {
-            this.errorMensaje = ' La contraseña y la confirmación no coinciden';
-            return; 
-        }
 
-        //Validacion de tipo de persona
-        if(!this.nuevoCliente.tipoPersona)
-        {
-            this.errorMensaje = ' Debe seleccionar si es UCAB o VISITANTE'; 
-            return; 
-        }
+        console.log('Datos para enviar: ', this.nuevoCliente); 
+
 
         //Preparación para el envio
         this.isProcessing = true; 
@@ -92,7 +139,7 @@ export class RegistroClienteComponent {
                     {
                         console.error('Error de registro: ', err); 
                         this.errorMensaje = err.error?.mensaje || "Hubo un error desconocido al registrar"; 
-                        this.paso = 'registro'; 
+                        this.paso = 'registrar'; 
                         this.isProcessing = false; 
                     }                 
             }); 
@@ -102,7 +149,7 @@ export class RegistroClienteComponent {
     //Metodo para modificar 
     modificarDatos()
     {
-        this.paso = 'registro'; 
+        this.paso = 'registrar'; 
         this.errorMensaje = null; 
     }
 

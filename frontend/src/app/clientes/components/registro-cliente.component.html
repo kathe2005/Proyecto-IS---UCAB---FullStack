@@ -1,14 +1,12 @@
 <div class="main-container">
-    @if (paso === 'registro') 
-    {   <div class="registro-cliente">
-            <h2> Registro de Estacionamiento </h2>
 
-            @if (errorMensaje) 
-            { <div class="alert-message error-alert">
-                **Error:**{{errorMensaje}}
-            </div> }
+<h1> Registro de Estacionamiento </h1>
+    @if (paso === 'credenciales') 
+    {   
+        <div class="registro-cliente">
+            <h2> Paso 1 de 3: Credenciales de Acceso  </h2>
 
-            <form (ngSubmit)="onSubmit()">
+            <form (ngSubmit)="siguientepaso()">
 
                 <fieldset>
 
@@ -36,46 +34,81 @@
 
                 </fieldset>
 
+            </form>
+
+            <div class="actions">
+                <button (click)="siguientepaso()" class=" btn btn-primary">
+                    Continuar (Paso 2)
+                </button>
+            </div>
+
+
+        </div> }
+
+        @if (paso === 'datos_personales') 
+        {   
+        <div class="registro-cliente">
+            <h2> Paso 2 de 3: Datos Personales  </h2>
+
+            <form (ngSubmit)="siguientepaso()">
 
                 <fieldset>
 
-                    <legend> Datos Personales y Clasificación </legend>
+                    <legend> Datos Personales </legend>
 
                     <div class="form-group">
-                        <label for="cedula"> Cedula (V/E-XXXXX) </label>
+                        <label for="cedula"> Cedula </label>
                         <input type="text" id="cedula" name="cedula" [(ngModel)] ="nuevoCliente.cedula" required>
                     </div>
 
-                    <div class="form-group half-width">
-                        <label for="nombre"> Nombres </label>
+                    <div class="form-group">
+                        <label for="nombre"> Nombre  </label>
                         <input type="text" id="nombre" name="nombre" [(ngModel)] ="nuevoCliente.nombre" required>
                     </div>
-
-                    <div class="form-group half-width">
-                        <label for="apellido"> Apellidos </label>
+                    
+                    <div class="form-group">
+                        <label for="apellido"> Apellido </label>
                         <input type="text" id="apellido" name="apellido" [(ngModel)] ="nuevoCliente.apellido" required>
                     </div>
 
                     <div class="form-group">
-
-                        <label for=" tipoPersona"> Tipo de Persona </label>
-                        <select id="tipoPersona" name="tipoPersona" [(ngModel)] = "nuevoCliente.tipoPersona" required>
-                            <option value="" disabled selected> Seleccione </option>
-                            <option value="Ninguna"> Ninguna </option>
-                            <option value="UCAB"> UCAB </option>
-                            <option value="VISITANTE"> VISITANTE </option>
-                        </select>
-
+                        <label for="tipoPersona"> Tipo de Persona </label>
+                        <input type="text" id="tipoPersona" name="tipoPersona" [(ngModel)] ="nuevoCliente.tipoPersona" required>
                     </div>
 
                 </fieldset>
 
+            </form>
+
+            <div class="actions">
+                <button (click)="siguientepaso()" class=" btn btn-primary">
+                    Continuar (Paso 3)
+                </button>
+            </div>
+
+            <div class="actions">
+                <button (click)="pasoAnterior()" class=" btn btn-primary">
+                    Regresar
+                </button>
+            </div>
+
+
+        </div> }
+
+        
+        @if (paso === 'contacto_ubicacion') 
+        {   
+        <div class="registro-cliente">
+            <h2> Paso 3 de 3: Contacto y Ubicación  </h2>
+
+            <form (ngSubmit)="siguientepaso()">
+
                 <fieldset>
 
-                    <legend> Contacto y Ubicación </legend>
+                    <legend> Contacto y Ubicación  </legend>
 
                     <div class="form-group">
-                        <label for="direccion"> Direccion </label>
+                        <label for="direccion"> Dirección </label>
                         <input type="text" id="direccion" name="direccion" [(ngModel)] ="nuevoCliente.direccion" required>
                     </div>
 
@@ -86,21 +119,25 @@
 
                 </fieldset>
 
-
-
-
-
             </form>
 
             <div class="actions">
-
-                <button (click)="onSubmit()" class="btn btn-primary">
-                    Registrar 
+                <button (click)="onSubmit()" class=" btn btn-primary">
+                    Registrar
                 </button>
-
             </div>
 
+            
+            <div class="actions">
+                <button (click)="pasoAnterior()" class=" btn btn-primary">
+                    Regresar
+                </button>
+            </div>
+
+
+
         </div> }
+
 
         @if (paso === 'cargando')
         { <div class="loading-screen">

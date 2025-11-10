@@ -8,7 +8,6 @@ import com.ucab.estacionamiento.model.Cliente;
 import java.util.List;
 
 
-import org.springframework.beans.factory.annotation.Autowired;
 import com.ucab.estacionamiento.repository.ClienteRepository;
 
 @Service //Esta clase continene la lógica del negocio
@@ -23,8 +22,6 @@ public class ClienteService {
     {
         this.clienteRepository = clienteRepository; 
     }
-
-    @Autowired //Necesario para los atributos del Cliente y su conexion a la Base de Datos 
 
     //Metodos 
     //Registrar un usuario 
