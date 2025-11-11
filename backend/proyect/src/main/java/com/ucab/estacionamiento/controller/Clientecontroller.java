@@ -25,8 +25,8 @@ import org.springframework.http.HttpStatus;
 
 
 @RestController //Indica que esta clase maneja peticiones REST
-@RequestMapping("/api/clientes") //URL base para todos los metodos 
-@CrossOrigin(origins = {"http://localhost:4200","http://localhost:57145", "http://localhost:59035","http://localhost:59110"}, methods = {RequestMethod.GET, RequestMethod.POST})
+@RequestMapping("/api/clientes/registrar") //URL base para todos los metodos 
+@CrossOrigin(origins = {"http://localhost:*"}, methods = {RequestMethod.GET, RequestMethod.POST})
 
 public class Clientecontroller {
     

@@ -2,6 +2,7 @@ package com.ucab.estacionamiento.exepciones;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
@@ -27,4 +28,20 @@ public class GlobalExceptionHandler {
         // Devolvemos la respuesta con el status HTTP que definimos en la excepción (ej. 409)
         return new ResponseEntity<>(body, HttpStatus.valueOf(ex.getStatus()));
     }
+
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    public ResponseEntity<Object> handleValidationExceptions(MethodArgumentNotValidException ex) {
+        
+        // Extraemos el primer error de la lista de errores
+        String mensajeDeError = ex.getBindingResult().getFieldError().getDefaultMessage();
+        
+        Map<String, Object> body = new HashMap<>();
+        body.put("timestamp", LocalDateTime.now());
+        body.put("status", HttpStatus.BAD_REQUEST.value()); // Usamos 400 Bad Request
+        body.put("error", HttpStatus.BAD_REQUEST.getReasonPhrase());
+        body.put("mensaje", mensajeDeError); 
+        
+        return new ResponseEntity<>(body, HttpStatus.BAD_REQUEST);
+    }
+    
 }

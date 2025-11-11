@@ -14,11 +14,7 @@ export class ClienteService {
 
     constructor(private http: HttpClient) { }
 
-    registrarCliente(cliente: Cliente): Observable<Cliente>
-    {
-        console.log("Enviando datos a Sprint Boot: ", cliente);
-
-        //Convierte automaticamente el objeto en un JSON 
-        return this.http.post<Cliente>(this.apiURL, cliente);
-    }
+    registrarCliente(cliente: any): Observable<any> {
+    return this.http.post(this.apiURL, cliente)
+}
 }

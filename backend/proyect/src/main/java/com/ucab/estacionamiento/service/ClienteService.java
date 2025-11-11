@@ -4,6 +4,7 @@ package com.ucab.estacionamiento.service;
 
 import org.springframework.stereotype.Service;
 import com.ucab.estacionamiento.model.Cliente;
+import com.ucab.estacionamiento.exepciones.RegistroClienteException;
 
 import java.util.List;
 
@@ -109,13 +110,13 @@ public class ClienteService {
         //Usuario 
         if(clienteRepository.findByUsuario(nuevoCliente.getUsuario()).isPresent())
         {
-            throw new IllegalArgumentException("Su usuario se encuentra registrado debe ingresar otro para continuar"); 
+            throw new RegistroClienteException("El usuario ingresado se encuentra esta registrado  ingresa otro para continuar", 409 ); 
         }
 
         //Contrasena 
         if(clienteRepository.findByContrasena(nuevoCliente.getContrasena()).isPresent())
         {
-            throw new IllegalArgumentException("Su contraseña se encuentra registrada debe ingresar otro para continuar"); 
+            throw new RegistroClienteException("La contraseña esta registrada debe ingresar otro para continuar",409); 
         }
 
         /*Nombre 
@@ -134,13 +135,13 @@ public class ClienteService {
         //Cedula 
         if(clienteRepository.findByCedula(nuevoCliente.getCedula()).isPresent())
         {
-            throw new IllegalArgumentException("Su cedula se encuentra registrada"); 
+            throw new RegistroClienteException("La cedula ingresada se encuentra registrada",409); 
         }
 
         //Email
         if(clienteRepository.findByEmail(nuevoCliente.getEmail()).isPresent())
         {
-            throw new IllegalArgumentException("Su correo se encuentra registrado debe ingresar otro para continuar"); 
+            throw new RegistroClienteException("El correo ingresado se encuentra registrado debe ingresar otro para continuar", 409); 
         }
 
         /*Direccion 
@@ -152,7 +153,7 @@ public class ClienteService {
         //Telefono 
         if(clienteRepository.findByTelefono(nuevoCliente.getTelefono()).isPresent())
         {
-            throw new IllegalArgumentException("Su telefono se encuentra registrado"); 
+            throw new RegistroClienteException("El telefono se encuentra registrado ingrese otro para continuar",409); 
         }
 
 
@@ -183,13 +184,13 @@ public class ClienteService {
         //Si el valor esta vacio
         if (valor == null || valor.trim().isEmpty())
         {
-            throw new IllegalArgumentException("El campo " + nombreCampo + " no puede estar vacio"); 
+            throw new RegistroClienteException("El campo " + nombreCampo + " no puede estar vacio",400); 
         }
 
         //Verificar espacios intermedios 
         if (valor.contains(" "))
         {
-            throw new IllegalArgumentException("El campo " + nombreCampo + " no puede contener espacios en blanco"); 
+            throw new RegistroClienteException("El campo " + nombreCampo + " no puede contener espacios en blanco",400); 
 
         }
 
@@ -225,7 +226,7 @@ public class ClienteService {
         //
         if(!email.contains("@"))
         {
-            throw new IllegalArgumentException("El formato del email es invalido: falta el '@'"); 
+            throw new RegistroClienteException("El formato del email es invalido: falta el '@'",400); 
         }
 
         //Extraer el dominio 
@@ -246,7 +247,7 @@ public class ClienteService {
             
         } else {
             System.err.println("El dominio no esta permitido: " + dominio);
-            throw new IllegalArgumentException("El dominio '" + dominio + "' no está permitido para el registro.");
+            throw new RegistroClienteException("El dominio '" + dominio + "' no está permitido para el registro.",400);
         }
     }
 
@@ -264,7 +265,7 @@ public class ClienteService {
             {
                 System.err.println("El usuario UCAB registrado no esta permitido.");
                 System.out.println("correo ingresado no pertenece a un dominio válido para este tipo de cliente");
-                throw new IllegalArgumentException("Para el tipo 'UCAB', el email debe ser @ucab.edu.ve u @est.ucab.edu.ve");
+                throw new RegistroClienteException("Para el tipo 'UCAB', el email debe ser @ucab.edu.ve u @est.ucab.edu.ve",400);
             }
             
         } 
@@ -275,13 +276,13 @@ public class ClienteService {
             {
                 System.err.println("El visitante registrado no esta permitido su dominio");
                 System.out.println("correo ingresado no pertenece a un dominio válido para este tipo de cliente");
-                throw new IllegalArgumentException("Para el tipo 'VISITANTE', el email debe ser @gmail.com, @outlook.com, yahoo.com u hotmail.com");
+                throw new RegistroClienteException("Para el tipo 'VISITANTE', el email debe ser @gmail.com, @outlook.com, yahoo.com u hotmail.com",400);
             }
             
         } 
         else 
         {
-            throw new IllegalArgumentException("El tipo de persona especificado ('" + tipoPersona + "') no es válido.");
+            throw new RegistroClienteException("El tipo de persona especificado ('" + tipoPersona + "') no es válido.",400);
         }
         
         System.out.println(" El email (" + tipoDominio + ") es válido para el TipoPersona (" + tipo + ").");
@@ -302,7 +303,7 @@ public class ClienteService {
         if(!cedulaLimpia.matches(CEDULA_REGEX))
         {
             System.err.println("Formato de cédula inválido: " + cedulaLimpia);
-            throw new IllegalArgumentException("El formato de la cédula debe ser V - 12345678");
+            throw new RegistroClienteException("El formato de la cédula debe ser V - 12345678",400);
         }
 
         System.out.println("La cedula se ha registrado");
@@ -324,7 +325,7 @@ public class ClienteService {
         if(!telefonoLimpio.matches(TELEFONO_REGEX))
         {
             System.err.println("Formato de telefono inválido: " + telefonoLimpio);
-            throw new IllegalArgumentException("El formato del telefono debe ser 0426 - 6112225");
+            throw new RegistroClienteException("El formato del telefono debe ser 0426 - 6112225",400);
         }
 
         System.out.println("El telefono se ha registrado");
@@ -348,7 +349,7 @@ public class ClienteService {
         if(!ContrasenaLimpio.matches(CONTRASENA_REGEX))
         {
             System.err.println("Formato de la contraseña es inválido: " + ContrasenaLimpio);
-            throw new IllegalArgumentException("La contraseña no cumple con los requisitos de seguridad. Debe tener un minimo de 8 caractere, incluir al menos una mayuscula y un número");
+            throw new RegistroClienteException("La contraseña no cumple con los requisitos de seguridad. Debe tener un minimo de 8 caractere, incluir al menos una mayuscula y un número",400);
         }
 
         System.out.println("La contrasena se ha registrado");
