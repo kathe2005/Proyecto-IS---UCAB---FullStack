@@ -1,0 +1,65 @@
+<div class="container-fluid p-0">
+  <!-- Header -->
+  <app-header></app-header>
+
+  <!-- Navigation Unificada -->
+  <app-navigation></app-navigation>
+
+  <!-- Hero Section -->
+  <div class="hero-section">
+    <div class="container">
+      <h1 class="display-4 fw-bold">🚗 SIGE</h1>
+      <p class="lead">Sistema Inteligente de Gestión de Estacionamiento</p>
+      <p class="mb-4">Gestiona tus puestos de estacionamiento de manera eficiente</p>
+    </div>
+  </div>
+
+  <!-- Statistics Cards -->
+  <div class="container-custom mb-5">
+    <div class="row g-4">
+      <div class="col-md-4">
+        <div class="stat-card bg-primary text-white p-4 text-center">
+          <i class="fas fa-parking fa-3x mb-3"></i>
+          <h3>{{ totalPuestos }}</h3>
+          <p class="mb-0">Total de Puestos</p>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="stat-card bg-success text-white p-4 text-center">
+          <i class="fas fa-check-circle fa-3x mb-3"></i>
+          <h3>{{ disponibles }}</h3>
+          <p class="mb-0">Puestos Disponibles</p>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="stat-card bg-warning text-white p-4 text-center">
+          <i class="fas fa-car fa-3x mb-3"></i>
+          <h3>{{ ocupados }}</h3>
+          <p class="mb-0">Puestos Ocupados</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Menu Cards -->
+  <div class="container-custom">
+    <div class="row g-4">
+      <div class="col-md-4" *ngFor="let menuItem of menuItems">
+        <a [routerLink]="menuItem.route" class="text-decoration-none">
+          <div class="menu-card">
+            <div class="menu-icon">
+              <i [class]="menuItem.icon"></i>
+            </div>
+            <h4>{{ menuItem.title }}</h4>
+            <p class="text-muted">{{ menuItem.description }}</p>
+          </div>
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <footer class="footer">
+    © 2025 UCAB Montalbán - Sistema de Estacionamiento
+  </footer>
+</div>
