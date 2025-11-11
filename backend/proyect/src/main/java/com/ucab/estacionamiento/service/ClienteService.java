@@ -3,8 +3,9 @@
 package com.ucab.estacionamiento.service;
 
 import org.springframework.stereotype.Service;
-import com.ucab.estacionamiento.model.Cliente;
+import com.ucab.estacionamiento.DTO.ClienteRegistroDTO;
 import com.ucab.estacionamiento.exepciones.RegistroClienteException;
+import com.ucab.estacionamiento.model.Cliente;
 
 import java.util.List;
 
@@ -26,71 +27,22 @@ public class ClienteService {
 
     //Metodos 
     //Registrar un usuario 
-    public Cliente registrarCliente(Cliente nuevoCliente)
+    public Cliente registrarCliente(ClienteRegistroDTO nuevoCliente)
     {
-        //Validar espacios en blanco 
+        //Validaciones de campos obligatorios, no vacios y sin espacios en blanco 
         //Usuario 
         validarSinEspacios(nuevoCliente.getUsuario(), "usuario");
 
         //Contraseña 
         validarSinEspacios(nuevoCliente.getContrasena(), "contrasena");
 
-        //Confirmar Contraseña 
-        validarSinEspacios(nuevoCliente.getConfirmcontrasena(), "confirmarContrasena");
-
         //Email
         validarSinEspacios(nuevoCliente.getEmail(), "email");
         
 
 
-        /** Validaciones de campos obligatorios y no puede estar vacío.
-        if(nuevoCliente.getUsuario() == null || nuevoCliente.getUsuario().isEmpty())
-        {
-            throw new IllegalArgumentException("El usuario no puede estar vacio"); 
-        }
-
-        if(nuevoCliente.getContrasena() == null || nuevoCliente.getContrasena().isEmpty())
-        {
-            throw new IllegalArgumentException("La contraseña no puede estar vacio"); 
-        }
-
-        if(nuevoCliente.getConfirmcontrasena() == null || nuevoCliente.getConfirmcontrasena().isEmpty())
-        {
-            throw new IllegalArgumentException("La confirmacion de la contraseña no puede estar vacio"); 
-        }
-
-        if (!nuevoCliente.getContrasena().equals(nuevoCliente.getConfirmcontrasena()))
-        {
-            throw new IllegalArgumentException("La confirmacion de la contraseña debe ser igual a la contraseña"); 
-        }
-
-
-        if(nuevoCliente.getNombre() == null || nuevoCliente.getNombre().isEmpty())
-        {
-            throw new IllegalArgumentException("El nombre no puede estar vacio"); 
-        }
-
-        if(nuevoCliente.getApellido() == null || nuevoCliente.getApellido().isEmpty())
-        {
-            throw new IllegalArgumentException("El apellido no puede estar vacio"); 
-        }
-
-        if(nuevoCliente.getCedula() == null || nuevoCliente.getCedula().isEmpty())
-        {
-            throw new IllegalArgumentException("La cedula no puede estar vacio"); 
-        }
-
-        if(nuevoCliente.getEmail() == null || nuevoCliente.getEmail().isEmpty())
-        {
-            throw new IllegalArgumentException("El email no puede estar vacio"); 
-        }
-
-        if(nuevoCliente.getTipoPersona() == null || nuevoCliente.getTipoPersona().isEmpty())
-        {
-            throw new IllegalArgumentException("El tipo de persona no puede estar vacio"); 
-        }**/
-
-        //Validar dominio 
+        //Validaciones de Formato
+        //Validar dominio
         clasificarDominio(nuevoCliente.getEmail());
 
         //Validar tipo de persona y el correo 
@@ -112,26 +64,7 @@ public class ClienteService {
         {
             throw new RegistroClienteException("El usuario ingresado se encuentra esta registrado  ingresa otro para continuar", 409 ); 
         }
-
-        //Contrasena 
-        if(clienteRepository.findByContrasena(nuevoCliente.getContrasena()).isPresent())
-        {
-            throw new RegistroClienteException("La contraseña esta registrada debe ingresar otro para continuar",409); 
-        }
-
-        /*Nombre 
-        if(clienteRepository.findByNombre(nuevoCliente.getNombre()).isPresent())
-        {
-            throw new IllegalArgumentException("Los nombres se encuentra registrada debe ingresar otro para continuar"); 
-        }
-
-
-        //Apellido 
-        if(clienteRepository.findByApellido(nuevoCliente.getApellido()).isPresent())
-        {
-            throw new IllegalArgumentException("Los apellidos se encuentra registrada debe ingresar otro para continuar"); 
-        }*/
-
+        
         //Cedula 
         if(clienteRepository.findByCedula(nuevoCliente.getCedula()).isPresent())
         {
@@ -144,12 +77,6 @@ public class ClienteService {
             throw new RegistroClienteException("El correo ingresado se encuentra registrado debe ingresar otro para continuar", 409); 
         }
 
-        /*Direccion 
-        if(clienteRepository.findByDireccion(nuevoCliente.getDireccion()).isPresent())
-        {
-            throw new IllegalArgumentException("Su direccion se encuentra registrada"); 
-        }*/
-
         //Telefono 
         if(clienteRepository.findByTelefono(nuevoCliente.getTelefono()).isPresent())
         {
@@ -157,18 +84,32 @@ public class ClienteService {
         }
 
 
+        Cliente nuevoCliente2 = new Cliente();
+
+        nuevoCliente2.setUsuario(nuevoCliente.getUsuario());
+        nuevoCliente2.setContrasena(nuevoCliente.getContrasena()); 
+        nuevoCliente2.setNombre(nuevoCliente.getNombre());
+        nuevoCliente2.setApellido(nuevoCliente.getApellido());
+        nuevoCliente2.setCedula(nuevoCliente.getCedula());
+        nuevoCliente2.setEmail(nuevoCliente.getEmail());
+        nuevoCliente2.setTipoPersona(nuevoCliente.getTipoPersona());
+        nuevoCliente2.setDireccion(nuevoCliente.getDireccion());
+        nuevoCliente2.setTelefono(nuevoCliente.getTelefono());
+
         //Simulacion del proceso lento (3 Segundos)
         try {
             System.out.println("Procesando el registro");
-            Thread.sleep(3000);
+            Thread.sleep(3000); 
             
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt();
+            throw new RegistroClienteException("Error durante el procesamiento del registro", 500);
+            
         }
 
         //Guardar en el repositorio es decir en la conexion a  la base de datos 
         System.out.println("Registrado Exitosamente");
-        return clienteRepository.guardar(nuevoCliente); 
+        return clienteRepository.guardar(nuevoCliente2); 
 
     }
 
@@ -288,16 +229,12 @@ public class ClienteService {
         System.out.println(" El email (" + tipoDominio + ") es válido para el TipoPersona (" + tipo + ").");
     }
 
-    private static final String CEDULA_REGEX = "^[VE]-\\d{1,9}$";
-    //[VE] que inicia con V o E
-    // - Seguido de un guion
-    // \d{1,8} Seguido de 1 a 9 dígitos
-    // $ Termina ahí 
+    private static final String CEDULA_REGEX = "^[VE]-\\d{6,8}$";
 
     private void validarFormatoCedula(String cedula)
     {
         //Eliminamos espacios iniciales / finales para la validacion
-        String cedulaLimpia = cedula.trim().toUpperCase(); 
+        String cedulaLimpia = cedula.trim(); 
 
         //Verificacion del formato REGEX
         if(!cedulaLimpia.matches(CEDULA_REGEX))
@@ -319,7 +256,7 @@ public class ClienteService {
     private void validarFormatoTelefono(String telefono)
     {
         //Eliminamos espacios iniciales / finales para la validacion
-        String telefonoLimpio = telefono.trim().toUpperCase(); 
+        String telefonoLimpio = telefono.trim(); 
 
         //Verificacion del formato REGEX
         if(!telefonoLimpio.matches(TELEFONO_REGEX))
@@ -343,7 +280,7 @@ public class ClienteService {
     private void validarFormatoContrasena(String contrasena)
     {
         //Eliminamos espacios iniciales / finales para la validacion
-        String ContrasenaLimpio = contrasena.trim().toUpperCase(); 
+        String ContrasenaLimpio = contrasena.trim(); 
 
         //Verificacion del formato REGEX
         if(!ContrasenaLimpio.matches(CONTRASENA_REGEX))

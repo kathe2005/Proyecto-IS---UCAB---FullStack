@@ -1,17 +1,20 @@
 package com.ucab.estacionamiento.exepciones;
 
+import org.springframework.http.HttpStatus;
+
 // 1. Debe heredar de RuntimeException
 public class RegistroClienteException extends RuntimeException {
 
-    // 2. Campo para almacenar el código de estado HTTP (ej. 409, 400)
-    private final int status; 
+private final HttpStatus httpStatus; 
 
-    public RegistroClienteException(String mensaje, int status) {
-        super(mensaje); // El mensaje se pasa al constructor base
-        this.status = status;
+    // Constructor...
+    public RegistroClienteException(String message, int httpStatusCode) {
+        super(message);
+        this.httpStatus = HttpStatus.valueOf(httpStatusCode); 
     }
 
-    public int getStatus() {
-        return status;
+    // Este es el método que SÍ existe y devuelve el código HTTP
+    public HttpStatus getHttpStatus() { 
+        return httpStatus;
     }
 }

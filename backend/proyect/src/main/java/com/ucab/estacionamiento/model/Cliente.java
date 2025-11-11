@@ -9,7 +9,6 @@ public class Cliente {
     private UUID id; 
     private String usuario; 
     private String contrasena; 
-    private String confirmcontrasena; 
     private String nombre; 
     private String apellido; 
     private String cedula; 
@@ -20,16 +19,17 @@ public class Cliente {
 
     //Contructor vacio 
     public Cliente(){
-        this.id = UUID.randomUUID(); //Se asigna un id automaticamente
+        
     }
 
     //Constructor con parametros (usuario, contraseña, confirmar contraseña, nombre, apellido, cedula, email, tipo de persona)
     public Cliente(String usuario, String contrasena, String confirmcontrasena, String nombre, String apellido, String cedula, String email, String tipoPersona, String direccion, String telefono )
     {
+
         this(); 
+        this.id = UUID.randomUUID(); //Se asigna un id automaticamente
         this.usuario = usuario; 
         this.contrasena = contrasena; 
-        this.confirmcontrasena = confirmcontrasena; 
         this.nombre = nombre; 
         this.apellido = apellido; 
         this.cedula = cedula; 
@@ -52,10 +52,6 @@ public class Cliente {
     //Contraseña 
     public String getContrasena(){   return contrasena;    }
     public void setContrasena(String contrasena){   this.contrasena = contrasena;   }
-
-    //Confirma Contraseña 
-    public String getConfirmcontrasena(){   return confirmcontrasena;    }
-    public void setConfirmcontrasena(String confirmcontrasena){   this.confirmcontrasena = confirmcontrasena;   }
 
     //Nombre
     public String getNombre(){   return nombre;    }

@@ -1,17 +1,27 @@
 //Recibir el JSON 
 package com.ucab.estacionamiento.controller;
 
-import com.ucab.estacionamiento.model.Cliente; 
+//import com.ucab.estacionamiento.model.Cliente; 
 import com.ucab.estacionamiento.service.ClienteService;
 import org.springframework.web.bind.annotation.RestController; 
-import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PostMapping;
+import com.ucab.estacionamiento.DTO.ClienteRegistroDTO;
+import com.ucab.estacionamiento.exepciones.RegistroClienteException;
+import com.ucab.estacionamiento.model.Cliente;
+import org.springframework.http.HttpStatus;
+import org.springframework.beans.factory.annotation.Autowired;
+
+
 //import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.http.ResponseEntity;
-import org.springframework.http.HttpStatus;
+import org.springframework.validation.annotation.Validated;
+
+import java.util.Map;
+
+//import org.springframework.http.HttpStatus;
 //import java.util.Map;
 //import java.util.HashMap;
 //import org.springframework.beans.factory.annotation.Autowired; 
@@ -19,18 +29,13 @@ import org.springframework.http.HttpStatus;
 //import org.springframework.http.ResponseEntity; 
 
 
-
-
-
-
-
 @RestController //Indica que esta clase maneja peticiones REST
-@RequestMapping("/api/clientes/registrar") //URL base para todos los metodos 
-@CrossOrigin(origins = {"http://localhost:*"}, methods = {RequestMethod.GET, RequestMethod.POST})
-
+@RequestMapping("/api") //URL base para todos los metodos 
+@CrossOrigin(origins = {"http://localhost:4200", "http://localhost:54733" })
 public class Clientecontroller {
     
 
+    @Autowired
     private final ClienteService clienteService; 
 
     
@@ -41,58 +46,37 @@ public class Clientecontroller {
 
     
     //Endpoint para el registro con JSON 
-    @PostMapping("/registrar")
+    @PostMapping("/cliente/registrar")
     
-    public ResponseEntity<Cliente> registrarCliente(@RequestBody Cliente nuevoCliente) {
-    
-    Cliente clienteRegistrado = clienteService.registrarCliente(nuevoCliente);
-    
-    // Devuelve 201 Created si es exitoso
-    return new ResponseEntity<>(clienteRegistrado, HttpStatus.CREATED);
-}
+    public ResponseEntity<?> registrarCliente(@Validated @RequestBody ClienteRegistroDTO nuevoCliente) {
 
 
-    /*
-     *     public ResponseEntity<Cliente> registrarCliente ( @RequestBody Cliente cliente)
-    {
-        System.out.println("Recibida peticion de registro para: " + cliente.getemail());
-
-        try {
-            //llama al servicio 
-            Cliente clienteRegistrado = clienteService.registrarCliente(cliente); 
-            return new ResponseEntity<> (clienteRegistrado, HttpStatus.CREATED); 
-        } 
-        catch (IllegalArgumentException e) {
-            //Errores de validacion 
-            System.out.println("Error de validacion: " + e.getMessage());
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST); 
-        }
-        catch (Exception e)
-        {
-            //Otros errores 
-            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
-        }
+    if (!nuevoCliente.getContrasena().equals(nuevoCliente.getConfirmcontrasena())) {
+        return ResponseEntity
+            .badRequest()
+            .body(Map.of("mensaje", "Las contraseñas enviadas no coinciden."));
     }
-     */
 
-    /*public Cliente registrarCliente(@RequestBody Cliente cliente) { 
-        return clienteService.registrarCliente(cliente);
-    }*/
+    try {
 
-    /*@ExceptionHandler(IllegalArgumentException.class)
-    public ResponseEntity<Map<String, String>> handleIllegalArgumentException(IllegalArgumentException ex) 
-    {
-    
-    // Creamos un mapa (JSON) para la respuesta de error
-    Map<String, String> errorResponse = new HashMap<>();
-    
-    // 'mensaje' contiene el mensaje de error del Service (ej: "Su correo se encuentra registrado...")
-    errorResponse.put("mensaje", ex.getMessage()); 
-    
-    // Retornamos un código HTTP 400 Bad Request
-    return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST); 
-    
-    }  */
+        // Usamos la entidad Cliente en el import 
+        Cliente clienteGuardado = clienteService.registrarCliente(nuevoCliente);
+        
+        // 3. RESPUESTA EXITOSA 
+        return ResponseEntity.status(HttpStatus.CREATED).body(clienteGuardado);
+
+    } catch (RegistroClienteException e) {
+        // Manejo de errores específicos (400 Bad Request, 409 Conflict)
+        return ResponseEntity
+            .status(e.getHttpStatus()) 
+            .body(Map.of("mensaje", e.getMessage()));
+    } catch (Exception e) {
+        // Manejo de errores genéricos (500 Internal Server Error)
+        return ResponseEntity
+            .internalServerError()
+            .body(Map.of("mensaje", "Ocurrió un error inesperado en el servidor: " + e.getMessage()));
+    }
+}
 
 }
 
