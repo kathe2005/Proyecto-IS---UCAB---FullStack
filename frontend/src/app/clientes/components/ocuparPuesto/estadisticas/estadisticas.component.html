@@ -1,0 +1,143 @@
+<div class="container-fluid p-0">
+  <!-- Header -->
+  <app-header></app-header>
+
+  <!-- Navigation Unificada -->
+  <app-navigation></app-navigation>
+
+  <div class="container-custom">
+    <h1 class="mb-4">📊 Estadísticas del Estacionamiento</h1>
+
+    <div class="row">
+      <div class="col-md-3">
+        <div class="stat-card bg-primary text-white p-4 text-center">
+          <i class="fas fa-parking fa-3x mb-3"></i>
+          <h2>{{ estadisticas.total || 0 }}</h2>
+          <p class="mb-0">Total de Puestos</p>
+        </div>
+      </div>
+      <div class="col-md-3">
+        <div class="stat-card bg-success text-white p-4 text-center">
+          <i class="fas fa-check-circle fa-3x mb-3"></i>
+          <h2>{{ estadisticas.disponibles || 0 }}</h2>
+          <p class="mb-0">Disponibles</p>
+        </div>
+      </div>
+      <div class="col-md-3">
+        <div class="stat-card bg-warning text-white p-4 text-center">
+          <i class="fas fa-car fa-3x mb-3"></i>
+          <h2>{{ estadisticas.ocupados || 0 }}</h2>
+          <p class="mb-0">Ocupados</p>
+        </div>
+      </div>
+      <div class="col-md-3">
+        <div class="stat-card bg-secondary text-white p-4 text-center">
+          <i class="fas fa-lock fa-3x mb-3"></i>
+          <h2>{{ estadisticas.bloqueados || 0 }}</h2>
+          <p class="mb-0">Bloqueados</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="row mt-4">
+      <div class="col-md-6">
+        <div class="card">
+          <div class="card-header text-white">
+            <h5 class="mb-0">📈 Porcentaje de Ocupación</h5>
+          </div>
+          <div class="card-body">
+            <div class="progress mb-3">
+              <div class="progress-bar bg-warning"
+                   role="progressbar"
+                   [style.width]="estadisticas.porcentajeOcupacion + '%'"
+                   [attr.aria-valuenow]="estadisticas.porcentajeOcupacion"
+                   aria-valuemin="0"
+                   aria-valuemax="100">
+                  <span>{{ estadisticas.porcentajeOcupacion | number:'1.1-1' }}%</span>
+              </div>
+            </div>
+            <p class="text-center mb-0">
+              <strong>{{ estadisticas.porcentajeOcupacion | number:'1.1-1' }}%</strong> de ocupación
+            </p>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-6">
+        <div class="card">
+          <div class="card-header bg-orange text-white">
+            <h5 class="mb-0">🛠️ Puestos en Mantenimiento</h5>
+          </div>
+          <div class="card-body text-center">
+            <i class="fas fa-tools fa-4x text-warning mb-3"></i>
+            <h2>{{ estadisticas.mantenimiento || 0 }}</h2>
+            <p class="mb-0">Puestos en mantenimiento</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="row mt-4">
+      <div class="col-12">
+        <div class="card">
+          <div class="card-header text-white">
+            <h5 class="mb-0">📋 Resumen General</h5>
+          </div>
+          <div class="card-body">
+            <div class="row text-center">
+              <div class="col-md-2">
+                <div class="border rounded p-3">
+                  <h4>{{ estadisticas.total || 0 }}</h4>
+                  <small>Total</small>
+                </div>
+              </div>
+              <div class="col-md-2">
+                <div class="border rounded p-3 bg-success text-white">
+                  <h4>{{ estadisticas.disponibles || 0 }}</h4>
+                  <small>Disponibles</small>
+                </div>
+              </div>
+              <div class="col-md-2">
+                <div class="border rounded p-3 bg-warning text-white">
+                  <h4>{{ estadisticas.ocupados || 0 }}</h4>
+                  <small>Ocupados</small>
+                </div>
+              </div>
+              <div class="col-md-2">
+                <div class="border rounded p-3 bg-secondary text-white">
+                  <h4>{{ estadisticas.bloqueados || 0 }}</h4>
+                  <small>Bloqueados</small>
+                </div>
+              </div>
+              <div class="col-md-2">
+                <div class="border rounded p-3 bg-orange text-white">
+                  <h4>{{ estadisticas.mantenimiento || 0 }}</h4>
+                  <small>Mantenimiento</small>
+                </div>
+              </div>
+              <div class="col-md-2">
+                <div class="border rounded p-3 bg-info text-white">
+                  <h4>{{ estadisticas.porcentajeOcupacion | number:'1.1-1' }}</h4>
+                  <small>% Ocupación</small>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="mt-4">
+      <button (click)="volverAPuestos()" class="btn btn-outline-primary me-2">
+        <i class="fas fa-arrow-left"></i> Volver a Puestos
+      </button>
+      <button (click)="irAInicio()" class="btn btn-outline-secondary">
+        <i class="fas fa-home"></i> Ir al Inicio
+      </button>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <footer class="footer">
+    © 2025 UCAB Montalbán - Sistema de Estacionamiento
+  </footer>
+</div>

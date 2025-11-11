@@ -5,7 +5,7 @@ import { FormsModule } from '@angular/forms';
 import { HeaderComponent } from '../header/header.component';
 import { NavigationComponent } from '../navegacion/navigation.component';
 
-// Enums temporales - reemplaza con tus enums reales
+// Enums temporales
 enum TipoPuesto {
   REGULAR = 'REGULAR',
   DISCAPACITADO = 'DISCAPACITADO',

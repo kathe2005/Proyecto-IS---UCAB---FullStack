@@ -1,0 +1,106 @@
+:host {
+  display: block;
+  min-height: 100vh;
+  background-color: #f8f9fa;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+/* Container */
+.container-custom {
+  margin: 0 50px;
+}
+
+/* Stat Cards */
+.stat-card {
+  border: none;
+  border-radius: 15px;
+  box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+  transition: transform 0.3s ease;
+  margin-bottom: 20px;
+}
+
+.stat-card:hover {
+  transform: translateY(-5px);
+}
+
+/* Card Styles */
+.card {
+  border: none;
+  border-radius: 15px;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+  margin-bottom: 20px;
+}
+
+.card-header {
+  border-radius: 15px 15px 0 0 !important;
+  background-color: rgb(28, 85, 255) !important;
+}
+
+/* Progress Bar */
+.progress {
+  height: 25px;
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+.progress-bar {
+  border-radius: 10px;
+  font-weight: bold;
+}
+
+/* Orange Background */
+.bg-orange {
+  background-color: #fd7e14 !important;
+}
+
+/* Button Styles */
+.btn {
+  border-radius: 8px;
+  transition: all 0.3s ease;
+  font-weight: 500;
+}
+
+.btn:hover {
+  transform: scale(1.05);
+}
+
+/* Footer */
+.footer {
+  background-color: rgb(28, 85, 255);
+  color: white;
+  text-align: center;
+  padding: 20px;
+  margin-top: 50px;
+  width: 100%;
+  font-size: 14px;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .container-custom {
+    margin: 0 20px;
+  }
+
+  .stat-card {
+    margin-bottom: 15px;
+  }
+
+  .row.text-center .col-md-2 {
+    margin-bottom: 10px;
+  }
+}
+
+@media (max-width: 480px) {
+  .container-custom {
+    margin: 0 10px;
+  }
+
+  .stat-card {
+    padding: 20px !important;
+  }
+
+  .row.text-center .col-md-2 {
+    width: 50%;
+    margin-bottom: 10px;
+  }
+}
