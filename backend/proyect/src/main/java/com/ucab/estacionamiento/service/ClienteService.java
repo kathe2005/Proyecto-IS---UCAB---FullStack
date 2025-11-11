@@ -27,73 +27,6 @@ public class ClienteService {
     //Registrar un usuario 
     public Cliente registrarCliente(Cliente nuevoCliente)
     {
-
-        //Validar dominio 
-        clasificarDominio(nuevoCliente.getEmail());
-
-        validarEmailPorTipoPersona(nuevoCliente.getTipoPersona(), nuevoCliente.getEmail());
-
-        //Validar formato de la cedula 
-        validarFormatoCedula(nuevoCliente.getCedula()); 
-
-        //Validar formato del telefono 
-        validarFormatoTelefono(nuevoCliente.getTelefono());
-
-        //Validar formato de la contraseña 
-        validarFormatoContrasena(nuevoCliente.getContrasena());
-
-
-        //Validacion de unicidad 
-        //Usuario 
-        if(clienteRepository.findByUsuario(nuevoCliente.getUsuario()).isPresent())
-        {
-            throw new IllegalArgumentException("Su usuario se encuentra registrado debe ingresar otro para continuar"); 
-        }
-
-        //Contrasena 
-        if(clienteRepository.findByContrasena(nuevoCliente.getContrasena()).isPresent())
-        {
-            throw new IllegalArgumentException("Su contraseña se encuentra registrada debe ingresar otro para continuar"); 
-        }
-
-        //Nombre 
-        if(clienteRepository.findByNombre(nuevoCliente.getNombre()).isPresent())
-        {
-            throw new IllegalArgumentException("Los nombres se encuentra registrada debe ingresar otro para continuar"); 
-        }
-
-
-        //Apellido 
-        if(clienteRepository.findByApellido(nuevoCliente.getApellido()).isPresent())
-        {
-            throw new IllegalArgumentException("Los apellidos se encuentra registrada debe ingresar otro para continuar"); 
-        }
-
-        //Cedula 
-        if(clienteRepository.findByCedula(nuevoCliente.getCedula()).isPresent())
-        {
-            throw new IllegalArgumentException("Su cedula se encuentra registrada"); 
-        }
-
-        //Email
-        if(clienteRepository.findByEmail(nuevoCliente.getEmail()).isPresent())
-        {
-            throw new IllegalArgumentException("Su correo se encuentra registrado debe ingresar otro para continuar"); 
-        }
-
-        //Direccion 
-        if(clienteRepository.findByDireccion(nuevoCliente.getDireccion()).isPresent())
-        {
-            throw new IllegalArgumentException("Su direccion se encuentra registrada"); 
-        }
-
-        //Telefono 
-        if(clienteRepository.findByTelefono(nuevoCliente.getTelefono()).isPresent())
-        {
-            throw new IllegalArgumentException("Su telefono se encuentra registrado"); 
-        }
-
-
         //Validar espacios en blanco 
         //Usuario 
         validarSinEspacios(nuevoCliente.getUsuario(), "usuario");
@@ -109,7 +42,7 @@ public class ClienteService {
         
 
 
-        //Validaciones de campos obligatorios y no puede estar vacío.
+        /** Validaciones de campos obligatorios y no puede estar vacío.
         if(nuevoCliente.getUsuario() == null || nuevoCliente.getUsuario().isEmpty())
         {
             throw new IllegalArgumentException("El usuario no puede estar vacio"); 
@@ -125,7 +58,7 @@ public class ClienteService {
             throw new IllegalArgumentException("La confirmacion de la contraseña no puede estar vacio"); 
         }
 
-        if (nuevoCliente.getContrasena() != nuevoCliente.getConfirmcontrasena())
+        if (!nuevoCliente.getContrasena().equals(nuevoCliente.getConfirmcontrasena()))
         {
             throw new IllegalArgumentException("La confirmacion de la contraseña debe ser igual a la contraseña"); 
         }
@@ -154,7 +87,74 @@ public class ClienteService {
         if(nuevoCliente.getTipoPersona() == null || nuevoCliente.getTipoPersona().isEmpty())
         {
             throw new IllegalArgumentException("El tipo de persona no puede estar vacio"); 
+        }**/
+
+        //Validar dominio 
+        clasificarDominio(nuevoCliente.getEmail());
+
+        //Validar tipo de persona y el correo 
+        validarEmailPorTipoPersona(nuevoCliente.getTipoPersona(), nuevoCliente.getEmail());
+
+        //Validar formato de la cedula 
+        validarFormatoCedula(nuevoCliente.getCedula()); 
+
+        //Validar formato del telefono 
+        validarFormatoTelefono(nuevoCliente.getTelefono());
+
+        //Validar formato de la contraseña 
+        validarFormatoContrasena(nuevoCliente.getContrasena());
+
+
+        //Validacion de unicidad 
+        //Usuario 
+        if(clienteRepository.findByUsuario(nuevoCliente.getUsuario()).isPresent())
+        {
+            throw new IllegalArgumentException("Su usuario se encuentra registrado debe ingresar otro para continuar"); 
         }
+
+        //Contrasena 
+        if(clienteRepository.findByContrasena(nuevoCliente.getContrasena()).isPresent())
+        {
+            throw new IllegalArgumentException("Su contraseña se encuentra registrada debe ingresar otro para continuar"); 
+        }
+
+        /*Nombre 
+        if(clienteRepository.findByNombre(nuevoCliente.getNombre()).isPresent())
+        {
+            throw new IllegalArgumentException("Los nombres se encuentra registrada debe ingresar otro para continuar"); 
+        }
+
+
+        //Apellido 
+        if(clienteRepository.findByApellido(nuevoCliente.getApellido()).isPresent())
+        {
+            throw new IllegalArgumentException("Los apellidos se encuentra registrada debe ingresar otro para continuar"); 
+        }*/
+
+        //Cedula 
+        if(clienteRepository.findByCedula(nuevoCliente.getCedula()).isPresent())
+        {
+            throw new IllegalArgumentException("Su cedula se encuentra registrada"); 
+        }
+
+        //Email
+        if(clienteRepository.findByEmail(nuevoCliente.getEmail()).isPresent())
+        {
+            throw new IllegalArgumentException("Su correo se encuentra registrado debe ingresar otro para continuar"); 
+        }
+
+        /*Direccion 
+        if(clienteRepository.findByDireccion(nuevoCliente.getDireccion()).isPresent())
+        {
+            throw new IllegalArgumentException("Su direccion se encuentra registrada"); 
+        }*/
+
+        //Telefono 
+        if(clienteRepository.findByTelefono(nuevoCliente.getTelefono()).isPresent())
+        {
+            throw new IllegalArgumentException("Su telefono se encuentra registrado"); 
+        }
+
 
         //Simulacion del proceso lento (3 Segundos)
         try {
@@ -177,18 +177,19 @@ public class ClienteService {
      * @param nombreCampo El nombre del campo para el mensaje de error.
      */
 
+    //Validar espacios 
     private void validarSinEspacios(String valor, String nombreCampo)
     {
         //Si el valor esta vacio
-        if (valor.trim().contains(""))
+        if (valor == null || valor.trim().isEmpty())
         {
-            throw new IllegalArgumentException(nombreCampo + " no puede estar vacio"); 
+            throw new IllegalArgumentException("El campo " + nombreCampo + " no puede estar vacio"); 
         }
 
         //Verificar espacios intermedios 
-        if (valor.trim().contains(""))
+        if (valor.contains(" "))
         {
-            throw new IllegalArgumentException(nombreCampo + " no puede contener espacios en blanco"); 
+            throw new IllegalArgumentException("El campo " + nombreCampo + " no puede contener espacios en blanco"); 
 
         }
 
@@ -330,10 +331,11 @@ public class ClienteService {
     }
 
     
-    private static final String CONTRASENA_REGEX = "^(?=.*[A-Z])(?=.*[0-9]).{8,}$";
+    private static final String CONTRASENA_REGEX = "^(?=.*[A-Z])(?=.*[a-z])(?=.*[0-9]).{8,}$";
     // ^ Inicio 
     // (?=.*[A-Z]) Contiene al menos una letra mayúscula (A-Z)
     // (?=.*[0-9]) Contiene al menos un dígito (0-9)
+    // (?=.*[a-z]) Contiene al menos una letra en minuscula (a-z)
     // .{8,} Tiene una longitud mínima de 8 caracteres
     // $ Termina ahí
 

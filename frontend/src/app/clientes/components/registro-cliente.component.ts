@@ -137,9 +137,30 @@ export class RegistroClienteComponent {
                 }, 
                 error: (err) => 
                     {
-                        console.error('Error de registro: ', err); 
-                        this.errorMensaje = err.error?.mensaje || "Hubo un error desconocido al registrar"; 
-                        this.paso = 'registrar'; 
+                        console.error('Error completo recibido: ', err); 
+
+                        let mensajeDelServidor = err.error?.mensaje; 
+
+                        if(!mensajeDelServidor && typeof err.error === 'string')
+                        {
+                            try {
+                                const parsedError = JSON.parse(err.error);
+                                mensajeDelServidor = parsedError.mensaje; 
+                                this.paso = 'credenciales'; 
+                                this.paso = 'datos_personales'; 
+                                this.paso = 'datos_personales'; 
+                                
+                            } catch (e) {
+
+                                
+                            }
+                        }
+
+
+                        this.errorMensaje = mensajeDelServidor ||  "Hubo un error desconocido al registrar"; 
+
+                        this.paso = 'contacto_ubicacion'; 
+                        
                         this.isProcessing = false; 
                     }                 
             }); 
@@ -149,14 +170,14 @@ export class RegistroClienteComponent {
     //Metodo para modificar 
     modificarDatos()
     {
-        this.paso = 'registrar'; 
+        this.paso = 'confirmacion'; 
         this.errorMensaje = null; 
     }
 
     finalizarRegistro()
     {
+        this.paso = 'confirmacion'
         console.log("Registro de cliente confirmado y finalizado"); 
-        alert('Registro y confirmación finalizados. Redirigiendo...'); 
     }
 
 }

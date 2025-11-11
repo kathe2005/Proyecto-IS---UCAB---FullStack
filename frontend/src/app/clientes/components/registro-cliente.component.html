@@ -6,6 +6,12 @@
         <div class="registro-cliente">
             <h2> Paso 1 de 3: Credenciales de Acceso  </h2>
 
+            @if (errorMensaje) {
+            <div class="error-alert">
+                🛑 {{ errorMensaje }}
+            </div>
+        }
+
             <form (ngSubmit)="siguientepaso()">
 
                 <fieldset>
@@ -49,6 +55,12 @@
         {   
         <div class="registro-cliente">
             <h2> Paso 2 de 3: Datos Personales  </h2>
+
+                    @if (errorMensaje) {
+            <div class="error-alert">
+                🛑 {{ errorMensaje }}
+            </div>
+        }
 
             <form (ngSubmit)="siguientepaso()">
 
@@ -101,6 +113,12 @@
         <div class="registro-cliente">
             <h2> Paso 3 de 3: Contacto y Ubicación  </h2>
 
+            @if (errorMensaje) {
+            <div class="error-alert">
+                🛑 {{ errorMensaje }}
+            </div>
+        }
+
             <form (ngSubmit)="siguientepaso()">
 
                 <fieldset>
@@ -142,13 +160,18 @@
         @if (paso === 'cargando')
         { <div class="loading-screen">
 
+                        @if (errorMensaje) {
+            <div class="error-alert">
+                🛑 {{ errorMensaje }}
+            </div>
+        }
                 <h2> Precesando su Registro </h2>
                 <div class="spinner"></div>
                 <p>Aplicando validaciones de unicidad y formato. Espere la confirmacion del servidor</p>
         
         </div>}
 
-        @if (paso === 'confirmacion' && 'clienteConfirmado')
+        @if (paso === 'confirmacion')
         { <div class=" confirmation-card">
             
                 <h2>✅ Datos Registrados Correctamente</h2>

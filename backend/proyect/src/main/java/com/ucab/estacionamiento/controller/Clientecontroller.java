@@ -9,14 +9,17 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.ExceptionHandler;
+//import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.HttpStatus;
-import java.util.Map;
-import java.util.HashMap;
+//import java.util.Map;
+//import java.util.HashMap;
 //import org.springframework.beans.factory.annotation.Autowired; 
 //import org.springframework.http.HttpStatus;
 //import org.springframework.http.ResponseEntity; 
+
+
+
 
 
 
@@ -27,6 +30,7 @@ import java.util.HashMap;
 
 public class Clientecontroller {
     
+
     private final ClienteService clienteService; 
 
     
@@ -37,7 +41,7 @@ public class Clientecontroller {
 
     
     //Endpoint para el registro con JSON 
-    @PostMapping
+    @PostMapping("/registrar")
     
     public ResponseEntity<Cliente> registrarCliente(@RequestBody Cliente nuevoCliente) {
     
@@ -75,8 +79,9 @@ public class Clientecontroller {
         return clienteService.registrarCliente(cliente);
     }*/
 
-    @ExceptionHandler(IllegalArgumentException.class)
-    public ResponseEntity<Map<String, String>> handleIllegalArgumentException(IllegalArgumentException ex) {
+    /*@ExceptionHandler(IllegalArgumentException.class)
+    public ResponseEntity<Map<String, String>> handleIllegalArgumentException(IllegalArgumentException ex) 
+    {
     
     // Creamos un mapa (JSON) para la respuesta de error
     Map<String, String> errorResponse = new HashMap<>();
@@ -86,7 +91,8 @@ public class Clientecontroller {
     
     // Retornamos un código HTTP 400 Bad Request
     return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST); 
-    }   
+    
+    }  */
 
 }
 

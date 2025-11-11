@@ -20,6 +20,5 @@ export class ClienteService {
 
         //Convierte automaticamente el objeto en un JSON 
         return this.http.post<Cliente>(this.apiURL, cliente);
-
     }
 }

@@ -1,6 +1,5 @@
 
-
-{
+[{
     "usuario": "prueba_ucab",
     "email": "prueba@ucab.edu.ve",
     "contrasena": "Secreta123",
@@ -12,3 +11,4 @@
     "direccion": "La Castellana",
     "telefono": "04121234567"
 }
+]
