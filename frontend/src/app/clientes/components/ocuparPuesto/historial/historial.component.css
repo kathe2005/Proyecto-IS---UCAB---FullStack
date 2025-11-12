@@ -1,0 +1,112 @@
+:host {
+  display: block;
+  min-height: 100vh;
+  background-color: #f8f9fa;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+/* Container */
+.container-custom {
+  margin: 0 50px;
+}
+
+/* Card Styles */
+.card {
+  border: none;
+  border-radius: 15px;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+  margin-bottom: 20px;
+}
+
+.card-header {
+  border-radius: 15px 15px 0 0 !important;
+  background-color: rgb(28, 85, 255) !important;
+  color: white;
+}
+
+/* List Group Styles */
+.list-group-item {
+  border: none;
+  border-bottom: 1px solid #e9ecef;
+  transition: background-color 0.3s ease;
+  padding: 15px 20px;
+}
+
+.list-group-item:hover {
+  background-color: rgba(28, 85, 255, 0.1);
+}
+
+.list-group-item:last-child {
+  border-bottom: none;
+}
+
+/* Badge Styles */
+.badge {
+  font-size: 0.9em;
+  padding: 0.5em 0.8em;
+  border-radius: 8px;
+  font-weight: 500;
+}
+
+/* Button Styles */
+.btn {
+  border-radius: 8px;
+  transition: all 0.3s ease;
+  font-weight: 500;
+  padding: 8px 16px;
+}
+
+.btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+}
+
+/* Footer */
+.footer {
+  background-color: rgb(28, 85, 255);
+  color: white;
+  text-align: center;
+  padding: 20px;
+  margin-top: 50px;
+  width: 100%;
+  font-size: 14px;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .container-custom {
+    margin: 0 20px;
+  }
+
+  .card-body .row {
+    flex-direction: column;
+  }
+
+  .card-body .col-md-6 {
+    width: 100%;
+    margin-bottom: 15px;
+  }
+
+  .list-group-item {
+    padding: 12px 15px;
+  }
+}
+
+@media (max-width: 480px) {
+  .container-custom {
+    margin: 0 10px;
+  }
+
+  .card-header h4 {
+    font-size: 1.2rem;
+  }
+
+  .list-group-item {
+    padding: 10px 12px;
+  }
+
+  .btn {
+    width: 100%;
+    margin-bottom: 10px;
+  }
+}

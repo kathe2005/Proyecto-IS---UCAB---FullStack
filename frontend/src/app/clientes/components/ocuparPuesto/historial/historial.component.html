@@ -1,0 +1,81 @@
+<div class="container-fluid p-0">
+  <!-- Header -->
+  <app-header></app-header>
+
+  <!-- Navigation Unificada -->
+  <app-navigation></app-navigation>
+
+  <div class="container-custom">
+    <!-- Información del Puesto -->
+    <div *ngIf="puesto" class="card mb-4">
+      <div class="card-header text-white">
+        <h4 class="mb-0">
+          <i class="fas fa-history"></i> Historial del Puesto
+          <span>{{ puesto.numero }}</span>
+        </h4>
+      </div>
+      <div class="card-body">
+        <div class="row">
+          <div class="col-md-6">
+            <p><strong>ID:</strong> <span>{{ puesto.id }}</span></p>
+            <p><strong>Ubicación:</strong> <span>{{ puesto.ubicacion }}</span></p>
+          </div>
+          <div class="col-md-6">
+            <p><strong>Tipo:</strong>
+              <span class="badge"
+                    [style.background-color]="getTipoColor(puesto.tipoPuesto)"
+                    style="color: white;">
+                {{ getTipoDescripcion(puesto.tipoPuesto) }}
+              </span>
+            </p>
+            <p><strong>Estado:</strong>
+              <span class="badge"
+                    [style.background-color]="getEstadoColor(puesto.estadoPuesto)"
+                    style="color: white;">
+                {{ getEstadoDescripcion(puesto.estadoPuesto) }}
+              </span>
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Lista de Historial -->
+    <div class="card">
+      <div class="card-header text-white">
+        <h5 class="mb-0">
+          <i class="fas fa-list"></i> Registros de Historial
+          <span class="badge bg-secondary">{{ historial.length }}</span>
+        </h5>
+      </div>
+      <div class="card-body">
+        <div *ngIf="historial.length === 0" class="text-center py-4">
+          <i class="fas fa-inbox fa-3x text-muted mb-3"></i>
+          <h4 class="text-muted">No hay registros en el historial</h4>
+        </div>
+
+        <div *ngIf="historial.length > 0" class="list-group">
+          <div *ngFor="let registro of historial; let i = index"
+               class="list-group-item list-group-item-action">
+            <div class="d-flex w-100 justify-content-between">
+              <h6 class="mb-1">{{ registro }}</h6>
+              <small class="text-muted">#{{ i + 1 }}</small>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Botones de Navegación -->
+    <div class="mt-4">
+      <button routerLink="/puestos" class="btn btn-outline-primary">
+        <i class="fas fa-arrow-left"></i> Volver a Puestos
+      </button>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <footer class="footer">
+    © 2025 UCAB Montalbán - Sistema de Estacionamiento
+  </footer>
+</div>

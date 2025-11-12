@@ -5,6 +5,8 @@ import { Cliente } from '../models/cliente';
 import { FormsModule } from '@angular/forms'; 
 import { Observable } from 'rxjs';
 
+import { Router } from '@angular/router';
+
 @Component({
     selector: 'app-registro-cliente',
     templateUrl: './registro-cliente.component.html',
@@ -38,7 +40,7 @@ export class RegistroClienteComponent implements OnInit {
     //Estado para controllar qué pantalla se muestra 
     paso: 'credenciales' | 'datos_personales' | 'contacto_ubicacion' | 'cargando' | 'confirmacion' = 'credenciales'; 
 
-    constructor(private clienteService: ClienteService){}
+    constructor(private clienteService: ClienteService, private router: Router){}
 
     ngOnInit(): void
     {
@@ -136,20 +138,20 @@ export class RegistroClienteComponent implements OnInit {
 
 
         this.errorMensaje = null; 
-    this.paso = 'cargando'; 
-    console.log('Iniciando registro...'); 
+        this.paso = 'cargando'; 
+        console.log('Iniciando registro...'); 
 
-    let solicitud$: Observable<any>;
+        let solicitud$: Observable<any>;
 
-    //Decidir si es Actualización (PUT) o Registro (POST)
-    if (this.estaEditando) 
-    {
-        solicitud$ = this.clienteService.actualizarCliente(this.nuevoCliente);
-    } 
-    else 
-    {
-        solicitud$ = this.clienteService.registrarCliente(this.nuevoCliente);
-    }
+        //Decidir si es Actualización (PUT) o Registro (POST)
+        if (this.estaEditando) 
+        {
+            solicitud$ = this.clienteService.actualizarCliente(this.nuevoCliente);
+        } 
+        else 
+        {
+            solicitud$ = this.clienteService.registrarCliente(this.nuevoCliente);
+        }
 
         solicitud$.subscribe({ 
         next: (clienteRespuesta) =>
@@ -220,5 +222,13 @@ export class RegistroClienteComponent implements OnInit {
         // Aquí deberías navegar a la pantalla de login o al home.
         console.log("Registro de cliente confirmado y finalizado"); 
 
+        // Mostrar mensaje de éxito
+        alert('✅ Registro exitoso! Serás redirigido al sistema de estacionamiento.');
+
+        // Redirigir al dashboard del sistema
+        setTimeout(() => {
+        this.router.navigate(['/inicio']);
+        },  
+    1500);
     }
 }

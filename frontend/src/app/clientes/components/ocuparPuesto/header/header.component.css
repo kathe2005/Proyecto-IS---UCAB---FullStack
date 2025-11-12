@@ -1,0 +1,50 @@
+header {
+  display: flex;
+  background-color: rgb(28, 85, 255);
+  color: white;
+  padding: 10px 0;
+  text-align: center;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.topbar h1 {
+  margin: 0;
+  font-size: 24px;
+  margin-left: 50px;
+}
+
+.topbar {
+  padding-bottom: 50px;
+  padding-top: 50px;
+}
+
+.topbar h5 {
+  margin: 0;
+  font-size: 16px;
+  margin-left: 50px;
+  color: #ffffff;
+}
+
+#fechaHeader {
+  background-color: rgba(105, 143, 255, 0.615);
+  width: 300px;
+  height: 100px;
+  margin-right: 50px;
+  border-radius: 10px;
+  transition: transform 0.3s ease;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+#fechaHeader:hover {
+  transform: scale(1.10);
+  box-shadow: 0 0 10px rgba(55, 55, 55, 0.737);
+}
+
+#fechaHeader h3 {
+  margin: 10px;
+  font-size: 20px;
+}

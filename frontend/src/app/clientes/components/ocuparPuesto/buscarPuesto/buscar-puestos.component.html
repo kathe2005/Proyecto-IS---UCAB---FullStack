@@ -1,0 +1,95 @@
+<div class="container-fluid p-0">
+  <!-- Header -->
+  <app-header></app-header>
+
+  <!-- Navigation Unificada -->
+  <app-navigation></app-navigation>
+
+  <div class="container-custom">
+    <h1 class="mb-4">🔍 Buscar Puestos</h1>
+
+    <div class="row">
+      <div class="col-md-4">
+        <div class="card">
+          <div class="card-header bg-success text-white">
+            <h5 class="mb-0"><i class="fas fa-filter"></i> Buscar por Estado</h5>
+          </div>
+          <div class="card-body">
+            <form (ngSubmit)="buscarPorEstado()">
+              <div class="mb-3">
+                <label class="form-label">Seleccionar Estado:</label>
+                <select [(ngModel)]="estadoSeleccionado" name="estado" class="form-select" required>
+                  <option value="">-- Seleccione estado --</option>
+                  <option *ngFor="let estado of estadosPuesto" [value]="estado">
+                    {{ getEstadoDescripcion(estado) }}
+                  </option>
+                </select>
+              </div>
+              <button type="submit" class="btn btn-success w-100">
+                <i class="fas fa-search"></i> Buscar por Estado
+              </button>
+            </form>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-md-4">
+        <div class="card">
+          <div class="card-header bg-info text-white">
+            <h5 class="mb-0"><i class="fas fa-tag"></i> Buscar por Tipo</h5>
+          </div>
+          <div class="card-body">
+            <form (ngSubmit)="buscarPorTipo()">
+              <div class="mb-3">
+                <label class="form-label">Seleccionar Tipo:</label>
+                <select [(ngModel)]="tipoSeleccionado" name="tipo" class="form-select" required>
+                  <option value="">-- Seleccione tipo --</option>
+                  <option *ngFor="let tipo of tiposPuesto" [value]="tipo">
+                    {{ getTipoDescripcion(tipo) }}
+                  </option>
+                </select>
+              </div>
+              <button type="submit" class="btn btn-info w-100">
+                <i class="fas fa-search"></i> Buscar por Tipo
+              </button>
+            </form>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-md-4">
+        <div class="card">
+          <div class="card-header bg-warning text-white">
+            <h5 class="mb-0"><i class="fas fa-map-marker-alt"></i> Buscar por Ubicación</h5>
+          </div>
+          <div class="card-body">
+            <form (ngSubmit)="buscarPorUbicacion()">
+              <div class="mb-3">
+                <label class="form-label">Ingresar Ubicación:</label>
+                <input type="text" [(ngModel)]="ubicacionSeleccionada" name="ubicacion"
+                       class="form-control" placeholder="Ej: Zona A, Zona Motos..." required>
+              </div>
+              <button type="submit" class="btn btn-warning w-100">
+                <i class="fas fa-search"></i> Buscar por Ubicación
+              </button>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="mt-4">
+      <button (click)="volverAPuestos()" class="btn btn-outline-primary me-2">
+        <i class="fas fa-arrow-left"></i> Volver a Puestos
+      </button>
+      <button (click)="irAInicio()" class="btn btn-outline-secondary">
+        <i class="fas fa-home"></i> Ir al Inicio
+      </button>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <footer class="footer">
+    © 2025 UCAB Montalbán - Sistema de Estacionamiento
+  </footer>
+</div>
