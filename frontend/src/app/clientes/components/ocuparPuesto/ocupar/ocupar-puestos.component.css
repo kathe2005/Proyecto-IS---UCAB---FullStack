@@ -1,0 +1,69 @@
+.container-fluid {
+  margin: 20px 50px;
+}
+
+.card {
+  border: none;
+  border-radius: 15px;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+}
+
+.card-header {
+  border-radius: 15px 15px 0 0 !important;
+  background-color: rgb(28, 85, 255) !important;
+}
+
+.btn-primary {
+  background-color: rgb(28, 85, 255);
+  border-color: rgb(28, 85, 255);
+}
+
+.btn-primary:hover {
+  background-color: rgb(20, 65, 200);
+  border-color: rgb(20, 65, 200);
+  transform: scale(1.05);
+}
+
+.puesto-card {
+  cursor: pointer;
+  transition: transform 0.2s;
+  border: 1px solid #dee2e6;
+  border-radius: 10px;
+}
+
+.puesto-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+}
+
+.badge {
+  color: white;
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-size: 0.8em;
+}
+
+.alert {
+  border-radius: 10px;
+  margin-bottom: 1rem;
+}
+
+.form-control, .form-select {
+  border-radius: 8px;
+  border: 1px solid #ced4da;
+}
+
+.form-control:focus, .form-select:focus {
+  border-color: rgb(28, 85, 255);
+  box-shadow: 0 0 0 0.2rem rgba(28, 85, 255, 0.25);
+}
+
+.btn {
+  border-radius: 8px;
+  transition: all 0.3s ease;
+}
+
+.btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}

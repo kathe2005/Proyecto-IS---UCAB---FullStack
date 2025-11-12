@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { HeaderComponent } from '../header/header.component';
-import { NavigationComponent } from '../navegacion/navigation.component';
+import { NavigationComponent } from '../navegador/navigation.component';
 
 // Enums temporales
 enum TipoPuesto {

@@ -1,0 +1,101 @@
+<div class="container-fluid p-0">
+  <!-- Header Component -->
+  <app-header></app-header>
+
+  <!-- Navigation Component -->
+  <app-navigation></app-navigation>
+
+  <div class="container-custom">
+    <div class="row justify-content-center">
+      <div class="col-md-8">
+        <div class="card shadow">
+          <div class="card-header bg-primary text-white">
+            <h4 class="mb-0"><i class="fas fa-parking"></i> Ocupar Puesto de Estacionamiento</h4>
+          </div>
+          <div class="card-body">
+            <!-- Mensajes de resultado -->
+            <div *ngIf="mensaje" [class]="'alert alert-' + mensajeTipo" class="alert">
+              {{ mensaje }}
+            </div>
+
+            <div *ngIf="!puestoSeleccionado">
+              <h5>Seleccionar Puesto Disponible</h5>
+              <div class="row">
+                <div *ngFor="let puesto of puestosDisponibles" class="col-md-4 mb-3">
+                  <div class="card puesto-card" (click)="seleccionarPuesto(puesto)">
+                    <div class="card-body text-center">
+                      <h5>{{ puesto.numero }}</h5>
+                      <span class="badge" [style.background-color]="getTipoColor(puesto.tipoPuesto)">
+                        {{ getTipoDescripcion(puesto.tipoPuesto) }}
+                      </span>
+                      <p class="mb-1">{{ puesto.ubicacion }}</p>
+                      <small class="text-muted">ID: {{ puesto.id }}</small>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div *ngIf="puestosDisponibles.length === 0" class="alert alert-warning">
+                No hay puestos disponibles en este momento.
+              </div>
+            </div>
+
+            <div *ngIf="puestoSeleccionado">
+              <h5>Confirmar Ocupación</h5>
+              <div class="card mb-3">
+                <div class="card-body">
+                  <h6>Puesto Seleccionado:</h6>
+                  <p><strong>Número:</strong> {{ puestoSeleccionado.numero }}</p>
+                  <p><strong>Ubicación:</strong> {{ puestoSeleccionado.ubicacion }}</p>
+                  <p><strong>Tipo:</strong>
+                    <span class="badge" [style.background-color]="getTipoColor(puestoSeleccionado.tipoPuesto)">
+                      {{ getTipoDescripcion(puestoSeleccionado.tipoPuesto) }}
+                    </span>
+                  </p>
+                </div>
+              </div>
+
+              <form (ngSubmit)="confirmarOcupacion()">
+                <div class="mb-3">
+                  <label class="form-label">Usuario (ID del Cliente):</label>
+                  <input type="text" [(ngModel)]="ocuparRequest.usuario" name="usuario"
+                         class="form-control" placeholder="Ingrese su usuario" required>
+                </div>
+
+                <div class="mb-3">
+                  <label class="form-label">ID del Cliente:</label>
+                  <input type="text" [(ngModel)]="ocuparRequest.clienteId" name="clienteId"
+                         class="form-control" placeholder="Ingrese ID del cliente" required>
+                </div>
+
+                <div class="mb-3">
+                  <label class="form-label">Tipo de Cliente:</label>
+                  <select [(ngModel)]="ocuparRequest.tipoCliente" name="tipoCliente" class="form-select" required>
+                    <option value="">-- Seleccione tipo --</option>
+                    <option value="UCAB">UCAB</option>
+                    <option value="VISITANTE">Visitante</option>
+                  </select>
+                </div>
+
+                <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                  <button type="button" (click)="cancelarSeleccion()" class="btn btn-secondary me-md-2">
+                    <i class="fas fa-arrow-left"></i> Cancelar
+                  </button>
+                  <button type="submit" class="btn btn-primary" [disabled]="procesando">
+                    <i class="fas fa-car"></i>
+                    {{ procesando ? 'Procesando...' : 'Confirmar Ocupación' }}
+                  </button>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <footer class="footer">
+    © 2025 UCAB Montalbán - Sistema de Estacionamiento
+  </footer>
+</div>

@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { RouterModule, ActivatedRoute } from '@angular/router';
 import { PuestoService } from '../../../service/puesto.service';
 import { HeaderComponent } from '../header/header.component';
-import { NavigationComponent } from '../navegacion/navigation.component';
+import { NavigationComponent } from '../navegador/navigation.component';
 
 // Interfaces temporales
 interface Puesto {
