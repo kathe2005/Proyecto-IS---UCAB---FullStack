@@ -53,7 +53,7 @@ public class ClienteServiceImpl implements ClienteService {
         {
             throw new RegistroClienteException("El usuario ingresado se encuentra esta registrado  ingresa otro para continuar", 409); 
         }
-        
+
         //Cedula 
         if(clienteRepository.findByCedula(nuevoCliente.getCedula()).isPresent())
         {
@@ -86,9 +86,68 @@ public class ClienteServiceImpl implements ClienteService {
 
         //Guardar en el repositorio es decir en la conexion a  la base de datos 
         System.out.println("Registrado Exitosamente");
-        return clienteRepository.guardar(nuevoCliente); 
+        return clienteRepository.save(nuevoCliente); 
 
     }
+
+    
+    /* --------------------------------------------- Actualizar Cliente -------------------------------------------------------------------------- */
+    @Override
+    public Cliente actualizarCliente(Cliente clienteActualizado) 
+    {
+    Cliente clienteExistente = clienteRepository.findByUsuario(clienteActualizado.getUsuario())
+        .orElseThrow(() -> new RuntimeException("Cliente no encontrado para la actualización.")); 
+
+    if (clienteActualizado.getContrasena() != null && !clienteActualizado.getContrasena().isEmpty()) 
+    {
+        validarFormatoContrasena(clienteActualizado.getContrasena());
+        clienteExistente.setContrasena(clienteActualizado.getContrasena());
+    }
+
+    validarSinEspacios(clienteActualizado.getEmail(), "email");
+    validarFormatoCedula(clienteActualizado.getCedula());
+    validarFormatoTelefono(clienteActualizado.getTelefono());
+
+    clasificarDominio(clienteActualizado.getEmail());
+    validarEmailPorTipoPersona(clienteActualizado.getTipoPersona(), clienteActualizado.getEmail());
+
+
+    clienteRepository.findByEmail(clienteActualizado.getEmail()).ifPresent(duplicado -> {
+        if (!clienteExistente.getUsuario().equals(duplicado.getUsuario())) {
+            // Se encontró un duplicado, y no es el cliente que estamos actualizando.
+            System.err.println("!!! CONFLICTO EMAIL !!!: El email '" + clienteActualizado.getEmail() + "' ya pertenece al usuario: " + duplicado.getUsuario());
+            throw new RegistroClienteException("El nuevo correo ingresado ya está registrado por otro usuario.", 409);
+        }
+    });
+
+    clienteRepository.findByCedula(clienteActualizado.getCedula()).ifPresent(duplicado -> {
+        if (!clienteExistente.getUsuario().equals(duplicado.getUsuario())) {
+            System.err.println("!!! CONFLICTO CÉDULA !!!: La cédula '" + clienteActualizado.getCedula() + "' ya pertenece al usuario: " + duplicado.getUsuario());
+            throw new RegistroClienteException("La nueva cédula ingresada ya está registrada por otro usuario.", 409);
+        }
+    });
+
+
+    clienteRepository.findByTelefono(clienteActualizado.getTelefono()).ifPresent(duplicado -> {
+        if (!clienteExistente.getUsuario().equals(duplicado.getUsuario())) {
+            System.err.println("!!! CONFLICTO TELÉFONO !!!: El teléfono '" + clienteActualizado.getTelefono() + "' ya pertenece al usuario: " + duplicado.getUsuario());
+            throw new RegistroClienteException("El nuevo teléfono ya está registrado por otro usuario.", 409);
+        }
+    });
+    
+    // Transfiere los datos actualizados a la entidad existente (Mismo código que tenías)
+    clienteExistente.setEmail(clienteActualizado.getEmail());
+    clienteExistente.setCedula(clienteActualizado.getCedula());
+    clienteExistente.setNombre(clienteActualizado.getNombre());
+    clienteExistente.setApellido(clienteActualizado.getApellido());
+    clienteExistente.setTipoPersona(clienteActualizado.getTipoPersona());
+    clienteExistente.setDireccion(clienteActualizado.getDireccion());
+    clienteExistente.setTelefono(clienteActualizado.getTelefono());
+
+    // Guarda la entidad modificada
+    return clienteRepository.save(clienteExistente);
+    }
+    
 
     //------------------------------- Validar espacios ----------------------------------
     @Override
@@ -298,39 +357,5 @@ public class ClienteServiceImpl implements ClienteService {
 
         //Devolver la lista al controlador 
         return clientes; 
-    }
-
-    /* --------------------------------------------- Actualizar Cliente -------------------------------------------------------------------------- */
-
-    public Cliente actualizarCliente(Cliente clienteActualizado) 
-    {
-            // Busca el cliente EXISTENTE usando un campo único (ej. usuario)
-            Cliente clienteExistente = clienteRepository.findByUsuario(clienteActualizado.getUsuario())
-                .orElseThrow(() -> new RuntimeException("Cliente no encontrado para la actualización.")); 
-
-            // Si la contraseña viene, la actualizamos (en un caso real, la hashearías aquí)
-            if (clienteActualizado.getContrasena() != null && !clienteActualizado.getContrasena().isEmpty()) 
-            {
-                clienteExistente.setContrasena(clienteActualizado.getContrasena());
-            }
-
-            // Transfiere los datos actualizados a la entidad existente
-            //Campos de credenciales
-            clienteExistente.setEmail(clienteActualizado.getEmail());
-            clienteExistente.setContrasena(clienteActualizado.getContrasena());
-
-            //Campo de datos personales 
-            clienteExistente.setCedula(clienteActualizado.getCedula());
-            clienteExistente.setNombre(clienteActualizado.getNombre());
-            clienteExistente.setApellido(clienteActualizado.getApellido());
-            clienteExistente.setTipoPersona(clienteActualizado.getTipoPersona());
-
-            //Campos de contacto y ubicación
-            clienteExistente.setDireccion(clienteActualizado.getDireccion());
-            clienteExistente.setTelefono(clienteActualizado.getTelefono());
-
-            
-            // Guarda la entidad modificada
-            return clienteRepository.guardar(clienteExistente); 
     }
 }

@@ -1,0 +1,67 @@
+[ {
+  "usuario" : "ucabtest",
+  "contrasena" : "Password123",
+  "nombre" : "Juan",
+  "apellido" : "Perez",
+  "cedula" : "V-12345678",
+  "direccion" : "Av. Principal",
+  "telefono" : "0414-1112233",
+  "email" : "prueba@est.ucab.edu.ve",
+  "tipoPersona" : "UCAB",
+  "confirmarContrasena" : null
+}, {
+  "usuario" : "hola",
+  "contrasena" : "Consta1234",
+  "nombre" : "Pedro",
+  "apellido" : "Gomez",
+  "cedula" : "V-1569310",
+  "direccion" : "Av. Principal La Hacienda",
+  "telefono" : "0416-9310940",
+  "email" : "prueba@gmail.com",
+  "tipoPersona" : "VISITANTE",
+  "confirmarContrasena" : null
+}, {
+  "usuario" : "katheb74",
+  "contrasena" : "Const1234",
+  "nombre" : "Katherine ",
+  "apellido" : "Amaya Briceño ",
+  "cedula" : "V-31490659",
+  "direccion" : "Caricuao",
+  "telefono" : "0424-2357081",
+  "email" : "katheamayabrice@gmail.com",
+  "tipoPersona" : "VISITANTE",
+  "confirmarContrasena" : null
+}, {
+  "usuario" : "ucab.74",
+  "contrasena" : "Const123",
+  "nombre" : "Yajaira Magaly",
+  "apellido" : "Briceño",
+  "cedula" : "V-32596354",
+  "direccion" : "Caricuao",
+  "telefono" : "0426-6112222",
+  "email" : "kamaya.23@est.ucab.edu.ve",
+  "tipoPersona" : "UCAB",
+  "confirmarContrasena" : null
+}, {
+  "usuario" : "ucab23",
+  "contrasena" : "Const235",
+  "nombre" : "Yajaira Magaly",
+  "apellido" : "Briceño",
+  "cedula" : "V-3789654",
+  "direccion" : "Caricuao",
+  "telefono" : "0424-8596327",
+  "email" : "kamaya.23@gmail.com",
+  "tipoPersona" : "VISITANTE",
+  "confirmarContrasena" : null
+}, {
+  "usuario" : "ucab1",
+  "contrasena" : "Const123",
+  "nombre" : "Yajaira Magaly",
+  "apellido" : "Briceño",
+  "cedula" : "V-22233344",
+  "direccion" : "Caricuao",
+  "telefono" : "0424-5556677",
+  "email" : "nuevo?email@est.ucab.edu.ve",
+  "tipoPersona" : "UCAB",
+  "confirmarContrasena" : null
+} ]
