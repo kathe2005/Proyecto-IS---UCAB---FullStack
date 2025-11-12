@@ -2588,3 +2588,152 @@ jakarta.servlet.ServletException: Circular view path [error]: would dispatch bac
 	at org.apache.tomcat.util.threads.TaskThread$WrappingRunnable.run(TaskThread.java:63) ~[tomcat-embed-core-10.1.48.jar:10.1.48]
 	at java.base/java.lang.Thread.run(Thread.java:840) ~[na:na]
 
+2025-11-12T13:42:21.827-04:00  INFO 8540 --- [proyect] [main] c.u.estacionamiento.ProyectApplication   : Starting ProyectApplication using Java 17.0.17 with PID 8540 (C:\Users\KATHE\OneDrive\Desktop\UCAB\Semestre Sep2025 - Ene2026\Ingeniería de Software\Proyecto-Estacioamiento\Proyecto-IS---UCAB---FullStack-2\backend\proyect\target\classes started by KATHE in C:\Users\KATHE\OneDrive\Desktop\UCAB\Semestre Sep2025 - Ene2026\Ingeniería de Software\Proyecto-Estacioamiento\Proyecto-IS---UCAB---FullStack-2)
+2025-11-12T13:42:21.837-04:00 DEBUG 8540 --- [proyect] [main] c.u.estacionamiento.ProyectApplication   : Running with Spring Boot v3.5.7, Spring v6.2.12
+2025-11-12T13:42:21.837-04:00  INFO 8540 --- [proyect] [main] c.u.estacionamiento.ProyectApplication   : No active profile set, falling back to 1 default profile: "default"
+2025-11-12T13:42:23.402-04:00  INFO 8540 --- [proyect] [main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat initialized with port 8080 (http)
+2025-11-12T13:42:23.416-04:00  INFO 8540 --- [proyect] [main] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2025-11-12T13:42:23.417-04:00  INFO 8540 --- [proyect] [main] o.apache.catalina.core.StandardEngine    : Starting Servlet engine: [Apache Tomcat/10.1.48]
+2025-11-12T13:42:23.493-04:00  INFO 8540 --- [proyect] [main] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring embedded WebApplicationContext
+2025-11-12T13:42:23.494-04:00  INFO 8540 --- [proyect] [main] w.s.c.ServletWebServerApplicationContext : Root WebApplicationContext: initialization completed in 1579 ms
+2025-11-12T13:42:24.376-04:00  INFO 8540 --- [proyect] [main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat started on port 8080 (http) with context path '/'
+2025-11-12T13:42:24.392-04:00  INFO 8540 --- [proyect] [main] c.u.estacionamiento.ProyectApplication   : Started ProyectApplication in 3.194 seconds (process running for 3.527)
+2025-11-12T13:43:46.482-04:00  INFO 8540 --- [proyect] [http-nio-127.0.0.1-8080-exec-2] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring DispatcherServlet 'dispatcherServlet'
+2025-11-12T13:43:46.497-04:00  INFO 8540 --- [proyect] [http-nio-127.0.0.1-8080-exec-2] o.s.web.servlet.DispatcherServlet        : Initializing Servlet 'dispatcherServlet'
+2025-11-12T13:43:46.573-04:00  INFO 8540 --- [proyect] [http-nio-127.0.0.1-8080-exec-2] o.s.web.servlet.DispatcherServlet        : Completed initialization in 75 ms
+2025-11-12T13:43:46.867-04:00 ERROR 8540 --- [proyect] [http-nio-127.0.0.1-8080-exec-2] o.a.c.c.C.[.[.[/].[dispatcherServlet]    : Servlet.service() for servlet [dispatcherServlet] threw exception
+
+jakarta.servlet.ServletException: Circular view path [error]: would dispatch back to the current handler URL [/error] again. Check your ViewResolver setup! (Hint: This may be the result of an unspecified view, due to default view name generation.)
+	at org.springframework.web.servlet.view.InternalResourceView.prepareForRendering(InternalResourceView.java:210) ~[spring-webmvc-6.2.12.jar:6.2.12]
+	at org.springframework.web.servlet.view.InternalResourceView.renderMergedOutputModel(InternalResourceView.java:148) ~[spring-webmvc-6.2.12.jar:6.2.12]
+	at org.springframework.web.servlet.view.AbstractView.render(AbstractView.java:314) ~[spring-webmvc-6.2.12.jar:6.2.12]
+	at org.springframework.web.servlet.DispatcherServlet.render(DispatcherServlet.java:1438) ~[spring-webmvc-6.2.12.jar:6.2.12]
+	at org.springframework.web.servlet.DispatcherServlet.processDispatchResult(DispatcherServlet.java:1168) ~[spring-webmvc-6.2.12.jar:6.2.12]
+	at org.springframework.web.servlet.DispatcherServlet.doDispatch(DispatcherServlet.java:1106) ~[spring-webmvc-6.2.12.jar:6.2.12]
+	at org.springframework.web.servlet.DispatcherServlet.doService(DispatcherServlet.java:979) ~[spring-webmvc-6.2.12.jar:6.2.12]
+	at org.springframework.web.servlet.FrameworkServlet.processRequest(FrameworkServlet.java:1014) ~[spring-webmvc-6.2.12.jar:6.2.12]
+	at org.springframework.web.servlet.FrameworkServlet.doGet(FrameworkServlet.java:903) ~[spring-webmvc-6.2.12.jar:6.2.12]
+	at jakarta.servlet.http.HttpServlet.service(HttpServlet.java:564) ~[tomcat-embed-core-10.1.48.jar:6.0]
+	at org.springframework.web.servlet.FrameworkServlet.service(FrameworkServlet.java:885) ~[spring-webmvc-6.2.12.jar:6.2.12]
+	at jakarta.servlet.http.HttpServlet.service(HttpServlet.java:658) ~[tomcat-embed-core-10.1.48.jar:6.0]
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:193) ~[tomcat-embed-core-10.1.48.jar:10.1.48]
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:138) ~[tomcat-embed-core-10.1.48.jar:10.1.48]
+	at org.springframework.web.filter.RequestContextFilter.doFilterInternal(RequestContextFilter.java:100) ~[spring-web-6.2.12.jar:6.2.12]
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116) ~[spring-web-6.2.12.jar:6.2.12]
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:162) ~[tomcat-embed-core-10.1.48.jar:10.1.48]
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:138) ~[tomcat-embed-core-10.1.48.jar:10.1.48]
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:101) ~[spring-web-6.2.12.jar:6.2.12]
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:162) ~[tomcat-embed-core-10.1.48.jar:10.1.48]
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:138) ~[tomcat-embed-core-10.1.48.jar:10.1.48]
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:101) ~[spring-web-6.2.12.jar:6.2.12]
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:162) ~[tomcat-embed-core-10.1.48.jar:10.1.48]
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:138) ~[tomcat-embed-core-10.1.48.jar:10.1.48]
+	at org.apache.catalina.core.ApplicationDispatcher.invoke(ApplicationDispatcher.java:610) ~[tomcat-embed-core-10.1.48.jar:10.1.48]
+	at org.apache.catalina.core.ApplicationDispatcher.processRequest(ApplicationDispatcher.java:394) ~[tomcat-embed-core-10.1.48.jar:10.1.48]
+	at org.apache.catalina.core.ApplicationDispatcher.doForward(ApplicationDispatcher.java:321) ~[tomcat-embed-core-10.1.48.jar:10.1.48]
+	at org.apache.catalina.core.ApplicationDispatcher.forward(ApplicationDispatcher.java:266) ~[tomcat-embed-core-10.1.48.jar:10.1.48]
+	at org.apache.catalina.core.StandardHostValve.custom(StandardHostValve.java:374) ~[tomcat-embed-core-10.1.48.jar:10.1.48]
+	at org.apache.catalina.core.StandardHostValve.status(StandardHostValve.java:206) ~[tomcat-embed-core-10.1.48.jar:10.1.48]
+	at org.apache.catalina.core.StandardHostValve.invoke(StandardHostValve.java:149) ~[tomcat-embed-core-10.1.48.jar:10.1.48]
+	at org.apache.catalina.valves.ErrorReportValve.invoke(ErrorReportValve.java:83) ~[tomcat-embed-core-10.1.48.jar:10.1.48]
+	at org.apache.catalina.core.StandardEngineValve.invoke(StandardEngineValve.java:72) ~[tomcat-embed-core-10.1.48.jar:10.1.48]
+	at org.apache.catalina.connector.CoyoteAdapter.service(CoyoteAdapter.java:342) ~[tomcat-embed-core-10.1.48.jar:10.1.48]
+	at org.apache.coyote.http11.Http11Processor.service(Http11Processor.java:399) ~[tomcat-embed-core-10.1.48.jar:10.1.48]
+	at org.apache.coyote.AbstractProcessorLight.process(AbstractProcessorLight.java:63) ~[tomcat-embed-core-10.1.48.jar:10.1.48]
+	at org.apache.coyote.AbstractProtocol$ConnectionHandler.process(AbstractProtocol.java:903) ~[tomcat-embed-core-10.1.48.jar:10.1.48]
+	at org.apache.tomcat.util.net.NioEndpoint$SocketProcessor.doRun(NioEndpoint.java:1774) ~[tomcat-embed-core-10.1.48.jar:10.1.48]
+	at org.apache.tomcat.util.net.SocketProcessorBase.run(SocketProcessorBase.java:52) ~[tomcat-embed-core-10.1.48.jar:10.1.48]
+	at org.apache.tomcat.util.threads.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:973) ~[tomcat-embed-core-10.1.48.jar:10.1.48]
+	at org.apache.tomcat.util.threads.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:491) ~[tomcat-embed-core-10.1.48.jar:10.1.48]
+	at org.apache.tomcat.util.threads.TaskThread$WrappingRunnable.run(TaskThread.java:63) ~[tomcat-embed-core-10.1.48.jar:10.1.48]
+	at java.base/java.lang.Thread.run(Thread.java:840) ~[na:na]
+
+2025-11-12T13:43:46.892-04:00 ERROR 8540 --- [proyect] [http-nio-127.0.0.1-8080-exec-2] o.a.c.c.C.[Tomcat].[localhost]           : Exception Processing [ErrorPage[errorCode=0, location=/error]]
+
+jakarta.servlet.ServletException: Circular view path [error]: would dispatch back to the current handler URL [/error] again. Check your ViewResolver setup! (Hint: This may be the result of an unspecified view, due to default view name generation.)
+	at org.springframework.web.servlet.view.InternalResourceView.prepareForRendering(InternalResourceView.java:210) ~[spring-webmvc-6.2.12.jar:6.2.12]
+	at org.springframework.web.servlet.view.InternalResourceView.renderMergedOutputModel(InternalResourceView.java:148) ~[spring-webmvc-6.2.12.jar:6.2.12]
+	at org.springframework.web.servlet.view.AbstractView.render(AbstractView.java:314) ~[spring-webmvc-6.2.12.jar:6.2.12]
+	at org.springframework.web.servlet.DispatcherServlet.render(DispatcherServlet.java:1438) ~[spring-webmvc-6.2.12.jar:6.2.12]
+	at org.springframework.web.servlet.DispatcherServlet.processDispatchResult(DispatcherServlet.java:1168) ~[spring-webmvc-6.2.12.jar:6.2.12]
+	at org.springframework.web.servlet.DispatcherServlet.doDispatch(DispatcherServlet.java:1106) ~[spring-webmvc-6.2.12.jar:6.2.12]
+	at org.springframework.web.servlet.DispatcherServlet.doService(DispatcherServlet.java:979) ~[spring-webmvc-6.2.12.jar:6.2.12]
+	at org.springframework.web.servlet.FrameworkServlet.processRequest(FrameworkServlet.java:1014) ~[spring-webmvc-6.2.12.jar:6.2.12]
+	at org.springframework.web.servlet.FrameworkServlet.doGet(FrameworkServlet.java:903) ~[spring-webmvc-6.2.12.jar:6.2.12]
+	at jakarta.servlet.http.HttpServlet.service(HttpServlet.java:564) ~[tomcat-embed-core-10.1.48.jar:6.0]
+	at org.springframework.web.servlet.FrameworkServlet.service(FrameworkServlet.java:885) ~[spring-webmvc-6.2.12.jar:6.2.12]
+	at jakarta.servlet.http.HttpServlet.service(HttpServlet.java:658) ~[tomcat-embed-core-10.1.48.jar:6.0]
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:193) ~[tomcat-embed-core-10.1.48.jar:10.1.48]
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:138) ~[tomcat-embed-core-10.1.48.jar:10.1.48]
+	at org.springframework.web.filter.RequestContextFilter.doFilterInternal(RequestContextFilter.java:100) ~[spring-web-6.2.12.jar:6.2.12]
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116) ~[spring-web-6.2.12.jar:6.2.12]
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:162) ~[tomcat-embed-core-10.1.48.jar:10.1.48]
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:138) ~[tomcat-embed-core-10.1.48.jar:10.1.48]
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:101) ~[spring-web-6.2.12.jar:6.2.12]
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:162) ~[tomcat-embed-core-10.1.48.jar:10.1.48]
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:138) ~[tomcat-embed-core-10.1.48.jar:10.1.48]
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:101) ~[spring-web-6.2.12.jar:6.2.12]
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:162) ~[tomcat-embed-core-10.1.48.jar:10.1.48]
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:138) ~[tomcat-embed-core-10.1.48.jar:10.1.48]
+	at org.apache.catalina.core.ApplicationDispatcher.invoke(ApplicationDispatcher.java:610) ~[tomcat-embed-core-10.1.48.jar:10.1.48]
+	at org.apache.catalina.core.ApplicationDispatcher.processRequest(ApplicationDispatcher.java:394) ~[tomcat-embed-core-10.1.48.jar:10.1.48]
+	at org.apache.catalina.core.ApplicationDispatcher.doForward(ApplicationDispatcher.java:321) ~[tomcat-embed-core-10.1.48.jar:10.1.48]
+	at org.apache.catalina.core.ApplicationDispatcher.forward(ApplicationDispatcher.java:266) ~[tomcat-embed-core-10.1.48.jar:10.1.48]
+	at org.apache.catalina.core.StandardHostValve.custom(StandardHostValve.java:374) ~[tomcat-embed-core-10.1.48.jar:10.1.48]
+	at org.apache.catalina.core.StandardHostValve.status(StandardHostValve.java:206) ~[tomcat-embed-core-10.1.48.jar:10.1.48]
+	at org.apache.catalina.core.StandardHostValve.invoke(StandardHostValve.java:149) ~[tomcat-embed-core-10.1.48.jar:10.1.48]
+	at org.apache.catalina.valves.ErrorReportValve.invoke(ErrorReportValve.java:83) ~[tomcat-embed-core-10.1.48.jar:10.1.48]
+	at org.apache.catalina.core.StandardEngineValve.invoke(StandardEngineValve.java:72) ~[tomcat-embed-core-10.1.48.jar:10.1.48]
+	at org.apache.catalina.connector.CoyoteAdapter.service(CoyoteAdapter.java:342) ~[tomcat-embed-core-10.1.48.jar:10.1.48]
+	at org.apache.coyote.http11.Http11Processor.service(Http11Processor.java:399) ~[tomcat-embed-core-10.1.48.jar:10.1.48]
+	at org.apache.coyote.AbstractProcessorLight.process(AbstractProcessorLight.java:63) ~[tomcat-embed-core-10.1.48.jar:10.1.48]
+	at org.apache.coyote.AbstractProtocol$ConnectionHandler.process(AbstractProtocol.java:903) ~[tomcat-embed-core-10.1.48.jar:10.1.48]
+	at org.apache.tomcat.util.net.NioEndpoint$SocketProcessor.doRun(NioEndpoint.java:1774) ~[tomcat-embed-core-10.1.48.jar:10.1.48]
+	at org.apache.tomcat.util.net.SocketProcessorBase.run(SocketProcessorBase.java:52) ~[tomcat-embed-core-10.1.48.jar:10.1.48]
+	at org.apache.tomcat.util.threads.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:973) ~[tomcat-embed-core-10.1.48.jar:10.1.48]
+	at org.apache.tomcat.util.threads.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:491) ~[tomcat-embed-core-10.1.48.jar:10.1.48]
+	at org.apache.tomcat.util.threads.TaskThread$WrappingRunnable.run(TaskThread.java:63) ~[tomcat-embed-core-10.1.48.jar:10.1.48]
+	at java.base/java.lang.Thread.run(Thread.java:840) ~[na:na]
+
+2025-11-12T14:06:41.621-04:00  INFO 27508 --- [proyect] [main] c.u.estacionamiento.ProyectApplication   : Starting ProyectApplication using Java 17.0.17 with PID 27508 (C:\Users\KATHE\OneDrive\Desktop\UCAB\Semestre Sep2025 - Ene2026\Ingeniería de Software\Proyecto-Estacioamiento\Proyecto-IS---UCAB---FullStack-2\backend\proyect\target\classes started by KATHE in C:\Users\KATHE\OneDrive\Desktop\UCAB\Semestre Sep2025 - Ene2026\Ingeniería de Software\Proyecto-Estacioamiento\Proyecto-IS---UCAB---FullStack-2)
+2025-11-12T14:06:41.627-04:00 DEBUG 27508 --- [proyect] [main] c.u.estacionamiento.ProyectApplication   : Running with Spring Boot v3.5.7, Spring v6.2.12
+2025-11-12T14:06:41.631-04:00  INFO 27508 --- [proyect] [main] c.u.estacionamiento.ProyectApplication   : No active profile set, falling back to 1 default profile: "default"
+2025-11-12T14:06:43.760-04:00  INFO 27508 --- [proyect] [main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat initialized with port 8080 (http)
+2025-11-12T14:06:43.784-04:00  INFO 27508 --- [proyect] [main] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2025-11-12T14:06:43.785-04:00  INFO 27508 --- [proyect] [main] o.apache.catalina.core.StandardEngine    : Starting Servlet engine: [Apache Tomcat/10.1.48]
+2025-11-12T14:06:43.891-04:00  INFO 27508 --- [proyect] [main] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring embedded WebApplicationContext
+2025-11-12T14:06:43.892-04:00  INFO 27508 --- [proyect] [main] w.s.c.ServletWebServerApplicationContext : Root WebApplicationContext: initialization completed in 2147 ms
+2025-11-12T14:06:44.976-04:00  INFO 27508 --- [proyect] [main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat started on port 8080 (http) with context path '/'
+2025-11-12T14:06:44.976-04:00  INFO 27508 --- [proyect] [main] c.u.estacionamiento.ProyectApplication   : Started ProyectApplication in 4.111 seconds (process running for 4.464)
+2025-11-12T14:08:36.720-04:00  INFO 27508 --- [proyect] [http-nio-127.0.0.1-8080-exec-1] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring DispatcherServlet 'dispatcherServlet'
+2025-11-12T14:08:36.731-04:00  INFO 27508 --- [proyect] [http-nio-127.0.0.1-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Initializing Servlet 'dispatcherServlet'
+2025-11-12T14:08:36.759-04:00  INFO 27508 --- [proyect] [http-nio-127.0.0.1-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Completed initialization in 25 ms
+2025-11-12T14:08:36.855-04:00  WARN 27508 --- [proyect] [http-nio-127.0.0.1-8080-exec-1] o.s.web.servlet.PageNotFound             : No mapping for GET /api/cliente/obtenerTod
+2025-11-12T14:17:52.166-04:00  INFO 44728 --- [proyect] [main] c.u.estacionamiento.ProyectApplication   : Starting ProyectApplication using Java 17.0.17 with PID 44728 (C:\Users\KATHE\OneDrive\Desktop\UCAB\Semestre Sep2025 - Ene2026\Ingeniería de Software\Proyecto-Estacioamiento\Proyecto-IS---UCAB---FullStack-2\backend\proyect\target\classes started by KATHE in C:\Users\KATHE\OneDrive\Desktop\UCAB\Semestre Sep2025 - Ene2026\Ingeniería de Software\Proyecto-Estacioamiento\Proyecto-IS---UCAB---FullStack-2)
+2025-11-12T14:17:52.171-04:00 DEBUG 44728 --- [proyect] [main] c.u.estacionamiento.ProyectApplication   : Running with Spring Boot v3.5.7, Spring v6.2.12
+2025-11-12T14:17:52.173-04:00  INFO 44728 --- [proyect] [main] c.u.estacionamiento.ProyectApplication   : No active profile set, falling back to 1 default profile: "default"
+2025-11-12T14:17:53.840-04:00  INFO 44728 --- [proyect] [main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat initialized with port 8080 (http)
+2025-11-12T14:17:53.855-04:00  INFO 44728 --- [proyect] [main] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2025-11-12T14:17:53.855-04:00  INFO 44728 --- [proyect] [main] o.apache.catalina.core.StandardEngine    : Starting Servlet engine: [Apache Tomcat/10.1.48]
+2025-11-12T14:17:53.923-04:00  INFO 44728 --- [proyect] [main] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring embedded WebApplicationContext
+2025-11-12T14:17:53.924-04:00  INFO 44728 --- [proyect] [main] w.s.c.ServletWebServerApplicationContext : Root WebApplicationContext: initialization completed in 1695 ms
+2025-11-12T14:17:54.572-04:00  INFO 44728 --- [proyect] [main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat started on port 8080 (http) with context path '/'
+2025-11-12T14:17:54.579-04:00  INFO 44728 --- [proyect] [main] c.u.estacionamiento.ProyectApplication   : Started ProyectApplication in 3.019 seconds (process running for 3.351)
+2025-11-12T14:18:34.523-04:00  INFO 44728 --- [proyect] [http-nio-127.0.0.1-8080-exec-1] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring DispatcherServlet 'dispatcherServlet'
+2025-11-12T14:18:34.581-04:00  INFO 44728 --- [proyect] [http-nio-127.0.0.1-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Initializing Servlet 'dispatcherServlet'
+2025-11-12T14:18:34.658-04:00  INFO 44728 --- [proyect] [http-nio-127.0.0.1-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Completed initialization in 71 ms
+2025-11-12T14:18:34.785-04:00  WARN 44728 --- [proyect] [http-nio-127.0.0.1-8080-exec-1] o.s.web.servlet.PageNotFound             : No mapping for GET /api/cliente/obtenerTodos
+2025-11-12T14:19:23.600-04:00  WARN 44728 --- [proyect] [http-nio-127.0.0.1-8080-exec-9] o.s.web.servlet.PageNotFound             : No mapping for GET /api/cliente/obtenerTodos
+2025-11-12T14:36:29.035-04:00  INFO 11592 --- [proyect] [main] c.u.estacionamiento.ProyectApplication   : Starting ProyectApplication using Java 17.0.17 with PID 11592 (C:\Users\KATHE\OneDrive\Desktop\UCAB\Semestre Sep2025 - Ene2026\Ingeniería de Software\Proyecto-Estacioamiento\Proyecto-IS---UCAB---FullStack-2\backend\proyect\target\classes started by KATHE in C:\Users\KATHE\OneDrive\Desktop\UCAB\Semestre Sep2025 - Ene2026\Ingeniería de Software\Proyecto-Estacioamiento\Proyecto-IS---UCAB---FullStack-2)
+2025-11-12T14:36:29.035-04:00 DEBUG 11592 --- [proyect] [main] c.u.estacionamiento.ProyectApplication   : Running with Spring Boot v3.5.7, Spring v6.2.12
+2025-11-12T14:36:29.035-04:00  INFO 11592 --- [proyect] [main] c.u.estacionamiento.ProyectApplication   : No active profile set, falling back to 1 default profile: "default"
+2025-11-12T14:36:30.805-04:00  INFO 11592 --- [proyect] [main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat initialized with port 8080 (http)
+2025-11-12T14:36:30.824-04:00  INFO 11592 --- [proyect] [main] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2025-11-12T14:36:30.825-04:00  INFO 11592 --- [proyect] [main] o.apache.catalina.core.StandardEngine    : Starting Servlet engine: [Apache Tomcat/10.1.48]
+2025-11-12T14:36:30.931-04:00  INFO 11592 --- [proyect] [main] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring embedded WebApplicationContext
+2025-11-12T14:36:30.932-04:00  INFO 11592 --- [proyect] [main] w.s.c.ServletWebServerApplicationContext : Root WebApplicationContext: initialization completed in 1796 ms
+2025-11-12T14:36:31.699-04:00  INFO 11592 --- [proyect] [main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat started on port 8080 (http) with context path '/'
+2025-11-12T14:36:31.713-04:00  INFO 11592 --- [proyect] [main] c.u.estacionamiento.ProyectApplication   : Started ProyectApplication in 3.533 seconds (process running for 4.024)
+2025-11-12T14:38:36.617-04:00  INFO 11592 --- [proyect] [http-nio-127.0.0.1-8080-exec-4] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring DispatcherServlet 'dispatcherServlet'
+2025-11-12T14:38:36.643-04:00  INFO 11592 --- [proyect] [http-nio-127.0.0.1-8080-exec-4] o.s.web.servlet.DispatcherServlet        : Initializing Servlet 'dispatcherServlet'
+2025-11-12T14:38:36.703-04:00  INFO 11592 --- [proyect] [http-nio-127.0.0.1-8080-exec-4] o.s.web.servlet.DispatcherServlet        : Completed initialization in 54 ms

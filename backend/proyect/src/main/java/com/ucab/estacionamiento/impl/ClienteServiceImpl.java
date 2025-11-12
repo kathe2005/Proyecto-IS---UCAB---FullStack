@@ -84,10 +84,11 @@ public class ClienteServiceImpl implements ClienteService {
             
         }
 
-        //Guardar en el repositorio es decir en la conexion a  la base de datos 
+        //Guardar en el repositorio es decir en la conexion a  la base de datos
         System.out.println("Registrado Exitosamente");
-        return clienteRepository.save(nuevoCliente); 
-
+        Cliente clienteGuardado = clienteRepository.save(nuevoCliente); 
+        obtenerTodos(); // <--- LLAMADA CLAVE: Imprime la lista actualizada
+        return clienteGuardado;
     }
 
     
@@ -144,10 +145,11 @@ public class ClienteServiceImpl implements ClienteService {
     clienteExistente.setDireccion(clienteActualizado.getDireccion());
     clienteExistente.setTelefono(clienteActualizado.getTelefono());
 
-    // Guarda la entidad modificada
-    return clienteRepository.save(clienteExistente);
+    Cliente clienteGuardado = clienteRepository.save(clienteExistente);
+    obtenerTodos(); 
+    return clienteGuardado;
     }
-    
+
 
     //------------------------------- Validar espacios ----------------------------------
     @Override

@@ -44,14 +44,14 @@
   "confirmarContrasena" : null
 }, {
   "usuario" : "ucab23",
-  "contrasena" : "Const235",
+  "contrasena" : "Const142",
   "nombre" : "Yajaira Magaly",
   "apellido" : "Briceño",
-  "cedula" : "V-3789654",
+  "cedula" : "V-32569345",
   "direccion" : "Caricuao",
-  "telefono" : "0424-8596327",
-  "email" : "kamaya.23@gmail.com",
-  "tipoPersona" : "VISITANTE",
+  "telefono" : "0212-4315496",
+  "email" : "prueba2@est.ucab.edu.ve",
+  "tipoPersona" : "UCAB",
   "confirmarContrasena" : null
 }, {
   "usuario" : "ucab1",
@@ -62,6 +62,39 @@
   "direccion" : "Caricuao",
   "telefono" : "0424-5556677",
   "email" : "nuevo?email@est.ucab.edu.ve",
+  "tipoPersona" : "UCAB",
+  "confirmarContrasena" : null
+}, {
+  "usuario" : "ucab231",
+  "contrasena" : "Const1234",
+  "nombre" : "Yajaira Magaly",
+  "apellido" : "Briceño",
+  "cedula" : "V-3158964",
+  "direccion" : "Caricuao",
+  "telefono" : "0212-5431979",
+  "email" : "prueba5@est.ucab.edu.ve",
+  "tipoPersona" : "UCAB",
+  "confirmarContrasena" : null
+}, {
+  "usuario" : "ucab232",
+  "contrasena" : "Const141",
+  "nombre" : "Yajaira Magaly",
+  "apellido" : "Briceño",
+  "cedula" : "V-31569854",
+  "direccion" : "Caricuao",
+  "telefono" : "0212-4313354",
+  "email" : "prueba3@est.ucab.edu.ve",
+  "tipoPersona" : "UCAB",
+  "confirmarContrasena" : null
+}, {
+  "usuario" : "ucab928",
+  "contrasena" : "Const589",
+  "nombre" : "Yajaira Magaly B",
+  "apellido" : "Briceño",
+  "cedula" : "V-32569235",
+  "direccion" : "Caricuao",
+  "telefono" : "0212-5201698",
+  "email" : "prueba25@est.ucab.edu.ve",
   "tipoPersona" : "UCAB",
   "confirmarContrasena" : null
 } ]

@@ -36,6 +36,7 @@ export class RegistroClienteComponent implements OnInit {
 
     //Cliente que recibimos de SpringBoot (La pantalla de confirmacion)
     clienteConfirmado: Cliente | null = null;
+    clienteSeleccionado: Cliente | null = null;
 
     //Estado para controllar qué pantalla se muestra 
     paso: 'credenciales' | 'datos_personales' | 'contacto_ubicacion' | 'cargando' | 'confirmacion' = 'credenciales'; 
@@ -47,6 +48,7 @@ export class RegistroClienteComponent implements OnInit {
         // Inicializar el tipoPersona para evitar que sea nulo al inicio
         this.nuevoCliente.tipoPersona = 'Seleccionar'; 
     }
+
 
     siguientepaso()
     {
@@ -108,6 +110,50 @@ export class RegistroClienteComponent implements OnInit {
 
     }
 
+    // Método que se llama cuando el usuario hace clic en editar en la tabla
+    onEditarCliente(cliente: Cliente) 
+    {
+        // 1. Clonar el objeto para que el formulario no modifique directamente la lista de la tabla
+        this.nuevoCliente = { ...cliente }; 
+    
+        // 2. Almacenar el original (opcional, pero útil para referencia)
+        this.clienteSeleccionado = cliente; 
+    
+        // 3. Activar el modo de edición
+        this.estaEditando = true;
+    
+        // 4. Cambiar al paso inicial para mostrar el formulario de edición
+        this.paso = 'credenciales'; 
+    
+        // Opcional: Deshabilitar el campo 'usuario' en el formulario HTML para que no se cambie.
+        // Si se cambia, el backend no encontrará el cliente original para actualizar.
+        console.log(`Editando usuario: ${this.nuevoCliente.usuario}`);  
+    }
+
+    // Para limpiar el estado después de una edición/registro
+    onCancelar() 
+    {
+        this.estaEditando = false;
+        // ASÍ SE REINICIA CORRECTAMENTE EL MODELO CLIENTE (lo copia del estado inicial)
+        this.nuevoCliente = 
+        { 
+            usuario: '',
+            contrasena: '',
+            confirmarcontrasena: '', 
+            nombre: '', 
+            apellido: '', 
+            cedula: '', 
+            email: '', 
+            tipoPersona: 'Seleccionar', // Volver al valor de inicialización
+            direccion: '',
+            telefono: '',
+        };
+        this.clienteSeleccionado = null;
+        this.paso = 'credenciales';
+        this.errorMensaje = null;
+        this.clienteConfirmado = null;
+    }
+
     pasoAnterior()
     {
         this.errorMensaje = null; 
@@ -131,6 +177,7 @@ export class RegistroClienteComponent implements OnInit {
     onSubmit()
     {
         this.errorMensaje = null; 
+        
         this.paso = 'cargando'; 
         console.log('Iniciando registro...'); 
 
@@ -206,18 +253,20 @@ export class RegistroClienteComponent implements OnInit {
     modificarDatos()
     {
         
+        // IMPORTANTE: Al volver a editar desde aquí, debe ser una ACTUALIZACIÓN (PUT)
+        this.estaEditando = true; // Activar PUT
+
         this.paso = 'credenciales'; 
         this.errorMensaje = null; 
-        this.estaEditando = true; 
-
 
         if (this.clienteConfirmado) 
         {
-            this.nuevoCliente.usuario = this.clienteConfirmado.usuario;
-        }
-        
-        console.log("Modo edición activado. Usuario clave: ", this.nuevoCliente.usuario);
 
+            this.nuevoCliente = { ...this.clienteConfirmado }; 
+        
+            this.nuevoCliente.confirmarcontrasena = this.clienteConfirmado.contrasena; 
+        }
+        console.log("Modo edición activado. Usuario clave: ", this.nuevoCliente.usuario);
     }
 
     finalizarRegistro()
