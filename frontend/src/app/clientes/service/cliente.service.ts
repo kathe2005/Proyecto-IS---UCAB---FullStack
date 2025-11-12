@@ -9,11 +9,17 @@ import { Observable } from 'rxjs';
 export class ClienteService {
 
     //URL de Sprint Boot 
-    private apiURL = 'http://localhost:8080/api/clientes/registrar'; 
+    private apiURL = 'http://localhost:8080/api/cliente'; 
 
     constructor(private http: HttpClient) { }
 
-    registrarCliente(ClienteRegistroDTO: any): Observable<any> {
-    return this.http.post(this.apiURL, ClienteRegistroDTO)
-}
+    registrarCliente(Cliente: any): Observable<any> 
+    {
+        return this.http.post(`${this.apiURL}/registrar`,Cliente); 
+    }
+
+    actualizarCliente(Cliente: any): Observable<any> 
+    {
+        return this.http.put(`${this.apiURL}/actualizar`, Cliente); 
+    }
 }

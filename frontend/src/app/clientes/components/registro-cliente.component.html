@@ -16,8 +16,6 @@
     <div class="registro-cliente">
         <h2> Paso 1 de 3: Credenciales de Acceso  </h2>
 
-        <form (ngSubmit)="siguientepaso()">
-
             <fieldset>
                 <legend> Credenciales de Acceso </legend>
                 
@@ -41,29 +39,25 @@
                 
                 <div class="form-group">
                     <label for="confirmcontrasena"> Confrimar Contraseña </label>
-                    <input type="password" id="confirmcontrasena" name="confirmcontrasena" [(ngModel)] ="nuevoCliente.confirmcontrasena" required>
+                    <input type="password" id="confirmcontrasena" name="confirmcontrasena" [(ngModel)] ="nuevoCliente.confirmarcontrasena" required>
                 </div>
             
             </fieldset>
 
 
             <div class="actions">
-                <button type="submit" class=" btn btn-primary">
+                <button type="button" class=" btn btn-primary" (click)="siguientepaso()"> 
                     Continuar (Paso 2)
                 </button>
             </div>
-
-        </form>
     </div>
 
     }
 
-        @if (paso === 'datos_personales') 
-        {   
+    @if (paso === 'datos_personales') 
+    {   
         <div class="registro-cliente">
             <h2> Paso 2 de 3: Datos Personales  </h2>
-
-            <form (ngSubmit)="siguientepaso()">
 
                 <fieldset>
 
@@ -95,11 +89,9 @@
                     
                 </fieldset>
 
-            </form>
-
             <div class="actions">
-                <button (click)="siguientepaso()" class=" btn btn-primary">
-                    Continuar (Paso 3)
+    <           <button type="button" class=" btn btn-primary" (click)="siguientepaso()"> 
+                    Continuar (Paso 2)
                 </button>
             </div>
 
@@ -110,16 +102,15 @@
             </div>
 
 
-        </div> }
+        </div> 
+    }
 
         
-        @if (paso === 'contacto_ubicacion') 
-        {   
+    @if (paso === 'contacto_ubicacion') 
+    {   
         <div class="registro-cliente">
             <h2> Paso 3 de 3: Contacto y Ubicación  </h2>
 
-
-            <form (ngSubmit)="siguientepaso()">
 
                 <fieldset>
 
@@ -144,9 +135,6 @@
 
             </div>
 
-
-            </form>
-
         </div> }
 
 
@@ -167,15 +155,13 @@
                 <p class="success-message">¡El sistema ha registrado su información! Por favor, confirme los siguientes detalles:</p>
         
                 <div class="data-summary">
-                    <div class="data-row"><strong>Tipo de Persona:</strong> <span>{{ clienteConfirmado?.tipoPersona }}</span></div>
-                    <div class="data-row"><strong>Cédula:</strong> <span>{{ clienteConfirmado?.cedula }}</span></div>
-                    <div class="data-row"><strong>Nombre:</strong> <span>{{ clienteConfirmado?.nombre }} {{ clienteConfirmado?.apellido }}</span></div>
-                    <div class="data-row"><strong>Email:</strong> <span>{{ clienteConfirmado?.email }}</span></div>
-                    <div class="data-row"><strong>Usuario:</strong> <span>{{ clienteConfirmado?.usuario }}</span></div>
-                    <div class="data-row"><strong>Dirección:</strong> <span>{{ clienteConfirmado?.direccion }}</span></div>
-                    <div class="data-row"><strong>Teléfono:</strong> <span>{{ clienteConfirmado?.telefono }}</span></div>
-                    <div class="data-row"><strong>Contraseña:</strong> <span>{{ clienteConfirmado?.contrasena }}</span></div>
-                    <div class="data-row"><strong>Confirmar Contraseña::</strong> <span>{{ clienteConfirmado?.confirmcontrasena }}</span></div>
+                    <div class="data-row"><strong>Tipo de Persona:</strong> <span>{{ nuevoCliente.tipoPersona }}</span></div>
+                    <div class="data-row"><strong>Cédula:</strong> <span>{{ nuevoCliente.cedula }}</span></div>
+                    <div class="data-row"><strong>Nombre:</strong> <span>{{ nuevoCliente.nombre }} {{ clienteConfirmado?.apellido }}</span></div>
+                    <div class="data-row"><strong>Email:</strong> <span>{{ nuevoCliente.email }}</span></div>
+                    <div class="data-row"><strong>Usuario:</strong> <span>{{ nuevoCliente.usuario }}</span></div>
+                    <div class="data-row"><strong>Dirección:</strong> <span>{{ nuevoCliente.direccion }}</span></div>
+                    <div class="data-row"><strong>Teléfono:</strong> <span>{{ nuevoCliente.telefono }}</span></div>
 
                 </div>
 

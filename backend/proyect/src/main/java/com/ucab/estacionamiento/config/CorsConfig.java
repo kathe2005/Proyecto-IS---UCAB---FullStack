@@ -1,36 +1,29 @@
 package com.ucab.estacionamiento.config;
 
-
-import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.lang.NonNull; // Importante para la anotación @NonNull
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 @Configuration
-public class CorsConfig {
+public class CorsConfig implements WebMvcConfigurer {
 
-    @Bean
-    public WebMvcConfigurer corsConfigurer() {
-        return new WebMvcConfigurer() {
-            
-            @Override
-            public void addCorsMappings(CorsRegistry registry) {
-                
-                // Aplica esta configuración a TODAS las rutas de la API
-                registry.addMapping("/**") 
-                    
-                    // Permite que las peticiones vengan de tu aplicación Angular
-                    .allowedOrigins("http://localhost:4200") 
-                    
-                    // Permite todos los métodos HTTP (GET, POST, PUT, DELETE, OPTIONS)
-                    .allowedMethods("*") 
-                    
-                    // Permite todos los encabezados
-                    .allowedHeaders("*") 
-                    
-                    // Permite credenciales (cookies, headers de autenticación, si fueran necesarios)
-                    .allowCredentials(true); 
-            }
-        };
+    /**
+     * Configura los mapeos CORS para la aplicación.
+     * Al añadir la anotación @NonNull al parámetro, se resuelve la advertencia
+     * que indica que el método heredado de WebMvcConfigurer espera un parámetro no nulo.
+     *
+     * @param registry El registro CORS al que se añadirán las configuraciones.
+     */
+    @Override
+    public void addCorsMappings(@NonNull CorsRegistry registry) {
+
+        registry.addMapping("/**") 
+                .allowedOrigins("http://localhost:4200")
+                .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
+                .allowedHeaders("*") 
+                .allowCredentials(true) 
+                .maxAge(3600); 
+
     }
 }

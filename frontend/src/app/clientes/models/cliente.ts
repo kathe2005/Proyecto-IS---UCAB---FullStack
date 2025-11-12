@@ -1,7 +1,7 @@
-export interface ClienteRegistroDTO {
+export interface Cliente {
     usuario:String; 
     contrasena: String; 
-    confirmcontrasena?: String;
+    confirmarcontrasena: String;
     nombre: String; 
     apellido: String; 
     cedula: string;
