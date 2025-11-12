@@ -10,18 +10,16 @@ import { Cliente } from '../models/cliente';
 export class ClienteService {
 
     //URL de Sprint Boot 
-    private apiURL = 'http://localhost:8080/api/cliente';
+    private apiURL = 'http://localhost:8080/api/clientes/registrar'; 
 
     constructor(private http: HttpClient) { }
 
-    registrarCliente(Cliente: any): Observable<any> 
+    registrarCliente(cliente: Cliente): Observable<Cliente>
     {
-        return this.http.post(`${this.apiURL}/registrar`,Cliente); 
-    }
+        console.log("Enviando datos a Sprint Boot: ", cliente);
 
-    actualizarCliente(cliente: Cliente): Observable<Cliente> 
-    {   
-        const usuarioClave = cliente.usuario; 
-        return this.http.put<Cliente>(`${this.apiURL}/actualizar/${usuarioClave}`, cliente); 
+        //Convierte automaticamente el objeto en un JSON 
+        return this.http.post<Cliente>(this.apiURL, cliente);
+
     }
 }

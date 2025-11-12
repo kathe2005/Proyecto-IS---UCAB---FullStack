@@ -6,8 +6,11 @@ import com.ucab.estacionamiento.service.JsonManager;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
+import org.springframework.http.HttpStatus;
 import java.util.List;
+/*import java.util.UUID;
+import java.time.LocalDateTime;
+import java.util.List;*/
 
 @RestController
 @RequestMapping("/api/puestos")
@@ -16,10 +19,13 @@ public class ApiController {
     @Autowired
     private PuestoService puestoService;
 
+    @Autowired
+    private JsonManager jsonManager;
+
     @GetMapping
-    public List<Puesto> obtenerTodosLosPuestos() {
-        return puestoService.obtenerPuestos();
-    }
+        public List<Puesto> obtenerTodosLosPuestos() {
+            return puestoService.obtenerPuestos();
+        }
 
     @GetMapping("/{id}")
     public ResponseEntity<Puesto> obtenerPuestoPorId(@PathVariable String id) {
@@ -39,6 +45,20 @@ public class ApiController {
         return ResponseEntity.ok(resultado);
     }
 
+    @PostMapping
+    public ResponseEntity<?> crearPuesto(@RequestBody Puesto nuevoPuesto) {
+        try {
+            Puesto puestoCreado = puestoService.crearPuesto(nuevoPuesto); 
+            return new ResponseEntity<>(puestoCreado, HttpStatus.CREATED);
+            
+        } catch (IllegalArgumentException e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+            
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new ResponseEntity<>("Error interno al crear el puesto", HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
     @PostMapping("/liberar/{id}")
     public ResponseEntity<?> liberarPuesto(@PathVariable String id) {
         boolean exito = puestoService.liberarPuesto(id);
@@ -96,7 +116,7 @@ public class ApiController {
 
     @GetMapping("/json")
     public ResponseEntity<?> mostrarArchivoJSON() {
-        JsonManager.mostrarArchivoJSON();
+        jsonManager.mostrarArchivoJSON();
         return ResponseEntity.ok().body("{\"mensaje\": \"Contenido del JSON mostrado en consola\"}");
     }
 

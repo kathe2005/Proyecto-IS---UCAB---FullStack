@@ -1,0 +1,14 @@
+
+
+{
+    "usuario": "prueba_ucab",
+    "email": "prueba@ucab.edu.ve",
+    "contrasena": "Secreta123",
+    "confirmarContrasena": "Secreta123",
+    "cedula": "V-12345678",
+    "nombre": "Estudiante",
+    "apellido": "UCAB",
+    "tipoPersona": "UCAB",
+    "direccion": "La Castellana",
+    "telefono": "04121234567"
+}

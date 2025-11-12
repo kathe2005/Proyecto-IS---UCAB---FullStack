@@ -3,7 +3,7 @@ import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { Puesto, TipoPuesto, EstadoPuesto } from '../models/puestos.model';
 import { OcuparPuestoRequest } from '../models/ocupar-puesto-request.model';
-import { ResultadoOcupacion } from '../models/resultado-ocupacion.model';
+import { ResultadoOcupacion } from '../models/resultado.ocupacion';
 
 @Injectable({
   providedIn: 'root'
@@ -65,5 +65,8 @@ export class PuestoService {
 
   obtenerHistorial(id: string): Observable<string[]> {
     return this.http.get<string[]>(`${this.apiUrl}/historial/${id}`);
+  }
+  crearPuesto(nuevoPuesto: Puesto): Observable<Puesto> {
+    return this.http.post<Puesto>(this.apiUrl, nuevoPuesto);
   }
 }

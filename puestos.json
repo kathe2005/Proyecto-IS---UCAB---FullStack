@@ -1,63 +1,61 @@
-[
-  {
-    "id": "P1",
-    "numero": "A-01",
-    "ubicacion": "Zona A",
-    "usuarioOcupante": null,
-    "tipoPuesto": "REGULAR",
-    "estadoPuesto": "DISPONIBLE",
-    "fechaOcupacion": null,
-    "fechaCreacion": "2025-11-12T13:30:52.115732700",
-    "historialOcupacion": [
-    ]
-  },
-  {
-    "id": "P2",
-    "numero": "A-02",
-    "ubicacion": "Zona A",
-    "usuarioOcupante": "profesor_garcia",
-    "tipoPuesto": "DOCENTE",
-    "estadoPuesto": "OCUPADO",
-    "fechaOcupacion": "2025-11-12T11:30:52.115732700",
-    "fechaCreacion": "2025-11-12T13:30:52.115732700",
-    "historialOcupacion": [
-      "Ocupado por profesor_garcia en 2025-11-12T11:30:52.115732700"
-    ]
-  },
-  {
-    "id": "P3",
-    "numero": "B-01",
-    "ubicacion": "Zona B",
-    "usuarioOcupante": null,
-    "tipoPuesto": "DISCAPACITADO",
-    "estadoPuesto": "DISPONIBLE",
-    "fechaOcupacion": null,
-    "fechaCreacion": "2025-11-12T13:30:52.115732700",
-    "historialOcupacion": [
-    ]
-  },
-  {
-    "id": "P4",
-    "numero": "C-01",
-    "ubicacion": "Zona C",
-    "usuarioOcupante": null,
-    "tipoPuesto": "VISITANTE",
-    "estadoPuesto": "BLOQUEADO",
-    "fechaOcupacion": null,
-    "fechaCreacion": "2025-11-12T13:30:52.115732700",
-    "historialOcupacion": [
-    ]
-  },
-  {
-    "id": "P5",
-    "numero": "M-01",
-    "ubicacion": "Zona Motos",
-    "usuarioOcupante": null,
-    "tipoPuesto": "MOTOCICLETA",
-    "estadoPuesto": "DISPONIBLE",
-    "fechaOcupacion": null,
-    "fechaCreacion": "2025-11-12T13:30:52.115732700",
-    "historialOcupacion": [
-    ]
-  }
-]
+[ {
+  "id" : "P1",
+  "numero" : "A-01",
+  "ubicacion" : "Zona A",
+  "usuarioOcupante" : null,
+  "tipoPuesto" : "REGULAR",
+  "estadoPuesto" : "DISPONIBLE",
+  "fechaOcupacion" : null,
+  "fechaCreacion" : "2025-11-11T14:14:30.8363303",
+  "historialOcupacion" : [ ]
+}, {
+  "id" : "P2",
+  "numero" : "A-02",
+  "ubicacion" : "Zona A",
+  "usuarioOcupante" : "profesor_garcia",
+  "tipoPuesto" : "DOCENTE",
+  "estadoPuesto" : "OCUPADO",
+  "fechaOcupacion" : "2025-11-11T12:14:30.8363303",
+  "fechaCreacion" : "2025-11-11T14:14:30.8363303",
+  "historialOcupacion" : [ "Ocupado por profesor_garcia en 2025-11-11T12:14:30.836330300" ]
+}, {
+  "id" : "P3",
+  "numero" : "B-01",
+  "ubicacion" : "Zona B",
+  "usuarioOcupante" : null,
+  "tipoPuesto" : "DISCAPACITADO",
+  "estadoPuesto" : "DISPONIBLE",
+  "fechaOcupacion" : null,
+  "fechaCreacion" : "2025-11-11T14:14:30.8363303",
+  "historialOcupacion" : [ ]
+}, {
+  "id" : "P4",
+  "numero" : "C-01",
+  "ubicacion" : "Zona C",
+  "usuarioOcupante" : null,
+  "tipoPuesto" : "VISITANTE",
+  "estadoPuesto" : "BLOQUEADO",
+  "fechaOcupacion" : null,
+  "fechaCreacion" : "2025-11-11T14:14:30.8363303",
+  "historialOcupacion" : [ ]
+}, {
+  "id" : "P5",
+  "numero" : "M-01",
+  "ubicacion" : "Zona Motos",
+  "usuarioOcupante" : null,
+  "tipoPuesto" : "MOTOCICLETA",
+  "estadoPuesto" : "DISPONIBLE",
+  "fechaOcupacion" : null,
+  "fechaCreacion" : "2025-11-11T14:14:30.8363303",
+  "historialOcupacion" : [ ]
+}, {
+  "id" : "f2c09762-6c12-45dc-bf71-54812fd6ead6",
+  "numero" : "A-03",
+  "ubicacion" : "Zona A",
+  "usuarioOcupante" : null,
+  "tipoPuesto" : "REGULAR",
+  "estadoPuesto" : "DISPONIBLE",
+  "fechaOcupacion" : null,
+  "fechaCreacion" : "2025-11-12T14:10:11.3621105",
+  "historialOcupacion" : [ "Puesto creado en 2025-11-12T14:10:11.362110500" ]
+} ]

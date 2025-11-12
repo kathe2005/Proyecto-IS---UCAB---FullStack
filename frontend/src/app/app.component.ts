@@ -1,13 +1,17 @@
 import { Component } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
-import { HeaderComponent } from './clientes/components/ocuparPuesto/header/header.component';
+import { HeaderComponent } from './clientes/components/ocuparPuestos/header/header.component';
+import { NavbarComponent } from './clientes/components/ocuparPuestos/navbar.component';
+import { BuscarPuestosComponent } from './clientes/components/ocuparPuestos/buscar/buscar-puestos.component';
+import { CrearPuestosComponent } from './clientes/components/ocuparPuestos/crear/crear-puestos.component';
 
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [RouterOutlet, HeaderComponent],
+  imports: [RouterOutlet, HeaderComponent, NavbarComponent],
   template: `
     <app-header></app-header>
+    <app-navbar></app-navbar>
     <div class="main-content">
       <router-outlet></router-outlet>
     </div>

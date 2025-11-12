@@ -1,0 +1,7 @@
+<nav class="navbar">
+  <a *ngFor="let item of menuItems"
+     [routerLink]="item.route"  class="nav-link"
+     routerLinkActive="active"> <i [class]="item.icon"></i>
+    {{ item.title }}
+  </a>
+</nav>

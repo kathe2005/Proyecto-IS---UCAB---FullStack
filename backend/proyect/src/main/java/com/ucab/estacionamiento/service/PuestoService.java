@@ -7,7 +7,7 @@ import java.util.Optional;
 public interface PuestoService {
     List<Puesto> obtenerPuestos();
     Optional<Puesto> obtenerPuestoPorId(String idPuesto);
-    Puesto crearPuesto(Puesto puesto);
+    Puesto crearPuesto(Puesto puesto) throws IllegalArgumentException;
     Puesto actualizarPuesto(Puesto puesto);
     boolean eliminarPuesto(String id);
 
