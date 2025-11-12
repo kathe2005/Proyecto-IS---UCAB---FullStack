@@ -285,7 +285,7 @@ public class ClienteServiceImpl implements ClienteService {
         if(!cedulaLimpia.matches(CEDULA_REGEX))
         {
             System.err.println("Formato de cédula inválido: " + cedulaLimpia);
-            throw new RegistroClienteException("El formato de la cédula debe ser V - 12345678", 400);
+            throw new RegistroClienteException("El formato de la cédula debe ser V-12345678", 400);
         }
 
         System.out.println("La cedula se ha registrado");
@@ -304,7 +304,7 @@ public class ClienteServiceImpl implements ClienteService {
         if(!telefonoLimpio.matches(TELEFONO_REGEX))
         {
             System.err.println("Formato de telefono inválido: " + telefonoLimpio);
-            throw new RegistroClienteException("El formato del telefono debe ser 0426 - 6112225", 400);
+            throw new RegistroClienteException("El formato del telefono debe ser 0426-6112225", 400);
         }
 
         System.out.println("El telefono se ha registrado");

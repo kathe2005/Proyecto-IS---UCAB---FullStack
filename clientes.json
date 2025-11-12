@@ -97,4 +97,59 @@
   "email" : "prueba25@est.ucab.edu.ve",
   "tipoPersona" : "UCAB",
   "confirmarContrasena" : null
+}, {
+  "usuario" : "katheb58",
+  "contrasena" : "Const1234",
+  "nombre" : "Cesar ",
+  "apellido" : "Peréz",
+  "cedula" : "V-36985214",
+  "direccion" : "Caricuao",
+  "telefono" : "0212-5312569",
+  "email" : "katheamaya.23@est.ucab.edu.ve",
+  "tipoPersona" : "UCAB",
+  "confirmarContrasena" : null
+}, {
+  "usuario" : "katheb89",
+  "contrasena" : "Const1234",
+  "nombre" : "Cesar ",
+  "apellido" : "Peréz",
+  "cedula" : "V-38935648",
+  "direccion" : "Caricuao",
+  "telefono" : "0212-5789315",
+  "email" : "katheb74@est.ucab.edu.ve",
+  "tipoPersona" : "UCAB",
+  "confirmarContrasena" : null
+}, {
+  "usuario" : "orlando25",
+  "contrasena" : "Const1234",
+  "nombre" : "Katherine",
+  "apellido" : "Amaya Briceño",
+  "cedula" : "E-31490659",
+  "direccion" : "Caricuao",
+  "telefono" : "0424-2368071",
+  "email" : "kathe1@ucab.edu.ve",
+  "tipoPersona" : "UCAB",
+  "confirmarContrasena" : null
+}, {
+  "usuario" : "Katherine1",
+  "contrasena" : "Katheb23",
+  "nombre" : "Katherine ",
+  "apellido" : "Amaya Briceño",
+  "cedula" : "V-31596285",
+  "direccion" : "",
+  "telefono" : "0424-2357082",
+  "email" : "kathe_abr@est.ucab.edu.ve",
+  "tipoPersona" : "UCAB",
+  "confirmarContrasena" : null
+}, {
+  "usuario" : "kathe123",
+  "contrasena" : "Katheb$23",
+  "nombre" : "Katherine ",
+  "apellido" : "Amaya Briceño",
+  "cedula" : "V-11918253",
+  "direccion" : "",
+  "telefono" : "0424-2569314",
+  "email" : "kamaya.223@ucab.edu.ve",
+  "tipoPersona" : "UCAB",
+  "confirmarContrasena" : null
 } ]

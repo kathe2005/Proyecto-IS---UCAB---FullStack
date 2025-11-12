@@ -2737,3 +2737,125 @@ jakarta.servlet.ServletException: Circular view path [error]: would dispatch bac
 2025-11-12T14:38:36.617-04:00  INFO 11592 --- [proyect] [http-nio-127.0.0.1-8080-exec-4] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring DispatcherServlet 'dispatcherServlet'
 2025-11-12T14:38:36.643-04:00  INFO 11592 --- [proyect] [http-nio-127.0.0.1-8080-exec-4] o.s.web.servlet.DispatcherServlet        : Initializing Servlet 'dispatcherServlet'
 2025-11-12T14:38:36.703-04:00  INFO 11592 --- [proyect] [http-nio-127.0.0.1-8080-exec-4] o.s.web.servlet.DispatcherServlet        : Completed initialization in 54 ms
+2025-11-12T17:38:21.859-04:00  INFO 6264 --- [proyect] [main] c.u.estacionamiento.ProyectApplication   : Starting ProyectApplication using Java 17.0.17 with PID 6264 (C:\Users\KATHE\OneDrive\Desktop\UCAB\Semestre Sep2025 - Ene2026\Ingeniería de Software\Proyecto-Estacioamiento\Proyecto-IS---UCAB---FullStack-3\backend\proyect\target\classes started by KATHE in C:\Users\KATHE\OneDrive\Desktop\UCAB\Semestre Sep2025 - Ene2026\Ingeniería de Software\Proyecto-Estacioamiento\Proyecto-IS---UCAB---FullStack-3)
+2025-11-12T17:38:21.866-04:00 DEBUG 6264 --- [proyect] [main] c.u.estacionamiento.ProyectApplication   : Running with Spring Boot v3.5.7, Spring v6.2.12
+2025-11-12T17:38:21.869-04:00  INFO 6264 --- [proyect] [main] c.u.estacionamiento.ProyectApplication   : No active profile set, falling back to 1 default profile: "default"
+2025-11-12T17:38:25.682-04:00  INFO 6264 --- [proyect] [main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat initialized with port 8080 (http)
+2025-11-12T17:38:25.719-04:00  INFO 6264 --- [proyect] [main] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2025-11-12T17:38:25.723-04:00  INFO 6264 --- [proyect] [main] o.apache.catalina.core.StandardEngine    : Starting Servlet engine: [Apache Tomcat/10.1.48]
+2025-11-12T17:38:25.870-04:00  INFO 6264 --- [proyect] [main] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring embedded WebApplicationContext
+2025-11-12T17:38:25.871-04:00  INFO 6264 --- [proyect] [main] w.s.c.ServletWebServerApplicationContext : Root WebApplicationContext: initialization completed in 3784 ms
+2025-11-12T17:38:27.859-04:00  INFO 6264 --- [proyect] [main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat started on port 8080 (http) with context path '/'
+2025-11-12T17:38:27.885-04:00  INFO 6264 --- [proyect] [main] c.u.estacionamiento.ProyectApplication   : Started ProyectApplication in 7.38 seconds (process running for 8.033)
+2025-11-12T17:41:08.380-04:00  INFO 6264 --- [proyect] [http-nio-127.0.0.1-8080-exec-1] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring DispatcherServlet 'dispatcherServlet'
+2025-11-12T17:41:08.395-04:00  INFO 6264 --- [proyect] [http-nio-127.0.0.1-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Initializing Servlet 'dispatcherServlet'
+2025-11-12T17:41:08.433-04:00  INFO 6264 --- [proyect] [http-nio-127.0.0.1-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Completed initialization in 37 ms
+2025-11-12T17:45:14.122-04:00  WARN 6264 --- [proyect] [http-nio-127.0.0.1-8080-exec-3] o.s.web.servlet.PageNotFound             : No mapping for GET /api/cliente/obtenerTodos
+2025-11-12T17:45:15.140-04:00  WARN 6264 --- [proyect] [http-nio-127.0.0.1-8080-exec-4] o.s.web.servlet.PageNotFound             : No mapping for GET /favicon.ico
+2025-11-12T17:45:56.772-04:00  INFO 40184 --- [proyect] [main] c.u.estacionamiento.ProyectApplication   : Starting ProyectApplication using Java 17.0.17 with PID 40184 (C:\Users\KATHE\OneDrive\Desktop\UCAB\Semestre Sep2025 - Ene2026\Ingeniería de Software\Proyecto-Estacioamiento\Proyecto-IS---UCAB---FullStack-3\backend\proyect\target\classes started by KATHE in C:\Users\KATHE\OneDrive\Desktop\UCAB\Semestre Sep2025 - Ene2026\Ingeniería de Software\Proyecto-Estacioamiento\Proyecto-IS---UCAB---FullStack-3)
+2025-11-12T17:45:56.777-04:00 DEBUG 40184 --- [proyect] [main] c.u.estacionamiento.ProyectApplication   : Running with Spring Boot v3.5.7, Spring v6.2.12
+2025-11-12T17:45:56.778-04:00  INFO 40184 --- [proyect] [main] c.u.estacionamiento.ProyectApplication   : No active profile set, falling back to 1 default profile: "default"
+2025-11-12T17:45:58.190-04:00  INFO 40184 --- [proyect] [main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat initialized with port 8080 (http)
+2025-11-12T17:45:58.206-04:00  INFO 40184 --- [proyect] [main] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2025-11-12T17:45:58.206-04:00  INFO 40184 --- [proyect] [main] o.apache.catalina.core.StandardEngine    : Starting Servlet engine: [Apache Tomcat/10.1.48]
+2025-11-12T17:45:58.271-04:00  INFO 40184 --- [proyect] [main] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring embedded WebApplicationContext
+2025-11-12T17:45:58.272-04:00  INFO 40184 --- [proyect] [main] w.s.c.ServletWebServerApplicationContext : Root WebApplicationContext: initialization completed in 1421 ms
+2025-11-12T17:45:59.078-04:00  INFO 40184 --- [proyect] [main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat started on port 8080 (http) with context path '/'
+2025-11-12T17:45:59.090-04:00  INFO 40184 --- [proyect] [main] c.u.estacionamiento.ProyectApplication   : Started ProyectApplication in 2.862 seconds (process running for 3.174)
+2025-11-12T17:46:30.032-04:00  INFO 40184 --- [proyect] [http-nio-127.0.0.1-8080-exec-1] o.apache.coyote.http11.Http11Processor   : Error parsing HTTP request header
+ Note: further occurrences of HTTP request parsing errors will be logged at DEBUG level.
+
+java.lang.IllegalArgumentException: Invalid character found in method name [0x160x030x010x060xb20x010x000x060xae0x030x03f0x960x8f0x9d0x1b0xa0C0x950xb2+0xd50x8e0xc8`0xb50xee0xa00xaakH0xe10xce;0xea0xb4txhp,D0xca ]. HTTP method names must be tokens
+	at org.apache.coyote.http11.Http11InputBuffer.parseRequestLine(Http11InputBuffer.java:402) ~[tomcat-embed-core-10.1.48.jar:10.1.48]
+	at org.apache.coyote.http11.Http11Processor.service(Http11Processor.java:272) ~[tomcat-embed-core-10.1.48.jar:10.1.48]
+	at org.apache.coyote.AbstractProcessorLight.process(AbstractProcessorLight.java:63) ~[tomcat-embed-core-10.1.48.jar:10.1.48]
+	at org.apache.coyote.AbstractProtocol$ConnectionHandler.process(AbstractProtocol.java:903) ~[tomcat-embed-core-10.1.48.jar:10.1.48]
+	at org.apache.tomcat.util.net.NioEndpoint$SocketProcessor.doRun(NioEndpoint.java:1774) ~[tomcat-embed-core-10.1.48.jar:10.1.48]
+	at org.apache.tomcat.util.net.SocketProcessorBase.run(SocketProcessorBase.java:52) ~[tomcat-embed-core-10.1.48.jar:10.1.48]
+	at org.apache.tomcat.util.threads.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:973) ~[tomcat-embed-core-10.1.48.jar:10.1.48]
+	at org.apache.tomcat.util.threads.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:491) ~[tomcat-embed-core-10.1.48.jar:10.1.48]
+	at org.apache.tomcat.util.threads.TaskThread$WrappingRunnable.run(TaskThread.java:63) ~[tomcat-embed-core-10.1.48.jar:10.1.48]
+	at java.base/java.lang.Thread.run(Thread.java:840) ~[na:na]
+
+2025-11-12T17:46:30.032-04:00  INFO 40184 --- [proyect] [http-nio-127.0.0.1-8080-exec-2] o.apache.coyote.http11.Http11Processor   : Error parsing HTTP request header
+ Note: further occurrences of HTTP request parsing errors will be logged at DEBUG level.
+
+java.lang.IllegalArgumentException: Invalid character found in method name [0x160x030x010x060xf20x010x000x060xee0x030x030xfdJ0xf20x96L0xab90x020xb80x1f0x97*F0xfd0xd30x840xf10x150x110x0f0xa50x020x150x0f0xa9Uk0x19D0xeb0xec0x97 ]. HTTP method names must be tokens
+	at org.apache.coyote.http11.Http11InputBuffer.parseRequestLine(Http11InputBuffer.java:402) ~[tomcat-embed-core-10.1.48.jar:10.1.48]
+	at org.apache.coyote.http11.Http11Processor.service(Http11Processor.java:272) ~[tomcat-embed-core-10.1.48.jar:10.1.48]
+	at org.apache.coyote.AbstractProcessorLight.process(AbstractProcessorLight.java:63) ~[tomcat-embed-core-10.1.48.jar:10.1.48]
+	at org.apache.coyote.AbstractProtocol$ConnectionHandler.process(AbstractProtocol.java:903) ~[tomcat-embed-core-10.1.48.jar:10.1.48]
+	at org.apache.tomcat.util.net.NioEndpoint$SocketProcessor.doRun(NioEndpoint.java:1774) ~[tomcat-embed-core-10.1.48.jar:10.1.48]
+	at org.apache.tomcat.util.net.SocketProcessorBase.run(SocketProcessorBase.java:52) ~[tomcat-embed-core-10.1.48.jar:10.1.48]
+	at org.apache.tomcat.util.threads.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:973) ~[tomcat-embed-core-10.1.48.jar:10.1.48]
+	at org.apache.tomcat.util.threads.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:491) ~[tomcat-embed-core-10.1.48.jar:10.1.48]
+	at org.apache.tomcat.util.threads.TaskThread$WrappingRunnable.run(TaskThread.java:63) ~[tomcat-embed-core-10.1.48.jar:10.1.48]
+	at java.base/java.lang.Thread.run(Thread.java:840) ~[na:na]
+
+2025-11-12T17:47:28.782-04:00  INFO 40184 --- [proyect] [http-nio-127.0.0.1-8080-exec-3] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring DispatcherServlet 'dispatcherServlet'
+2025-11-12T17:47:28.785-04:00  INFO 40184 --- [proyect] [http-nio-127.0.0.1-8080-exec-3] o.s.web.servlet.DispatcherServlet        : Initializing Servlet 'dispatcherServlet'
+2025-11-12T17:47:28.800-04:00  INFO 40184 --- [proyect] [http-nio-127.0.0.1-8080-exec-3] o.s.web.servlet.DispatcherServlet        : Completed initialization in 12 ms
+2025-11-12T17:47:28.854-04:00  WARN 40184 --- [proyect] [http-nio-127.0.0.1-8080-exec-3] o.s.web.servlet.PageNotFound             : No mapping for GET /api/cliente/obtenerTodos
+2025-11-12T17:47:36.871-04:00  WARN 40184 --- [proyect] [http-nio-127.0.0.1-8080-exec-5] o.s.web.servlet.PageNotFound             : No mapping for GET /api/client/obtenerTodos
+2025-11-12T17:47:56.909-04:00  WARN 40184 --- [proyect] [http-nio-127.0.0.1-8080-exec-8] o.s.web.servlet.PageNotFound             : No mapping for GET /api/cliente/api/obtenerTodos
+2025-11-12T17:48:08.560-04:00  WARN 40184 --- [proyect] [http-nio-127.0.0.1-8080-exec-2] o.s.web.servlet.PageNotFound             : No mapping for GET /api/cliente/obtenerTodos
+2025-11-12T17:48:33.510-04:00  WARN 40184 --- [proyect] [http-nio-127.0.0.1-8080-exec-7] o.s.web.servlet.PageNotFound             : No mapping for GET /favicon.ico
+2025-11-12T18:00:17.422-04:00  INFO 35028 --- [proyect] [main] c.u.estacionamiento.ProyectApplication   : Starting ProyectApplication using Java 17.0.17 with PID 35028 (C:\Users\KATHE\OneDrive\Desktop\UCAB\Semestre Sep2025 - Ene2026\Ingeniería de Software\Proyecto-Estacioamiento\Proyecto-IS---UCAB---FullStack-3\backend\proyect\target\classes started by KATHE in C:\Users\KATHE\OneDrive\Desktop\UCAB\Semestre Sep2025 - Ene2026\Ingeniería de Software\Proyecto-Estacioamiento\Proyecto-IS---UCAB---FullStack-3)
+2025-11-12T18:00:17.427-04:00 DEBUG 35028 --- [proyect] [main] c.u.estacionamiento.ProyectApplication   : Running with Spring Boot v3.5.7, Spring v6.2.12
+2025-11-12T18:00:17.428-04:00  INFO 35028 --- [proyect] [main] c.u.estacionamiento.ProyectApplication   : No active profile set, falling back to 1 default profile: "default"
+2025-11-12T18:00:19.024-04:00  INFO 35028 --- [proyect] [main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat initialized with port 8080 (http)
+2025-11-12T18:00:19.041-04:00  INFO 35028 --- [proyect] [main] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2025-11-12T18:00:19.042-04:00  INFO 35028 --- [proyect] [main] o.apache.catalina.core.StandardEngine    : Starting Servlet engine: [Apache Tomcat/10.1.48]
+2025-11-12T18:00:19.114-04:00  INFO 35028 --- [proyect] [main] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring embedded WebApplicationContext
+2025-11-12T18:00:19.115-04:00  INFO 35028 --- [proyect] [main] w.s.c.ServletWebServerApplicationContext : Root WebApplicationContext: initialization completed in 1619 ms
+2025-11-12T18:00:20.096-04:00  INFO 35028 --- [proyect] [main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat started on port 8080 (http) with context path '/'
+2025-11-12T18:00:20.111-04:00  INFO 35028 --- [proyect] [main] c.u.estacionamiento.ProyectApplication   : Started ProyectApplication in 3.38 seconds (process running for 3.728)
+2025-11-12T18:07:22.447-04:00  INFO 20192 --- [proyect] [main] c.u.estacionamiento.ProyectApplication   : Starting ProyectApplication using Java 17.0.17 with PID 20192 (C:\Users\KATHE\OneDrive\Desktop\UCAB\Semestre Sep2025 - Ene2026\Ingeniería de Software\Proyecto-Estacioamiento\Proyecto-IS---UCAB---FullStack-3\backend\proyect\target\classes started by KATHE in C:\Users\KATHE\OneDrive\Desktop\UCAB\Semestre Sep2025 - Ene2026\Ingeniería de Software\Proyecto-Estacioamiento\Proyecto-IS---UCAB---FullStack-3)
+2025-11-12T18:07:22.447-04:00 DEBUG 20192 --- [proyect] [main] c.u.estacionamiento.ProyectApplication   : Running with Spring Boot v3.5.7, Spring v6.2.12
+2025-11-12T18:07:22.447-04:00  INFO 20192 --- [proyect] [main] c.u.estacionamiento.ProyectApplication   : No active profile set, falling back to 1 default profile: "default"
+2025-11-12T18:07:25.096-04:00  INFO 20192 --- [proyect] [main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat initialized with port 8080 (http)
+2025-11-12T18:07:25.148-04:00  INFO 20192 --- [proyect] [main] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2025-11-12T18:07:25.149-04:00  INFO 20192 --- [proyect] [main] o.apache.catalina.core.StandardEngine    : Starting Servlet engine: [Apache Tomcat/10.1.48]
+2025-11-12T18:07:25.277-04:00  INFO 20192 --- [proyect] [main] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring embedded WebApplicationContext
+2025-11-12T18:07:25.277-04:00  INFO 20192 --- [proyect] [main] w.s.c.ServletWebServerApplicationContext : Root WebApplicationContext: initialization completed in 2681 ms
+2025-11-12T18:07:26.693-04:00  INFO 20192 --- [proyect] [main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat started on port 8080 (http) with context path '/'
+2025-11-12T18:07:26.711-04:00  INFO 20192 --- [proyect] [main] c.u.estacionamiento.ProyectApplication   : Started ProyectApplication in 5.514 seconds (process running for 6.021)
+2025-11-12T18:09:00.212-04:00  INFO 20192 --- [proyect] [http-nio-127.0.0.1-8080-exec-2] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring DispatcherServlet 'dispatcherServlet'
+2025-11-12T18:09:00.216-04:00  INFO 20192 --- [proyect] [http-nio-127.0.0.1-8080-exec-2] o.s.web.servlet.DispatcherServlet        : Initializing Servlet 'dispatcherServlet'
+2025-11-12T18:09:00.229-04:00  INFO 20192 --- [proyect] [http-nio-127.0.0.1-8080-exec-2] o.s.web.servlet.DispatcherServlet        : Completed initialization in 11 ms
+2025-11-12T18:13:37.043-04:00  INFO 22348 --- [proyect] [main] c.u.estacionamiento.ProyectApplication   : Starting ProyectApplication using Java 17.0.17 with PID 22348 (C:\Users\KATHE\OneDrive\Desktop\UCAB\Semestre Sep2025 - Ene2026\Ingeniería de Software\Proyecto-Estacioamiento\Proyecto-IS---UCAB---FullStack-3\backend\proyect\target\classes started by KATHE in C:\Users\KATHE\OneDrive\Desktop\UCAB\Semestre Sep2025 - Ene2026\Ingeniería de Software\Proyecto-Estacioamiento\Proyecto-IS---UCAB---FullStack-3)
+2025-11-12T18:13:37.043-04:00 DEBUG 22348 --- [proyect] [main] c.u.estacionamiento.ProyectApplication   : Running with Spring Boot v3.5.7, Spring v6.2.12
+2025-11-12T18:13:37.043-04:00  INFO 22348 --- [proyect] [main] c.u.estacionamiento.ProyectApplication   : No active profile set, falling back to 1 default profile: "default"
+2025-11-12T18:13:38.743-04:00  INFO 22348 --- [proyect] [main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat initialized with port 8080 (http)
+2025-11-12T18:13:38.756-04:00  INFO 22348 --- [proyect] [main] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2025-11-12T18:13:38.757-04:00  INFO 22348 --- [proyect] [main] o.apache.catalina.core.StandardEngine    : Starting Servlet engine: [Apache Tomcat/10.1.48]
+2025-11-12T18:13:38.813-04:00  INFO 22348 --- [proyect] [main] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring embedded WebApplicationContext
+2025-11-12T18:13:38.813-04:00  INFO 22348 --- [proyect] [main] w.s.c.ServletWebServerApplicationContext : Root WebApplicationContext: initialization completed in 1683 ms
+2025-11-12T18:13:39.620-04:00  INFO 22348 --- [proyect] [main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat started on port 8080 (http) with context path '/'
+2025-11-12T18:13:39.629-04:00  INFO 22348 --- [proyect] [main] c.u.estacionamiento.ProyectApplication   : Started ProyectApplication in 3.251 seconds (process running for 3.563)
+2025-11-12T18:14:04.063-04:00  INFO 11688 --- [proyect] [main] c.u.estacionamiento.ProyectApplication   : Starting ProyectApplication using Java 17.0.17 with PID 11688 (C:\Users\KATHE\OneDrive\Desktop\UCAB\Semestre Sep2025 - Ene2026\Ingeniería de Software\Proyecto-Estacioamiento\Proyecto-IS---UCAB---FullStack-3\backend\proyect\target\classes started by KATHE in C:\Users\KATHE\OneDrive\Desktop\UCAB\Semestre Sep2025 - Ene2026\Ingeniería de Software\Proyecto-Estacioamiento\Proyecto-IS---UCAB---FullStack-3)
+2025-11-12T18:14:04.063-04:00 DEBUG 11688 --- [proyect] [main] c.u.estacionamiento.ProyectApplication   : Running with Spring Boot v3.5.7, Spring v6.2.12
+2025-11-12T18:14:04.063-04:00  INFO 11688 --- [proyect] [main] c.u.estacionamiento.ProyectApplication   : No active profile set, falling back to 1 default profile: "default"
+2025-11-12T18:14:06.237-04:00  INFO 11688 --- [proyect] [main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat initialized with port 8080 (http)
+2025-11-12T18:14:06.268-04:00  INFO 11688 --- [proyect] [main] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2025-11-12T18:14:06.268-04:00  INFO 11688 --- [proyect] [main] o.apache.catalina.core.StandardEngine    : Starting Servlet engine: [Apache Tomcat/10.1.48]
+2025-11-12T18:14:06.397-04:00  INFO 11688 --- [proyect] [main] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring embedded WebApplicationContext
+2025-11-12T18:14:06.397-04:00  INFO 11688 --- [proyect] [main] w.s.c.ServletWebServerApplicationContext : Root WebApplicationContext: initialization completed in 2220 ms
+2025-11-12T18:14:07.664-04:00  INFO 11688 --- [proyect] [main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat started on port 8080 (http) with context path '/'
+2025-11-12T18:14:07.688-04:00  INFO 11688 --- [proyect] [main] c.u.estacionamiento.ProyectApplication   : Started ProyectApplication in 4.772 seconds (process running for 5.413)
+2025-11-12T18:40:23.338-04:00  INFO 11688 --- [proyect] [http-nio-127.0.0.1-8080-exec-1] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring DispatcherServlet 'dispatcherServlet'
+2025-11-12T18:40:23.369-04:00  INFO 11688 --- [proyect] [http-nio-127.0.0.1-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Initializing Servlet 'dispatcherServlet'
+2025-11-12T18:40:23.436-04:00  INFO 11688 --- [proyect] [http-nio-127.0.0.1-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Completed initialization in 63 ms
+2025-11-12T18:46:58.801-04:00  INFO 12532 --- [proyect] [main] c.u.estacionamiento.ProyectApplication   : Starting ProyectApplication using Java 17.0.17 with PID 12532 (C:\Users\KATHE\OneDrive\Desktop\UCAB\Semestre Sep2025 - Ene2026\Ingeniería de Software\Proyecto-Estacioamiento\Proyecto-IS---UCAB---FullStack-3\backend\proyect\target\classes started by KATHE in C:\Users\KATHE\OneDrive\Desktop\UCAB\Semestre Sep2025 - Ene2026\Ingeniería de Software\Proyecto-Estacioamiento\Proyecto-IS---UCAB---FullStack-3)
+2025-11-12T18:46:58.807-04:00 DEBUG 12532 --- [proyect] [main] c.u.estacionamiento.ProyectApplication   : Running with Spring Boot v3.5.7, Spring v6.2.12
+2025-11-12T18:46:58.809-04:00  INFO 12532 --- [proyect] [main] c.u.estacionamiento.ProyectApplication   : No active profile set, falling back to 1 default profile: "default"
+2025-11-12T18:47:00.469-04:00  INFO 12532 --- [proyect] [main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat initialized with port 8080 (http)
+2025-11-12T18:47:00.482-04:00  INFO 12532 --- [proyect] [main] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2025-11-12T18:47:00.482-04:00  INFO 12532 --- [proyect] [main] o.apache.catalina.core.StandardEngine    : Starting Servlet engine: [Apache Tomcat/10.1.48]
+2025-11-12T18:47:00.553-04:00  INFO 12532 --- [proyect] [main] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring embedded WebApplicationContext
+2025-11-12T18:47:00.553-04:00  INFO 12532 --- [proyect] [main] w.s.c.ServletWebServerApplicationContext : Root WebApplicationContext: initialization completed in 1678 ms
+2025-11-12T18:47:01.330-04:00  INFO 12532 --- [proyect] [main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat started on port 8080 (http) with context path '/'
+2025-11-12T18:47:01.348-04:00  INFO 12532 --- [proyect] [main] c.u.estacionamiento.ProyectApplication   : Started ProyectApplication in 3.173 seconds (process running for 3.482)
+2025-11-12T18:48:46.155-04:00  INFO 12532 --- [proyect] [http-nio-127.0.0.1-8080-exec-2] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring DispatcherServlet 'dispatcherServlet'
+2025-11-12T18:48:46.161-04:00  INFO 12532 --- [proyect] [http-nio-127.0.0.1-8080-exec-2] o.s.web.servlet.DispatcherServlet        : Initializing Servlet 'dispatcherServlet'
+2025-11-12T18:48:46.166-04:00  INFO 12532 --- [proyect] [http-nio-127.0.0.1-8080-exec-2] o.s.web.servlet.DispatcherServlet        : Completed initialization in 4 ms
