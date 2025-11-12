@@ -209,6 +209,12 @@ export class RegistroClienteComponent implements OnInit {
         this.paso = 'credenciales'; 
         this.errorMensaje = null; 
         this.estaEditando = true; 
+
+
+        if (this.clienteConfirmado) 
+        {
+            this.nuevoCliente.usuario = this.clienteConfirmado.usuario;
+        }
         
         console.log("Modo edición activado. Usuario clave: ", this.nuevoCliente.usuario);
 
