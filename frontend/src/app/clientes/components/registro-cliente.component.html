@@ -1,197 +1,167 @@
 <div class="main-container">
 
-<h1> Registro de Estacionamiento </h1>
-    @if (paso === 'credenciales')
-    {
-        <div class="registro-cliente">
-            <h2> Paso 1 de 3: Credenciales de Acceso  </h2>
+    <h1> Registro de Estacionamiento </h1>
 
-            <form (ngSubmit)="siguientePaso()">
+    @if (errorMensaje && paso !== 'cargando') {
+    <div class="error-alert">
+        <p>{{ errorMensaje }}</p>
+    </div>
+    }
 
-                <fieldset>
+    @if (paso === 'credenciales') {
+    <div class="registro-cliente">
 
-                    <legend> Credenciales de Acceso </legend>
 
-                    <div class="form-group">
-                        <label for="usuario"> Usuario </label>
-                        <input type="text" id="usuario" name="usuario" [(ngModel)]="nuevoCliente.usuario" required>
-                    </div>
+            <fieldset>
+                <legend> Credenciales de Acceso </legend>
 
-                    <div class="form-group">
-                        <label for="email"> Correo Electrónico </label>
-                        <input type="email" id="email" name="email" [(ngModel)]="nuevoCliente.email" required>
-                    </div>
-
-                    <div class="form-group">
-                        <label for="contrasena"> Contraseña </label>
-                        <input type="password" id="contrasena" name="contrasena" [(ngModel)]="nuevoCliente.contrasena" required>
-                    </div>
-
-                    <div class="form-group">
-                        <label for="confirmarContrasena"> Confirmar Contraseña: </label>
-                        <input type="password" id="confirmarContrasena" name="confirmarContrasena" [(ngModel)]="nuevoCliente.confirmarContrasena" required>
-                    </div>
-
-                </fieldset>
-
-            </form>
-
-            <!-- Mensaje de error -->
-            @if (errorMensaje) {
-                <div class="alert alert-danger">
-                    {{ errorMensaje }}
+                <div class="form-group">
+                    <label for="usuario"> Usuario </label>
+                    <input type="text" id="usuario" name="usuario" [(ngModel)]="nuevoCliente.usuario" required>
                 </div>
-            }
+
+                <div class="form-group">
+                    <label for="email"> Correo Electrónico </label>
+                    <input type="email" id="email" name="email" [(ngModel)]="nuevoCliente.email" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="contrasena"> Contraseña </label>
+                    <input type="password" id="contrasena" name="contrasena" [(ngModel)]="nuevoCliente.contrasena"
+                        required>
+                </div>
+
+                <div class="form-group">
+                    <label for="confirmarContrasena"> Confirmar Contraseña </label>
+                    <input type="password" id="confirmarContrasena" name="confirmarContrasena"
+                        [(ngModel)]="nuevoCliente.confirmarcontrasena" required>
+                </div>
+
+            </fieldset>
 
             <div class="actions">
-                <button (click)="siguientePaso()" class="btn btn-primary">
+                <button type="button" (click)="siguientepaso()" class="btn btn-primary">
                     Continuar (Paso 2)
                 </button>
             </div>
 
-        </div>
+    </div>
     }
 
-    @if (paso === 'datos_personales')
-    {
-        <div class="registro-cliente">
-            <h2> Paso 2 de 3: Datos Personales  </h2>
 
-            <form (ngSubmit)="siguientePaso()">
+    @if (paso === 'datos_personales') {
+    <div class="registro-cliente">
 
-                <fieldset>
 
-                    <legend> Datos Personales </legend>
+            <fieldset>
+                <legend> Datos Personales </legend>
 
-                    <div class="form-group">
-                        <label for="cedula"> Cédula </label>
-                        <input type="text" id="cedula" name="cedula" [(ngModel)]="nuevoCliente.cedula" required>
-                    </div>
-
-                    <div class="form-group">
-                        <label for="nombre"> Nombre  </label>
-                        <input type="text" id="nombre" name="nombre" [(ngModel)]="nuevoCliente.nombre" required>
-                    </div>
-
-                    <div class="form-group">
-                        <label for="apellido"> Apellido </label>
-                        <input type="text" id="apellido" name="apellido" [(ngModel)]="nuevoCliente.apellido" required>
-                    </div>
-
-                    <div class="form-group">
-                        <label for="tipoPersona"> Tipo de Persona </label>
-                        <select id="tipoPersona" name="tipoPersona" [(ngModel)]="nuevoCliente.tipoPersona" class="form-control" required>
-                            <option value="">-- Seleccione --</option>
-                            <option value="UCAB">UCAB</option>
-                            <option value="VISITANTE">VISITANTE</option>
-                        </select>
-                    </div>
-
-                </fieldset>
-
-            </form>
-
-            <!-- Mensaje de error -->
-            @if (errorMensaje) {
-                <div class="alert alert-danger">
-                    {{ errorMensaje }}
+                <div class="form-group">
+                    <label for="cedula"> Cédula </label>
+                    <input type="text" id="cedula" name="cedula" [(ngModel)]="nuevoCliente.cedula" required>
                 </div>
-            }
+
+                <div class="form-group">
+                    <label for="nombre"> Nombre </label>
+                    <input type="text" id="nombre" name="nombre" [(ngModel)]="nuevoCliente.nombre" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="apellido"> Apellido </label>
+                    <input type="text" id="apellido" name="apellido" [(ngModel)]="nuevoCliente.apellido" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="tipoPersona"> Tipo de Persona </label>
+                    <select id="tipoPersona" name="tipoPersona" [(ngModel)]="nuevoCliente.tipoPersona" required>
+                        <option value="Seleccionar" disabled>-- Seleccione --</option>
+                        <option value="UCAB">UCAB</option>
+                        <option value="VISITANTE">VISITANTE</option>
+                    </select>
+                </div>
+
+            </fieldset>
 
             <div class="actions">
-                <button (click)="siguientePaso()" class="btn btn-primary">
+                <button type="button" (click)="siguientepaso()" class="btn btn-primary">
                     Continuar (Paso 3)
                 </button>
-                <button (click)="pasoAnterior()" class="btn btn-secondary">
+                <button type="button" (click)="pasoAnterior()" class="btn btn-secondary">
                     Regresar
                 </button>
             </div>
-
-        </div>
+    </div>
     }
 
 
-    @if (paso === 'contacto_ubicacion')
-    {
-        <div class="registro-cliente">
-            <h2> Paso 3 de 3: Contacto y Ubicación  </h2>
+    @if (paso === 'contacto_ubicacion') {
+    <div class="registro-cliente">
 
-            <form (ngSubmit)="onSubmit()">
+            <fieldset>
+                <legend> Contacto y Ubicación </legend>
 
-                <fieldset>
-
-                    <legend> Contacto y Ubicación  </legend>
-
-                    <div class="form-group">
-                        <label for="direccion"> Dirección </label>
-                        <input type="text" id="direccion" name="direccion" [(ngModel)]="nuevoCliente.direccion" required>
-                    </div>
-
-                    <div class="form-group">
-                        <label for="telefono"> Teléfono </label>
-                        <input type="text" id="telefono" name="telefono" [(ngModel)]="nuevoCliente.telefono" required>
-                    </div>
-
-                </fieldset>
-
-            </form>
-
-            <!-- Mensaje de error -->
-            @if (errorMensaje) {
-                <div class="alert alert-danger">
-                    {{ errorMensaje }}
+                <div class="form-group">
+                    <label for="direccion"> Dirección </label>
+                    <input type="text" id="direccion" name="direccion" [(ngModel)]="nuevoCliente.direccion" required>
                 </div>
-            }
+
+                <div class="form-group">
+                    <label for="telefono"> Teléfono </label>
+                    <input type="text" id="telefono" name="telefono" [(ngModel)]="nuevoCliente.telefono" required>
+                </div>
+
+            </fieldset>
 
             <div class="actions">
-                <button (click)="onSubmit()" class="btn btn-primary">
+                <button type="button" (click)="onSubmit()" class="btn btn-secondary">
                     Registrar
-                </button>
-                <button (click)="pasoAnterior()" class="btn btn-secondary">
-                    Regresar
                 </button>
             </div>
 
-        </div>
+            <div class="actions">
+                <button type="button" (click)="pasoAnterior()" class="btn btn-secondary">
+                    Regresar
+                </button>
+            </div>
+    </div>
     }
 
-    @if (paso === 'cargando')
-    {
-        <div class="loading-screen">
-            <h2> Procesando su Registro </h2>
-            <div class="spinner"></div>
-            <p>Aplicando validaciones de unicidad y formato. Espere la confirmación del servidor</p>
-        </div>
+
+    @if (paso === 'cargando') {
+    <div class="loading-screen">
+        <h2> Procesando su Registro </h2>
+        <div class="spinner"></div>
+        <p>Aplicando validaciones de unicidad y formato. Espere la confirmación del servidor</p>
+    </div>
     }
 
     @if (paso === 'confirmacion' && clienteConfirmado)
     {
-        <div class="confirmation-card">
-            <h2>✅ Datos Registrados Correctamente</h2>
+    <div class="confirmation-card">
+        <h2>✅ Datos Registrados Correctamente</h2>
 
-            <p class="success-message">¡El sistema ha registrado su información! Por favor, confirme los siguientes detalles:</p>
+        <p class="success-message">¡El sistema ha registrado su información! Por favor, confirme los siguientes
+            detalles:</p>
 
-            <div class="data-summary">
-                <div class="data-row"><strong>ID de Cliente:</strong> <span>{{ clienteConfirmado.id }}</span></div>
-                <div class="data-row"><strong>Tipo de Persona:</strong> <span>{{ clienteConfirmado.tipoPersona }}</span></div>
-                <div class="data-row"><strong>Cédula:</strong> <span>{{ clienteConfirmado.cedula }}</span></div>
-                <div class="data-row"><strong>Nombre:</strong> <span>{{ clienteConfirmado.nombre }} {{ clienteConfirmado.apellido }}</span></div>
-                <div class="data-row"><strong>Email:</strong> <span>{{ clienteConfirmado.email }}</span></div>
-                <div class="data-row"><strong>Usuario:</strong> <span>{{ clienteConfirmado.usuario }}</span></div>
-                <div class="data-row"><strong>Dirección:</strong> <span>{{ clienteConfirmado.direccion }}</span></div>
-                <div class="data-row"><strong>Teléfono:</strong> <span>{{ clienteConfirmado.telefono }}</span></div>
-                <!-- No mostrar contraseñas por seguridad -->
-            </div>
-
-            <div class="actions">
-                <button (click)="modificarDatos()" class="btn btn-secondary">
-                    Modificar
-                </button>
-                <button (click)="finalizarRegistro()" class="btn btn-primary">
-                    Finalizar y Continuar
-                </button>
-            </div>
+        <div class="data-summary">
+            <div class="data-row"><strong>Tipo de Persona:</strong> <span>{{ clienteConfirmado.tipoPersona }}</span></div>
+            <div class="data-row"><strong>Cédula:</strong> <span>{{ clienteConfirmado.cedula }}</span></div>
+            <div class="data-row"><strong>Nombre:</strong> <span>{{ clienteConfirmado.nombre }} {{ clienteConfirmado.apellido }}</span></div>
+            <div class="data-row"><strong>Email:</strong> <span>{{ clienteConfirmado.email }}</span></div>
+            <div class="data-row"><strong>Usuario:</strong> <span>{{ clienteConfirmado.usuario }}</span></div>
+            <div class="data-row"><strong>Dirección:</strong> <span>{{ clienteConfirmado.direccion }}</span></div>
+            <div class="data-row"><strong>Teléfono:</strong> <span>{{ clienteConfirmado.telefono }}</span></div>
         </div>
+
+        <div class="actions">
+            <button (click)="modificarDatos()" class="btn btn-secondary">
+                Modificar
+            </button>
+            <button (click)="finalizarRegistro()" class="btn btn-primary">
+                Finalizar y Continuar
+            </button>
+        </div>
+    </div>
     }
 
 </div>

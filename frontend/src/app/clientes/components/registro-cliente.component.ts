@@ -1,269 +1,231 @@
 import { CommonModule } from '@angular/common';
-import { Component } from '@angular/core';
-import { Router } from '@angular/router';
-import { ClienteService } from '../service/cliente.service';
-import { FormsModule } from '@angular/forms';
+import { Component, OnInit } from '@angular/core';
+import { ClienteService } from '../service/cliente.service'; 
+import { Cliente } from '../models/cliente'; 
+import { FormsModule } from '@angular/forms'; 
+import { Observable } from 'rxjs';
 
-// Interface temporal
-interface Cliente {
-  id?: string;
-  usuario: string;
-  contrasena: string;
-  confirmarContrasena: string;
-  nombre: string;
-  apellido: string;
-  cedula: string;
-  email: string;
-  tipoPersona: string
-  direccion: string;
-  telefono: string;
-}
+import { Router } from '@angular/router';
 
 @Component({
-  selector: 'app-registro-cliente',
-  templateUrl: './registro-cliente.component.html',
-  styleUrls: ['./registro-cliente.component.css'],
-  standalone: true,
-  imports: [FormsModule, CommonModule],
+    selector: 'app-registro-cliente',
+    templateUrl: './registro-cliente.component.html',
+    styleUrls: ['./registro-cliente.component.css'],
+    standalone: true, 
+    imports: [FormsModule, CommonModule,], // Añadimos LucideAngularModule
 })
-export class RegistroClienteComponent {
-  nuevoCliente: Cliente = {
+export class RegistroClienteComponent implements OnInit {
+
+    // Modelo de datos para el formulario 
+    nuevoCliente: Cliente = { 
     usuario: '',
     contrasena: '',
-    confirmarContrasena: '',
-    nombre: '',
-    apellido: '',
-    cedula: '',
-    email: '',
-    tipoPersona: '',
+    confirmarcontrasena: '', 
+    nombre: '', 
+    apellido: '', 
+    cedula: '', 
+    email: '', 
+    tipoPersona: '', 
     direccion: '',
     telefono: '',
-  };
+};
 
-  errorMensaje: string | null = null;
-  isProcessing: boolean = false;
-  clienteConfirmado: Cliente | null = null;
-  paso: 'credenciales' | 'datos_personales' | 'contacto_ubicacion' | 'cargando' | 'confirmacion' = 'credenciales';
+    //Variables de control Adicionales 
+    errorMensaje: string | null = null ; 
+    estaEditando: boolean = false;
 
-  // Opciones para el select de tipo de persona
-  tiposPersona = [
-    { value: 'UCAB', label: 'UCAB' },
-    { value: 'VISITANTE', label: 'VISITANTE' }
-  ];
+    //Cliente que recibimos de SpringBoot (La pantalla de confirmacion)
+    clienteConfirmado: Cliente | null = null;
 
-  constructor(
-    private clienteService: ClienteService,
-    private router: Router
-  ) {}
+    //Estado para controllar qué pantalla se muestra 
+    paso: 'credenciales' | 'datos_personales' | 'contacto_ubicacion' | 'cargando' | 'confirmacion' = 'credenciales'; 
 
-  ngOnInit(): void {
-    this.nuevoCliente.tipoPersona = '';
-  }
+    constructor(private clienteService: ClienteService, private router: Router){}
 
-  siguientePaso() {
-    this.errorMensaje = null;
-
-    if (this.paso === 'credenciales') {
-      // Validaciones del paso 1
-      if (!this.nuevoCliente.usuario || !this.nuevoCliente.email) {
-        this.errorMensaje = 'Usuario y email son obligatorios';
-        return;
-      }
-
-      if (this.nuevoCliente.usuario.length < 4) {
-        this.errorMensaje = 'El usuario debe tener al menos 4 caracteres';
-        return;
-      }
-
-      if (!this.validarEmail(this.nuevoCliente.email)) {
-        this.errorMensaje = 'El formato del email no es válido';
-        return;
-      }
-
-      if (this.nuevoCliente.contrasena.length < 6) {
-        this.errorMensaje = 'La contraseña debe tener al menos 6 caracteres';
-        return;
-      }
-
-      if (this.nuevoCliente.contrasena !== this.nuevoCliente.confirmarContrasena) {
-        this.errorMensaje = 'Las contraseñas no coinciden. Por favor revíselas';
-        return;
-      }
-
-      this.paso = 'datos_personales';
-    }
-    else if (this.paso === 'datos_personales') {
-      // Validaciones del paso 2
-      if (!this.nuevoCliente.tipoPersona) {
-        this.errorMensaje = 'Debe seleccionar si es UCAB o VISITANTE';
-        return;
-      }
-
-      if (!this.nuevoCliente.cedula || !this.nuevoCliente.nombre || !this.nuevoCliente.apellido) {
-        this.errorMensaje = 'Debe completar la cédula, el nombre y el apellido para continuar';
-        return;
-      }
-
-      if (!this.validarCedula(this.nuevoCliente.cedula)) {
-        this.errorMensaje = 'La cédula debe contener solo números';
-        return;
-      }
-
-      if (this.nuevoCliente.nombre.length < 2 || this.nuevoCliente.apellido.length < 2) {
-        this.errorMensaje = 'Nombre y apellido deben tener al menos 2 caracteres';
-        return;
-      }
-
-      this.paso = 'contacto_ubicacion';
-    }
-    else if (this.paso === 'contacto_ubicacion') {
-      this.onSubmit();
-    }
-  }
-
-  pasoAnterior() {
-    this.errorMensaje = null;
-
-    if (this.paso === 'datos_personales') {
-      this.paso = 'credenciales';
-    }
-    else if (this.paso === 'contacto_ubicacion') {
-      this.paso = 'datos_personales';
-    }
-    else if (this.paso === 'confirmacion') {
-      this.paso = 'contacto_ubicacion';
-    }
-  }
-
-  onSubmit() {
-    this.errorMensaje = null;
-
-    // Validación final del paso 3
-    if (!this.nuevoCliente.direccion || !this.nuevoCliente.telefono) {
-      this.errorMensaje = 'Dirección y teléfono son obligatorios';
-      return;
+    ngOnInit(): void
+    {
+        // Inicializar el tipoPersona para evitar que sea nulo al inicio
+        this.nuevoCliente.tipoPersona = 'Seleccionar'; 
     }
 
-    if (!this.validarTelefono(this.nuevoCliente.telefono)) {
-      this.errorMensaje = 'El formato del teléfono no es válido';
-      return;
-    }
+    siguientepaso()
+    {
+        this.errorMensaje = null;
 
-    this.isProcessing = true;
-    this.paso = 'cargando';
+        // VALIDACIÓN DE CREDENCIALES
+        if (this.paso === 'credenciales')
+        {
 
-    // Simulación de registro - reemplaza con servicio real
-    setTimeout(() => {
-      // Generar ID simulado para el cliente
-      const clienteId = 'CLI-' + Math.random().toString(36).substr(2, 9).toUpperCase();
+            if(!this.nuevoCliente.usuario || !this.nuevoCliente.contrasena || !this.nuevoCliente.email || !this.nuevoCliente.confirmarcontrasena)
+            {
+                this.errorMensaje = 'Debes completar el usuario, email y ambas contraseñas.';
+                return; 
+            }
+    
+        
+            if(this.nuevoCliente.contrasena !== this.nuevoCliente.confirmarcontrasena)
+            {
+                this.errorMensaje = 'Las contraseñas no coinciden. Por favor revisalas.';
+                return; 
+            }
 
-      this.clienteConfirmado = {
-        ...this.nuevoCliente,
-        id: clienteId
-      };
-
-      this.paso = 'confirmacion';
-      this.isProcessing = false;
-
-      // Mostrar mensaje de éxito
-      console.log('Cliente registrado exitosamente:', this.clienteConfirmado);
-    }, 2000);
-
-    // Descomenta para usar el servicio real:
-    /*
-    this.clienteService.registrarCliente(this.nuevoCliente)
-      .subscribe({
-        next: (clienteRespuesta) => {
-          this.clienteConfirmado = clienteRespuesta;
-          this.paso = 'confirmacion';
-          this.isProcessing = false;
-          console.log('Cliente registrado exitosamente:', clienteRespuesta);
-        },
-        error: (err) => {
-          console.error('Error de registro: ', err);
-          this.errorMensaje = err.error?.mensaje || "Hubo un error desconocido al registrar";
-          this.paso = 'contacto_ubicacion';
-          this.isProcessing = false;
+            this.paso = 'datos_personales'; 
         }
-      });
-    */
-  }
+        else if (this.paso === 'datos_personales')
+        {
+             // Validación de tipo de persona
+            if(!this.nuevoCliente.tipoPersona || (this.nuevoCliente.tipoPersona !== 'UCAB' && this.nuevoCliente.tipoPersona !== 'VISITANTE'))
+            {
+                this.errorMensaje = 'Debe seleccionar si es UCAB o VISITANTE.'; 
+                return; 
+            }
+            
+            if(!this.nuevoCliente.cedula || !this.nuevoCliente.nombre || !this.nuevoCliente.apellido)
+            {
+                this.errorMensaje = 'Debes completar la cédula, el nombre y el apellido para continuar.'; 
+                return; 
+            }
 
-  modificarDatos() {
-    this.paso = 'contacto_ubicacion';
-    this.errorMensaje = null;
-  }
+            this.paso = 'contacto_ubicacion';
+        }
 
-  finalizarRegistro() {
-    console.log("Registro de cliente confirmado y finalizado");
 
-    // Mostrar mensaje de éxito
-    alert('✅ Registro exitoso! Serás redirigido al sistema de estacionamiento.');
+        // Validación de contacto y ubicación 
+        else if(this.paso === 'contacto_ubicacion')
+        {
+            // Corregido: La validación estaba pidiendo cédula/nombre/apellido de nuevo.
+            if(!this.nuevoCliente.direccion || !this.nuevoCliente.telefono )
+            {
+                this.errorMensaje = 'Debes completar la dirección y el teléfono para registrarte.'; 
+                return; 
+            }
+            this.onSubmit(); 
+        }
+        else 
+        {
+            console.log('Intento de navegación en un estado desconocido: ' + this.paso); 
+        }
 
-    // Redirigir al dashboard del sistema
-    setTimeout(() => {
-      this.router.navigate(['/inicio']);
-    }, 1500);
-  }
-
-  // Métodos de validación
-  private validarEmail(email: string): boolean {
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    return emailRegex.test(email);
-  }
-
-  private validarCedula(cedula: string): boolean {
-    // Validar que la cédula contenga solo números
-    return /^\d+$/.test(cedula);
-  }
-
-  private validarTelefono(telefono: string): boolean {
-    // Validar formato de teléfono (mínimo 10 dígitos, puede contener +, espacios, guiones)
-    const telefonoRegex = /^[\+]?[(]?[\d\s\-\(\)]{10,}$/;
-    return telefonoRegex.test(telefono.replace(/\s/g, ''));
-  }
-
-  // Método para reiniciar el formulario
-  registrarNuevoCliente() {
-    this.nuevoCliente = {
-      usuario: '',
-      contrasena: '',
-      confirmarContrasena: '',
-      nombre: '',
-      apellido: '',
-      cedula: '',
-      email: '',
-      tipoPersona: '',
-      direccion: '',
-      telefono: '',
-    };
-    this.clienteConfirmado = null;
-    this.paso = 'credenciales';
-    this.errorMensaje = null;
-  }
-
-  // Método para obtener el progreso del formulario
-  getProgreso(): number {
-    const pasos = ['credenciales', 'datos_personales', 'contacto_ubicacion', 'confirmacion'];
-    const pasoActual = pasos.indexOf(this.paso);
-    return ((pasoActual + 1) / pasos.length) * 100;
-  }
-
-  // Método para obtener el texto del paso actual
-  getTextoPasoActual(): string {
-    switch (this.paso) {
-      case 'credenciales':
-        return 'Paso 1 de 3: Credenciales de Acceso';
-      case 'datos_personales':
-        return 'Paso 2 de 3: Datos Personales';
-      case 'contacto_ubicacion':
-        return 'Paso 3 de 3: Contacto y Ubicación';
-      case 'cargando':
-        return 'Procesando Registro';
-      case 'confirmacion':
-        return 'Confirmación de Registro';
-      default:
-        return 'Registro de Cliente';
     }
-  }
+
+    pasoAnterior()
+    {
+        this.errorMensaje = null; 
+        this.clienteConfirmado = null; // Reiniciar datos de confirmación
+
+        if (this.paso === 'datos_personales')
+        {
+            this.paso = 'credenciales'; 
+        }
+        else if(this.paso === 'contacto_ubicacion')
+        {
+            this.paso = 'datos_personales'; 
+        }
+        else if (this.paso === 'confirmacion') 
+        {
+         // Si estamos en confirmación y queremos volver, vamos al último paso de datos.
+        this.paso = 'contacto_ubicacion';
+        }
+    }
+
+    onSubmit()
+    {
+        this.errorMensaje = null; 
+        this.paso = 'cargando'; 
+        console.log('Iniciando registro...'); 
+
+        let solicitud$: Observable<any>;
+
+        //Decidir si es Actualización (PUT) o Registro (POST)
+        if (this.estaEditando) 
+        {
+            solicitud$ = this.clienteService.actualizarCliente(this.nuevoCliente);
+        } 
+        else 
+        {
+            solicitud$ = this.clienteService.registrarCliente(this.nuevoCliente);
+        }
+
+        solicitud$.subscribe({ 
+        next: (clienteRespuesta) =>
+        {
+            console.log("Datos recibidos de Spring Boot: ", clienteRespuesta);
+            this.clienteConfirmado = clienteRespuesta; 
+            this.paso = 'confirmacion';
+            this.estaEditando = false; 
+        }, 
+        error: (err) => {
+            console.log('Error completo recibido: ', err);
+            
+            let mensajeDelServidor: string = 'Error de conexión. ¿El servidor está corriendo?';
+            const status = err.status;
+
+            // 2. LÓGICA CLAVE: BUSCAR TU CLAVE PERSONALIZADA 'mensajeError'
+                if (err.error && err.error.mensajeError) 
+                {
+                    mensajeDelServidor = err.error.mensajeError;
+                } 
+                // Fallback para errores de validación automática (si Spring envía detalles)
+                else if (err.error && err.error.detalles && Array.isArray(err.error.detalles)) {
+                        mensajeDelServidor = `Error ${status}: ${err.error.detalles.join(' | ')}`;
+                }
+                
+                // Fallback genérico para errores de red o servidor
+                else if (status === 0) {
+                    mensajeDelServidor = 'No se pudo conectar con el servidor. Verifica la URL y si está encendido.';
+                } else if (status >= 500) {
+                    mensajeDelServidor = `Error del Servidor (${status}). Contacte a soporte.`;
+                }
+
+                this.errorMensaje = mensajeDelServidor; 
+
+                const mensajeLower = mensajeDelServidor.toLowerCase();
+
+                if (mensajeLower.includes('usuario') || mensajeLower.includes('email') || mensajeLower.includes('contraseña')) 
+                {
+                    this.paso = 'credenciales';
+                } 
+                else if (mensajeLower.includes('cédula') || mensajeLower.includes('nombre') || mensajeLower.includes('apellido') || mensajeLower.includes('persona')) 
+                {
+                    
+                    this.paso = 'datos_personales';
+                } 
+                else if (mensajeLower.includes('teléfono') || mensajeLower.includes('dirección')) 
+                {
+                    this.paso = 'contacto_ubicacion';
+                } 
+                else 
+                {
+                    this.paso = 'credenciales';
+                }
+        }
+    });
+    }
+
+    //Método para modificar 
+    modificarDatos()
+    {
+        
+        this.paso = 'credenciales'; 
+        this.errorMensaje = null; 
+        this.estaEditando = true; 
+        
+        console.log("Modo edición activado. Usuario clave: ", this.nuevoCliente.usuario);
+
+    }
+
+    finalizarRegistro()
+    {
+        // Aquí deberías navegar a la pantalla de login o al home.
+        console.log("Registro de cliente confirmado y finalizado"); 
+
+        // Mostrar mensaje de éxito
+        alert('✅ Registro exitoso! Serás redirigido al sistema de estacionamiento.');
+
+        // Redirigir al dashboard del sistema
+        setTimeout(() => {
+        this.router.navigate(['/inicio']);
+        },  
+    1500);
+    }
 }

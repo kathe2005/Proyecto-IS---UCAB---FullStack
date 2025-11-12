@@ -6,15 +6,18 @@ import { Cliente } from '../models/cliente';
 @Injectable({
     providedIn: 'root'
 })
-
 export class ClienteService {
 
-    //URL de Sprint Boot
-    private apiURL = 'http://localhost:8080/api/clientes/registrar';
+    // URL de Spring Boot
+    private apiURL = 'http://localhost:8080/api/cliente';
 
     constructor(private http: HttpClient) { }
 
     registrarCliente(cliente: any): Observable<any> {
-    return this.http.post(this.apiURL, cliente)
-}
+        return this.http.post(`${this.apiURL}/registrar`, cliente);
+    }
+
+    actualizarCliente(cliente: any): Observable<any> {
+        return this.http.put(`${this.apiURL}/actualizar`, cliente);
+    }
 }

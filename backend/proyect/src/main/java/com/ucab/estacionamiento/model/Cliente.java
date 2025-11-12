@@ -1,15 +1,12 @@
 //Contenedor del JSON 
 package com.ucab.estacionamiento.model;
 
-import java.util.UUID; 
-
 public class Cliente {
     
     //Atributo del C4 (Clientes)
-    private UUID id; 
     private String usuario; 
     private String contrasena; 
-    private String confirmcontrasena; 
+    private String confirmarcontrasena; 
     private String nombre; 
     private String apellido; 
     private String cedula; 
@@ -20,16 +17,16 @@ public class Cliente {
 
     //Contructor vacio 
     public Cliente(){
-        this.id = UUID.randomUUID(); //Se asigna un id automaticamente
+        
     }
 
     //Constructor con parametros (usuario, contraseña, confirmar contraseña, nombre, apellido, cedula, email, tipo de persona)
-    public Cliente(String usuario, String contrasena, String confirmcontrasena, String nombre, String apellido, String cedula, String email, String tipoPersona, String direccion, String telefono )
+    public Cliente(String usuario, String contrasena, String confirmarcontrasena, String nombre, String apellido, String cedula, String email, String tipoPersona, String direccion, String telefono )
     {
-        this(); 
+
         this.usuario = usuario; 
         this.contrasena = contrasena; 
-        this.confirmcontrasena = confirmcontrasena; 
+        this.confirmarcontrasena = confirmarcontrasena; 
         this.nombre = nombre; 
         this.apellido = apellido; 
         this.cedula = cedula; 
@@ -40,11 +37,7 @@ public class Cliente {
     }
 
     //Getters y setters de los atributos 
-    //id 
-    public UUID getId(){ return id; }
-    public void setId(UUID id){ this.id = id; }
-
-
+    
     //Usuario 
     public String getUsuario(){   return usuario;    }
     public void setUsuario(String usuario){   this.usuario = usuario;   }
@@ -53,9 +46,9 @@ public class Cliente {
     public String getContrasena(){   return contrasena;    }
     public void setContrasena(String contrasena){   this.contrasena = contrasena;   }
 
-    //Confirma Contraseña 
-    public String getConfirmcontrasena(){   return confirmcontrasena;    }
-    public void setConfirmcontrasena(String confirmcontrasena){   this.confirmcontrasena = confirmcontrasena;   }
+    //Contraseña 
+    public String getconfirmarContrasena(){   return confirmarcontrasena;    }
+    public void setconfirmarContrasena(String confirmarcontrasena){   this.confirmarcontrasena = confirmarcontrasena;  }
 
     //Nombre
     public String getNombre(){   return nombre;    }

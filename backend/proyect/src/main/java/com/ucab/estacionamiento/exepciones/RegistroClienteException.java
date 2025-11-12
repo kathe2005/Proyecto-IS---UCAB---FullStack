@@ -1,17 +1,16 @@
 package com.ucab.estacionamiento.exepciones;
 
-// 1. Debe heredar de RuntimeException
 public class RegistroClienteException extends RuntimeException {
 
-    // 2. Campo para almacenar el código de estado HTTP (ej. 409, 400)
-    private final int status; 
+    private final int codigoError;
 
-    public RegistroClienteException(String mensaje, int status) {
-        super(mensaje); // El mensaje se pasa al constructor base
-        this.status = status;
+    public RegistroClienteException(String mensaje, int codigoError) {
+        super(mensaje); 
+        this.codigoError = codigoError;
     }
 
-    public int getStatus() {
-        return status;
+    public int getCodigoError() {
+        return codigoError;
     }
+
 }
