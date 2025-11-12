@@ -131,13 +131,6 @@ export class RegistroClienteComponent implements OnInit {
     onSubmit()
     {
         this.errorMensaje = null; 
-
-
-        this.paso = 'cargando'; 
-        console.log('Iniciando registro...'); 
-
-
-        this.errorMensaje = null; 
         this.paso = 'cargando'; 
         console.log('Iniciando registro...'); 
 
@@ -212,9 +205,13 @@ export class RegistroClienteComponent implements OnInit {
     //Método para modificar 
     modificarDatos()
     {
+        
         this.paso = 'credenciales'; 
         this.errorMensaje = null; 
-        this.estaEditando = true;
+        this.estaEditando = true; 
+        
+        console.log("Modo edición activado. Usuario clave: ", this.nuevoCliente.usuario);
+
     }
 
     finalizarRegistro()

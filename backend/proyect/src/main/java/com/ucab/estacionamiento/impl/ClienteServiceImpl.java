@@ -311,7 +311,7 @@ public class ClienteServiceImpl implements ClienteService {
             // Si la contraseña viene, la actualizamos (en un caso real, la hashearías aquí)
             if (clienteActualizado.getContrasena() != null && !clienteActualizado.getContrasena().isEmpty()) 
             {
-                    clienteExistente.setContrasena(clienteActualizado.getContrasena());
+                clienteExistente.setContrasena(clienteActualizado.getContrasena());
             }
 
             // Transfiere los datos actualizados a la entidad existente
