@@ -2859,3 +2859,13 @@ java.lang.IllegalArgumentException: Invalid character found in method name [0x16
 2025-11-12T18:48:46.155-04:00  INFO 12532 --- [proyect] [http-nio-127.0.0.1-8080-exec-2] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring DispatcherServlet 'dispatcherServlet'
 2025-11-12T18:48:46.161-04:00  INFO 12532 --- [proyect] [http-nio-127.0.0.1-8080-exec-2] o.s.web.servlet.DispatcherServlet        : Initializing Servlet 'dispatcherServlet'
 2025-11-12T18:48:46.166-04:00  INFO 12532 --- [proyect] [http-nio-127.0.0.1-8080-exec-2] o.s.web.servlet.DispatcherServlet        : Completed initialization in 4 ms
+2025-11-12T19:37:43.764-04:00  INFO 34412 --- [proyect] [main] c.u.estacionamiento.ProyectApplication   : Starting ProyectApplication using Java 17.0.17 with PID 34412 (C:\Users\KATHE\OneDrive\Desktop\UCAB\Semestre Sep2025 - Ene2026\Ingeniería de Software\Proyecto-Estacioamiento\Proyecto-IS---UCAB---FullStack-3\backend\proyect\target\classes started by KATHE in C:\Users\KATHE\OneDrive\Desktop\UCAB\Semestre Sep2025 - Ene2026\Ingeniería de Software\Proyecto-Estacioamiento\Proyecto-IS---UCAB---FullStack-3)
+2025-11-12T19:37:43.778-04:00 DEBUG 34412 --- [proyect] [main] c.u.estacionamiento.ProyectApplication   : Running with Spring Boot v3.5.7, Spring v6.2.12
+2025-11-12T19:37:43.781-04:00  INFO 34412 --- [proyect] [main] c.u.estacionamiento.ProyectApplication   : No active profile set, falling back to 1 default profile: "default"
+2025-11-12T19:37:44.936-04:00  INFO 34412 --- [proyect] [main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat initialized with port 8080 (http)
+2025-11-12T19:37:44.956-04:00  INFO 34412 --- [proyect] [main] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2025-11-12T19:37:44.957-04:00  INFO 34412 --- [proyect] [main] o.apache.catalina.core.StandardEngine    : Starting Servlet engine: [Apache Tomcat/10.1.48]
+2025-11-12T19:37:45.016-04:00  INFO 34412 --- [proyect] [main] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring embedded WebApplicationContext
+2025-11-12T19:37:45.030-04:00  INFO 34412 --- [proyect] [main] w.s.c.ServletWebServerApplicationContext : Root WebApplicationContext: initialization completed in 1212 ms
+2025-11-12T19:37:45.891-04:00  INFO 34412 --- [proyect] [main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat started on port 8080 (http) with context path '/'
+2025-11-12T19:37:45.905-04:00  INFO 34412 --- [proyect] [main] c.u.estacionamiento.ProyectApplication   : Started ProyectApplication in 2.675 seconds (process running for 2.931)
