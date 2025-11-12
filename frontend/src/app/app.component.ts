@@ -5,9 +5,8 @@ import { HeaderComponent } from './clientes/components/ocuparPuesto/header/heade
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [RouterOutlet, HeaderComponent],
+  imports: [RouterOutlet],
   template: `
-    <app-header></app-header>
     <div class="main-content">
       <router-outlet></router-outlet>
     </div>

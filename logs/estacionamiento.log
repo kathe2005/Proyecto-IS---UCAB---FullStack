@@ -1,0 +1,21 @@
+2025-11-12T10:47:37.814-04:00  INFO 49452 --- [proyect] [main] c.u.estacionamiento.ProyectApplication   : Starting ProyectApplication using Java 21.0.8 with PID 49452 (C:\Users\admin\Documents\Proyecto-IS---UCAB---FullStack\backend\proyect\target\classes started by admin in C:\Users\admin\Documents\Proyecto-IS---UCAB---FullStack)
+2025-11-12T10:47:37.814-04:00 DEBUG 49452 --- [proyect] [main] c.u.estacionamiento.ProyectApplication   : Running with Spring Boot v3.5.7, Spring v6.2.12
+2025-11-12T10:47:37.814-04:00  INFO 49452 --- [proyect] [main] c.u.estacionamiento.ProyectApplication   : No active profile set, falling back to 1 default profile: "default"
+2025-11-12T10:47:38.971-04:00  WARN 49452 --- [proyect] [main] ConfigServletWebServerApplicationContext : Exception encountered during context initialization - cancelling refresh attempt: org.springframework.beans.factory.support.BeanDefinitionOverrideException: Invalid bean definition with name 'corsConfigurer' defined in class path resource [com/ucab/estacionamiento/service/CorsConfig.class]: Cannot register bean definition [Root bean: class=null; scope=; abstract=false; lazyInit=null; autowireMode=3; dependencyCheck=0; autowireCandidate=true; primary=false; fallback=false; factoryBeanName=corsConfig; factoryMethodName=corsConfigurer; initMethodNames=null; destroyMethodNames=[(inferred)]; defined in class path resource [com/ucab/estacionamiento/service/CorsConfig.class]] for bean 'corsConfigurer' since there is already [Root bean: class=null; scope=; abstract=false; lazyInit=null; autowireMode=3; dependencyCheck=0; autowireCandidate=true; primary=false; fallback=false; factoryBeanName=securityConfig; factoryMethodName=corsConfigurer; initMethodNames=null; destroyMethodNames=[(inferred)]; defined in class path resource [com/ucab/estacionamiento/config/SecurityConfig.class]] bound.
+2025-11-12T10:47:39.000-04:00  INFO 49452 --- [proyect] [main] .s.b.a.l.ConditionEvaluationReportLogger : 
+
+Error starting ApplicationContext. To display the condition evaluation report re-run your application with 'debug' enabled.
+2025-11-12T10:47:39.046-04:00 ERROR 49452 --- [proyect] [main] o.s.b.d.LoggingFailureAnalysisReporter   : 
+
+***************************
+APPLICATION FAILED TO START
+***************************
+
+Description:
+
+The bean 'corsConfigurer', defined in class path resource [com/ucab/estacionamiento/service/CorsConfig.class], could not be registered. A bean with that name has already been defined in class path resource [com/ucab/estacionamiento/config/SecurityConfig.class] and overriding is disabled.
+
+Action:
+
+Consider renaming one of the beans or enabling overriding by setting spring.main.allow-bean-definition-overriding=true
+
