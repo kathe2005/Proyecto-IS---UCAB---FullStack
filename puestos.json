@@ -7,7 +7,11 @@
     "tipoPuesto": "REGULAR",
     "estadoPuesto": "DISPONIBLE",
     "fechaOcupacion": null,
+<<<<<<< HEAD
     "fechaCreacion": "2025-11-12T17:47:14.459244500",
+=======
+    "fechaCreacion": "2025-11-12T19:37:45.147730200",
+>>>>>>> f60515a7208837665d5d1ce4ef4e0fa1c47abdb1
     "historialOcupacion": [
     ]
   },
@@ -18,10 +22,17 @@
     "usuarioOcupante": "profesor_garcia",
     "tipoPuesto": "DOCENTE",
     "estadoPuesto": "OCUPADO",
+<<<<<<< HEAD
     "fechaOcupacion": "2025-11-12T15:47:14.459244500",
     "fechaCreacion": "2025-11-12T17:47:14.459244500",
     "historialOcupacion": [
       "Ocupado por profesor_garcia en 2025-11-12T15:47:14.459244500"
+=======
+    "fechaOcupacion": "2025-11-12T17:37:45.147730200",
+    "fechaCreacion": "2025-11-12T19:37:45.147730200",
+    "historialOcupacion": [
+      "Ocupado por profesor_garcia en 2025-11-12T17:37:45.147730200"
+>>>>>>> f60515a7208837665d5d1ce4ef4e0fa1c47abdb1
     ]
   },
   {
@@ -32,7 +43,11 @@
     "tipoPuesto": "DISCAPACITADO",
     "estadoPuesto": "DISPONIBLE",
     "fechaOcupacion": null,
+<<<<<<< HEAD
     "fechaCreacion": "2025-11-12T17:47:14.459799",
+=======
+    "fechaCreacion": "2025-11-12T19:37:45.147730200",
+>>>>>>> f60515a7208837665d5d1ce4ef4e0fa1c47abdb1
     "historialOcupacion": [
     ]
   },
@@ -44,7 +59,11 @@
     "tipoPuesto": "VISITANTE",
     "estadoPuesto": "BLOQUEADO",
     "fechaOcupacion": null,
+<<<<<<< HEAD
     "fechaCreacion": "2025-11-12T17:47:14.459799",
+=======
+    "fechaCreacion": "2025-11-12T19:37:45.147730200",
+>>>>>>> f60515a7208837665d5d1ce4ef4e0fa1c47abdb1
     "historialOcupacion": [
     ]
   },
@@ -56,7 +75,11 @@
     "tipoPuesto": "MOTOCICLETA",
     "estadoPuesto": "DISPONIBLE",
     "fechaOcupacion": null,
+<<<<<<< HEAD
     "fechaCreacion": "2025-11-12T17:47:14.459799",
+=======
+    "fechaCreacion": "2025-11-12T19:37:45.147730200",
+>>>>>>> f60515a7208837665d5d1ce4ef4e0fa1c47abdb1
     "historialOcupacion": [
     ]
   }

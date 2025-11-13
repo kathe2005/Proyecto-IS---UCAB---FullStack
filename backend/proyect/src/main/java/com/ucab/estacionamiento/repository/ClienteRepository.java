@@ -1,6 +1,7 @@
 //Comunicacion con la Base de Datos para ejecutar operaciones básicas
 package com.ucab.estacionamiento.repository;
 
+import com.ucab.estacionamiento.JsonFileUtil;
 import org.springframework.stereotype.Repository;
 import com.ucab.estacionamiento.model.Cliente;
 import java.util.ArrayList;
@@ -11,31 +12,52 @@ import java.util.Optional;
 public class ClienteRepository {
 
     // Base de datos JSON simulada 
-    private static final List<Cliente> BD_clientes = new ArrayList<>(List.of(
-    // Cliente de prueba 1: UCAB (con correo UCAB)
-    new Cliente() {{
-    setUsuario("ucabtest");
-    setTelefono("0414-1112233");
-    setEmail("prueba@est.ucab.edu.ve");
-    setCedula("V-12345678");
-    setContrasena("Password123");
-    setNombre("Juan");
-    setApellido("Perez");
-    setTipoPersona("UCAB");
-    setDireccion("Av. Principal");
-}}, 
-    new Cliente() {{
-    setUsuario("hola");
-    setTelefono("0416-9310940");
-    setEmail("prueba@gmail.com");
-    setCedula("V-1569310");
-    setContrasena("Consta1234");
-    setNombre("Juan");
-    setApellido("Perez");
-    setTipoPersona("VISITANTE");
-    setDireccion("Av. Principal La Hacienda");
-}}
-));
+    private static final List<Cliente> BD_clientes; 
+
+    // Bloque estático para inicializar la lista cargando desde JSON o usando datos de prueba
+    static {
+        // La clase JsonFileUtil está en un paquete diferente, asegúrate que el import sea correcto.
+        List<Cliente> loadedClientes = JsonFileUtil.loadClientes(); // Intenta cargar
+        
+        if (loadedClientes != null) {
+            // Si la carga fue exitosa, usa los datos cargados
+            BD_clientes = loadedClientes;
+        } else {
+            // Si la carga falló o el archivo no existe, usa datos iniciales
+            System.out.println("? Creando datos iniciales de clientes...");
+            BD_clientes = new ArrayList<>(List.of(
+                // Cliente de prueba 1: UCAB
+                new Cliente() {{ 
+                    setUsuario("ucabtest");
+                    setTelefono("0414-1112233");
+                    setEmail("prueba@est.ucab.edu.ve");
+                    setCedula("V-12345678");
+                    setContrasena("Password123");
+                    setNombre("Juan");
+                    setApellido("Perez"); // Inicial con datos base
+                    setTipoPersona("UCAB");
+                    setDireccion("Av. Principal");
+                }}, 
+                // Cliente de prueba 2: VISITANTE
+                new Cliente() {{ 
+                    setUsuario("hola");
+                    setTelefono("0416-9310940");
+                    setEmail("prueba@gmail.com");
+                    setCedula("V-1569310");
+                    setContrasena("Consta1234");
+                    setNombre("Pedro");
+                    setApellido("Gomez");
+                    setTipoPersona("VISITANTE");
+                    setDireccion("Av. Principal La Hacienda");
+                }}
+            ));
+            // Guardar estos datos iniciales si no había archivo
+            JsonFileUtil.saveClientes(BD_clientes);
+        }
+        System.out.println("? Servicio de Clientes inicializado con " + BD_clientes.size() + " clientes.");
+    }
+
+
     
     //Metodo para guardar un nuevo usuario
     public Cliente guardar(Cliente cliente) {
@@ -45,6 +67,45 @@ public class ClienteRepository {
         
         // Muestra un mensaje para confirmar que se guardó en la simulación
         System.out.println("El nuevo usuario se guardo correctamente");
+
+        return cliente; 
+    }
+
+
+    public Cliente save(Cliente cliente) 
+    {
+    
+        // Verificar si el cliente ya existe (Búsqueda por Usuario, que es la clave)
+        Optional<Cliente> existenteOpt = findByUsuario(cliente.getUsuario());
+
+        if (existenteOpt.isPresent()) 
+        {
+        // --- ACTUALIZACIÓN ---
+            Cliente clienteExistente = existenteOpt.get();
+        
+            // Encontrar el índice del objeto existente en la lista
+            int index = BD_clientes.indexOf(clienteExistente);
+        
+            // Reemplazar el objeto existente con el objeto modificado
+            if (index != -1) 
+            {
+                BD_clientes.set(index, cliente);
+                System.out.println("El usuario " + cliente.getUsuario() + " se ha actualizado correctamente.");
+            } else
+            {
+                // Esto no debería pasar si findByUsuario funciona bien, pero es una seguridad
+                System.err.println("Error: El cliente existente no se encontró en la lista para actualizar.");
+            }
+        
+        } else 
+        {
+            // --- NUEVO REGISTRO ---
+            BD_clientes.add(cliente); 
+            System.out.println("El nuevo usuario se ha guardado correctamente.");
+        }
+
+        // 2. Después de modificar BD_clientes (ya sea ADD o SET), ¡GUARDAMOS!
+        JsonFileUtil.saveClientes(BD_clientes); 
 
         return cliente; 
     }

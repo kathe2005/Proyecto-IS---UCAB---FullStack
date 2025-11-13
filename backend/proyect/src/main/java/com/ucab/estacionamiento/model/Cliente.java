@@ -20,6 +20,20 @@ public class Cliente {
         
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Cliente cliente = (Cliente) o;
+        // La igualdad se basa solo en el campo único: 'usuario'
+        return java.util.Objects.equals(usuario, cliente.usuario); 
+    }
+
+    @Override
+    public int hashCode() {
+        return java.util.Objects.hash(usuario);
+    }
+
     //Constructor con parametros (usuario, contraseña, confirmar contraseña, nombre, apellido, cedula, email, tipo de persona)
     public Cliente(String usuario, String contrasena, String confirmarcontrasena, String nombre, String apellido, String cedula, String email, String tipoPersona, String direccion, String telefono )
     {

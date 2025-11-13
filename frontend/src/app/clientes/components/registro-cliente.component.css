@@ -1,199 +1,268 @@
-/* ------------------------------------------- */
-/* LAYOUT Y TARJETA PRINCIPAL (La 'Carta' Flotante) */
-/* ------------------------------------------- */
-.main-container {
-    /* Centra la tarjeta en la página */
+/* Paleta de Colores:
+   - Primario (Cool Green/Turquoise): #34D399
+   - Gris Oscuro (Texto): #1F2937
+   - Gris Claro (Fondo/Bordes): #E5E7EB
+   - Fondo de la aplicación: #F9FAFB
+*/
+
+/* --- Base y Contenedor Principal --- */
+body {
+    font-family: 'Inter', sans-serif; /* Usamos una fuente moderna (simulada) */
+    background-color: #F9FAFB;
     display: flex;
     justify-content: center;
-    align-items: flex-start; /* Alineación al inicio para formularios largos */
+    align-items: center;
     min-height: 100vh;
-    padding: 30px;
-    background-color: #f4f6f8; /* Fondo suave fuera de la tarjeta */
-    font-family: 'Arial', sans-serif;
+    margin: 0;
 }
 
-.registro-card, .loading-screen, .confirmation-card {
-    /* Estilo de la tarjeta flotante */
-    max-width: 750px;
+.app-container {
+    padding: 20px;
     width: 100%;
-    padding: 40px;
-    background-color: white;
-    border-radius: 12px; /* Esquinas suaves */
-    box-shadow: 0 10px 30px rgba(18, 59, 103, 0.05); /* Sombra muy sutil */
 }
 
-h2 {
-    color: #123B67; /* Un azul oscuro, limpio */
-    font-size: 24px;
+.registration-card {
+    display: flex;
+    background-color: #ffffff;
+    border-radius: 20px; /* Esquinas grandes y suaves */
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08); /* Sombra elegante */
+    max-width: 1500px;
+    margin: auto;
+    overflow: hidden; /* Asegura que el borde redondeado funcione bien */
+    min-height: 600px;
+}
+
+/* --- Sidebar de Navegación (Izquierda) --- */
+.sidebar-steps {
+    flex: 0 0 360px; /* Ancho fijo para el sidebar */
+    background-color: #f3f4f6; /* Fondo ligeramente gris para el sidebar */
+    padding: 30px;
+    color: #1F2937;
+    border-right: 1px solid #E5E7EB;
+}
+
+.logo {
+    font-size: 1.5em;
+    font-weight: 800;
+    color: #34D399; /* Logo en color primario */
+    margin-bottom: 5px;
+}
+
+.title {
+    font-size: 1.1em;
     font-weight: 600;
-    margin-bottom: 25px;
+    margin-bottom: 40px;
+    color: #4B5563;
 }
 
-/* ------------------------------------------- */
-/* ESTILOS DE GRUPOS Y LEYENDAS (Segmentation) */
-/* ------------------------------------------- */
-fieldset {
-    border: none;
-    padding: 0;
+.steps-nav {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.step-item {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    font-weight: 500;
+    color: #6B7280;
+    transition: color 0.3s;
+}
+
+.step-item.active {
+    color: #1F2937; /* Texto más oscuro para el paso activo */
+    font-weight: 600;
+}
+
+.step-icon {
+    width: 35px;
+    height: 35px;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: #ffffff;
+    border: 2px solid #D1D5DB;
+    font-size: 0.9em;
+    font-weight: 700;
+    color: #9CA3AF;
+    transition: all 0.3s;
+}
+
+.step-item.active .step-icon {
+    background-color: #30bdcfb7; /* Fondo color primario para el activo */
+    border-color: #34D399;
+    color: white;
+    transform: scale(1.05);
+}
+
+/* --- Contenido del Formulario (Derecha) --- */
+.form-content {
+
+    flex-grow: 1;
+    padding: 40px 50px;
+}
+
+.step-form h2 {
+    font-size: 2em;
+    color: #1F2937;
+    margin-bottom: 5px;
+    font-weight: 700;
+}
+
+.subtitle {
+    color: #6B7280;
     margin-bottom: 30px;
+    font-size: 1.5em;
 }
 
-/* Simula los encabezados grises del formulario (ej. "YOUR PERSONAL DETAILS") */
-legend {
-    font-size: 11px;
-    color: #5A697B; /* Gris medio */
-    text-transform: uppercase;
-    font-weight: 600;
-    margin-bottom: 15px;
-    padding: 0;
-    border: none;
-}
-
-/* Grid para campos de dos columnas (Nombre/Apellido) */
-form {
+/* Layout de la cuadrícula de campos */
+.form-grid {
     display: flex;
     flex-wrap: wrap;
+    gap: 20px;
 }
 
 .form-group {
-    width: 100%;
-    margin-bottom: 20px;
+    display: flex;
+    flex-direction: column;
 }
 
 .form-group.half-width {
-    width: calc(50% - 15px); /* Dos columnas con un espacio entre ellas */
-    margin-right: 30px;
+    flex-basis: calc(50% - 10px); /* Dos columnas */
 }
 
-.form-group.half-width:nth-child(even) {
-    margin-right: 0;
+.form-group.full-width {
+    flex-basis: 100%; /* Una columna */
 }
 
-/* ------------------------------------------- */
-/* ESTILOS DE INPUTS Y BOTONES */
-/* ------------------------------------------- */
 .form-group label {
-    display: block;
-    margin-bottom: 5px;
-    font-size: 14px;
-    color: #333;
-    font-weight: 500;
+    font-size: 0.9em;
+    font-weight: 600;
+    color: #4B5563;
+    margin-bottom: 8px;
 }
 
-.form-group input, .form-group select {
-    width: 100%;
-    padding: 10px 12px;
-    border: 1px solid #E0E4E7; /* Borde muy claro */
-    border-radius: 8px; /* Bordes redondeados */
-    box-sizing: border-box;
-    font-size: 15px;
-    color: #444;
-    transition: border-color 0.2s;
+.form-group input,
+.form-group select {
+    padding: 12px 15px;
+    border: 1px solid #D1D5DB;
+    border-radius: 8px;
+    font-size: 1em;
+    color: #1F2937;
+    transition: border-color 0.3s, box-shadow 0.3s;
+    background-color: #ffffff;
 }
 
-.form-group input:focus, .form-group select:focus {
-    border-color: #007bff; /* Borde azul al enfocar */
+.form-group input:focus,
+.form-group select:focus {
+    border-color: #34D399;
+    box-shadow: 0 0 0 3px rgba(52, 211, 153, 0.3);
     outline: none;
-    box-shadow: 0 0 0 1px rgba(0, 123, 255, 0.2);
 }
 
-/* Botón de Envío (El acento verde del Next Button de la imagen) */
-.submit-button {
-    background-color: #28a745; /* Tono verde */
-    color: white;
+/* --- Botones --- */
+.actions {
+    margin-top: 40px;
+    display: flex;
+    justify-content: flex-end;
+    gap: 15px;
+}
+
+.btn {
     padding: 12px 25px;
     border: none;
     border-radius: 8px;
-    font-size: 16px;
-    font-weight: 600;
     cursor: pointer;
-    width: auto;
-    float: right; /* Alineado a la derecha */
-    margin-top: 30px;
-    transition: background-color 0.3s;
+    font-weight: 600;
+    font-size: 1em;
+    transition: background-color 0.3s, transform 0.2s;
 }
 
-.submit-button:hover:not(:disabled) {
-    background-color: #1e7e34;
+.btn-primary {
+    background-color: #34D399; /* Botón principal 'Cool' */
+    color: #ffffff;
 }
 
-.submit-button:disabled {
-    background-color: #90d39e;
-    cursor: not-allowed;
+.btn-secondary {
+    background-color: #F3F4F6; /* Botón 'Regresar' discreto */
+    color: #4B5563;
 }
 
-/* ------------------------------------------- */
-/* MENSAJES DE ERROR Y ALERTA */
-/* ------------------------------------------- */
-.alert-message {
-    padding: 12px;
-    margin-bottom: 20px;
-    border-radius: 6px;
-    font-size: 14px;
-    font-weight: 500;
+.btn-primary:hover {
+    background-color: #2CA879;
+    transform: translateY(-1px);
 }
 
+.btn-secondary:hover {
+    background-color: #E5E7EB;
+}
+
+/* Mensaje de Error (si es visible) */
 .error-alert {
-    background-color: #fff0f0;
-    color: #cc0000;
-    border: 1px solid #ffcccc;
-}
-
-/* ------------------------------------------- */
-/* PANTALLAS DE CARGA Y CONFIRMACIÓN */
-/* ------------------------------------------- */
-.loading-screen, .confirmation-card {
-    text-align: center;
-    padding: 50px;
-}
-
-/* Estilos de la tabla resumen de confirmación */
-.data-summary {
-    text-align: left;
-    margin-top: 20px;
-    padding: 20px;
-    border: 1px solid #e0e4e7;
+    background-color: #fee2e2;
+    color: #991b1b;
+    padding: 15px;
     border-radius: 8px;
-    background-color: #fcfcfc;
+    border: 1px solid #fca5a5;
+    margin-bottom: 20px;
+    font-size: 0.95em;
+    font-weight: 600;
+}
+
+/* --- Estilos para la Tarjeta de Confirmación (paso 4) --- */
+
+.data-summary {
+    background-color: #f9fafb; /* Fondo muy claro para el resumen */
+    border: 1px solid #E5E7EB;
+    border-radius: 10px;
+    padding: 20px;
+    margin-top: 25px;
 }
 
 .data-row {
     display: flex;
     justify-content: space-between;
-    padding: 8px 0;
-    border-bottom: 1px dashed #eee;
-    font-size: 15px;
+    align-items: center;
+    padding: 10px 0;
+    font-size: 1em;
+    border-bottom: 1px dotted #D1D5DB; /* Línea punteada sutil */
 }
 
 .data-row:last-child {
-    border-bottom: none;
+    border-bottom: none; /* Quitar la línea del último elemento */
 }
 
 .data-row strong {
-    color: #123B67;
-}
-
-.actions {
-    margin-top: 30px;
-    text-align: center;
-}
-
-.actions button {
-    padding: 10px 20px;
-    margin: 0 10px;
-    border-radius: 6px;
+    color: #4B5563; /* Gris medio para las etiquetas */
     font-weight: 600;
-    cursor: pointer;
 }
 
-.btn-primary {
-    background-color: #007bff;
-    color: white;
-    border: none;
+.data-row span {
+    color: #1F2937; /* Texto oscuro para los valores */
+    font-weight: 500;
 }
 
-.btn-secondary {
-    background-color: #f0f0f0;
-    color: #333;
-    border: 1px solid #ccc;
+/* Estilos de carga (spinner opcional) */
+.loading-screen {
+    text-align: center;
+    padding: 50px 0;
+}
+.loading-screen h2 {
+    color: #34D399;
+}
+.spinner {
+    /* Aquí irían los estilos para una animación de carga CSS si usaras uno real */
+    margin: 20px auto;
+    width: 40px;
+    height: 40px;
+    border: 4px solid #f3f3f3;
+    border-top: 4px solid #34D399;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
 }
