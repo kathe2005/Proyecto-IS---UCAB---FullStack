@@ -4,7 +4,6 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { PuestoService } from '../../../service/puesto.service';
-import { NavigationComponent } from '../navegador/navigation.component';
 import { HeaderComponent } from '../header/header.component';
 
 // Interface mejorada y exportada
@@ -29,7 +28,6 @@ export interface OcuparPuestoRequest {
   imports: [
     CommonModule,
     FormsModule,
-    NavigationComponent,
     HeaderComponent
   ],
   templateUrl: './ocupar-puestos.component.html',

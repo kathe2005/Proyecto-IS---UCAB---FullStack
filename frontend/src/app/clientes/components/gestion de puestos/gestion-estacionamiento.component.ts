@@ -2,7 +2,6 @@ import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { HeaderComponent } from '../ocuparPuesto/header/header.component';
-import { NavigationComponent } from '../ocuparPuesto/navegador/navigation.component';
 
 @Component({
   selector: 'app-gestion-estacionamiento',
@@ -10,8 +9,7 @@ import { NavigationComponent } from '../ocuparPuesto/navegador/navigation.compon
   imports: [
     CommonModule,
     RouterModule,
-    HeaderComponent,
-    NavigationComponent
+    HeaderComponent
   ],
   templateUrl: './gestion-estacionamiento.component.html',
   styleUrls: ['./gestion-estacionamiento.component.css']

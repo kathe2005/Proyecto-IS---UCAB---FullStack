@@ -3,7 +3,6 @@ import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { HeaderComponent } from '../header/header.component';
-import { NavigationComponent } from '../navegador/navigation.component';
 
 // Enums temporales
 enum TipoPuesto {
@@ -39,7 +38,7 @@ const EstadoPuestoInfo = {
 @Component({
   selector: 'app-buscar-puestos',
   standalone: true,
-  imports: [CommonModule, FormsModule, HeaderComponent, NavigationComponent],
+  imports: [CommonModule, FormsModule, HeaderComponent],
   templateUrl: './buscar-puestos.component.html',
   styleUrls: ['./buscar-puestos.component.css']
 })

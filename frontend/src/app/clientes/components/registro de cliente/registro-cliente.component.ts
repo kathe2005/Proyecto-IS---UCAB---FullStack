@@ -2,7 +2,6 @@ import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { ClienteService } from '../../service/cliente.service';
 import { Cliente } from '../../models/cliente';
-import { HeaderComponent } from '../ocuparPuesto/header/header.component';
 import { FormsModule } from '@angular/forms';
 import { Observable } from 'rxjs';
 
@@ -13,7 +12,7 @@ import { Router } from '@angular/router';
     templateUrl: './registro-cliente.component.html',
     styleUrls: ['./registro-cliente.component.css'],
     standalone: true,
-    imports: [FormsModule, CommonModule, HeaderComponent], // Añadimos LucideAngularModule
+    imports: [FormsModule, CommonModule], // Añadimos LucideAngularModule
 })
 export class RegistroClienteComponent implements OnInit {
 

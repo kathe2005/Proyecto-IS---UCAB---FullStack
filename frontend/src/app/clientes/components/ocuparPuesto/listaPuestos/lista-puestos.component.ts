@@ -3,7 +3,6 @@ import { CommonModule } from '@angular/common';
 import { RouterModule, ActivatedRoute, Router } from '@angular/router';
 import { PuestoService } from '../../../service/puesto.service';
 import { HeaderComponent } from '../header/header.component';
-import { NavigationComponent } from '../navegador/navigation.component';
 import { Puesto, TipoPuestoInfo, EstadoPuestoInfo, EstadoPuesto, TipoPuesto } from '../../../models/puestos.model';
 
 @Component({
@@ -12,8 +11,7 @@ import { Puesto, TipoPuestoInfo, EstadoPuestoInfo, EstadoPuesto, TipoPuesto } fr
   imports: [
     CommonModule,
     RouterModule,
-    HeaderComponent,
-    NavigationComponent
+    HeaderComponent
   ],
   templateUrl: './lista-puestos.component.html',
   styleUrls: ['./lista-puestos.component.css']

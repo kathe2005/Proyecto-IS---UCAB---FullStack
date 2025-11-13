@@ -4,7 +4,6 @@ import { RouterModule, Router } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { PuestoService } from '../../../service/puesto.service';
 import { HeaderComponent } from '../header/header.component';
-import { NavigationComponent } from '../navegador/navigation.component';
 import { Puesto, TipoPuestoInfo, EstadoPuestoInfo, EstadoPuesto, TipoPuesto } from '../../../models/puestos.model';
 
 @Component({
@@ -15,7 +14,6 @@ import { Puesto, TipoPuestoInfo, EstadoPuestoInfo, EstadoPuesto, TipoPuesto } fr
     RouterModule,
     FormsModule,
     HeaderComponent,
-    NavigationComponent
   ],
   templateUrl: './crear-puestos.component.html',
   styleUrls: ['./crear-puestos.component.css']
