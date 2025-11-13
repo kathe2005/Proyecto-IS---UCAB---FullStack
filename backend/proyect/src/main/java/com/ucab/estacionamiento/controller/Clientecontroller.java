@@ -1,8 +1,12 @@
 //Recibir el JSON 
 package com.ucab.estacionamiento.controller;
 
-import com.ucab.estacionamiento.model.Cliente; 
+import com.ucab.estacionamiento.model.Cliente;
+import com.ucab.estacionamiento.model.Puesto;
+import com.ucab.estacionamiento.model.ResultadoOcupacion;
+import com.ucab.estacionamiento.model.EstadoPuesto;
 import com.ucab.estacionamiento.service.ClienteService;
+import com.ucab.estacionamiento.service.PuestoService;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -21,11 +25,13 @@ public class Clientecontroller {
     
 
     private final ClienteService clienteService; 
+    private final PuestoService puestoService;
 
     
-    public Clientecontroller(ClienteService clienteService)
+    public Clientecontroller(ClienteService clienteService, PuestoService puestoService)
     {
         this.clienteService = clienteService; 
+        this.puestoService = puestoService;
     }
 
     @GetMapping("/obtenerTodo")
@@ -51,6 +57,45 @@ public class Clientecontroller {
                 Cliente clienteGuardado = clienteService.actualizarCliente(clienteActualizado);
                 return new ResponseEntity<>(clienteGuardado, HttpStatus.OK);
         }
+
+    // --- Endpoint: Obtener perfil (datos personales)
+    @GetMapping("/perfil/{usuario}")
+    public ResponseEntity<Cliente> obtenerPerfil(@PathVariable String usuario) {
+        Cliente cliente = clienteService.obtenerPorUsuario(usuario);
+        if (cliente == null) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+        return new ResponseEntity<>(cliente, HttpStatus.OK);
+    }
+
+    // --- Endpoint: Obtener reserva activa del usuario (si existe)
+    @GetMapping("/reserva-activa/{usuario}")
+    public ResponseEntity<ResultadoOcupacion> obtenerReservaActiva(@PathVariable String usuario) {
+        List<Puesto> puestos = puestoService.obtenerPuestos();
+        for (Puesto p : puestos) {
+            if (p.getUsuarioOcupante() != null && p.getUsuarioOcupante().equalsIgnoreCase(usuario)
+                    && p.getEstadoPuesto() == EstadoPuesto.OCUPADO) {
+                ResultadoOcupacion res = new ResultadoOcupacion(true, "Reserva activa encontrada", p);
+                return new ResponseEntity<>(res, HttpStatus.OK);
+            }
+        }
+        ResultadoOcupacion sin = new ResultadoOcupacion(false, "No hay reserva activa para el usuario", null, "NO_RESERVA_ACTIVA");
+        return new ResponseEntity<>(sin, HttpStatus.OK);
+    }
+
+    // --- Endpoint: Obtener zona de estacionamiento actual del usuario (ubicación)
+    @GetMapping("/zona-actual/{usuario}")
+    public ResponseEntity<Object> obtenerZonaActual(@PathVariable String usuario) {
+        List<Puesto> puestos = puestoService.obtenerPuestos();
+        for (Puesto p : puestos) {
+            if (p.getUsuarioOcupante() != null && p.getUsuarioOcupante().equalsIgnoreCase(usuario)
+                    && p.getEstadoPuesto() == EstadoPuesto.OCUPADO) {
+                // Devolver la ubicación y datos básicos del puesto
+                return new ResponseEntity<>(p.getUbicacion(), HttpStatus.OK);
+            }
+        }
+        return new ResponseEntity<>("No hay zona de estacionamiento activa", HttpStatus.OK);
+    }
 }
 
 

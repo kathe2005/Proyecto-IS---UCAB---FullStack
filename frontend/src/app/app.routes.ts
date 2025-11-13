@@ -20,6 +20,12 @@ export const routes: Routes = [
         loadComponent: () => import('./clientes/components/ocuparPuesto/ocupar/ocupar-puestos.component').then(m => m.OcuparPuestoComponent)
     },
 
+    // Perfil de cliente (nuevo)
+    {
+        path: 'perfil',
+        loadComponent: () => import('./clientes/components/perfil/perfil-cliente.component').then(m => m.PerfilClienteComponent)
+    },
+
     // Resto de rutas del sistema de estacionamiento
     {
         path: 'puestos',

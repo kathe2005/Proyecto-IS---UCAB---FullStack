@@ -1,0 +1,50 @@
+<div class="perfil-container" *ngIf="!loading">
+  <div class="perfil-header">
+    <h2>Perfil de usuario</h2>
+    <a class="btn-home" routerLink="/inicio"> <i class="fas fa-home"></i>←  Regresar al inicio</a>
+  </div>
+
+  <div *ngIf="error" class="error">{{ error }}</div>
+
+  <div *ngIf="cliente">
+    <div class="card">
+      <h3>Datos personales</h3>
+      <p><strong>Nombre:</strong> {{ cliente.nombre }} {{ cliente.apellido }}</p>
+      <p><strong>Usuario:</strong> {{ cliente.usuario }}</p>
+      <p><strong>Email:</strong> {{ cliente.email }}</p>
+      <p *ngIf="cliente.telefono"><strong>Teléfono:</strong> {{ cliente.telefono }}</p>
+    </div>
+
+    <div class="card" *ngIf="cliente.vehiculos && cliente.vehiculos.length > 0">
+      <h3>Vehículos registrados</h3>
+      <ul>
+        <li *ngFor="let v of cliente.vehiculos">{{ v.marca }} - {{ v.modelo }} - {{ v.placa }}</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="card">
+    <h3>Reserva activa</h3>
+    <div *ngIf="reserva?.exito">
+      <p><strong>Puesto:</strong> {{ reserva?.puesto?.id || reserva?.puesto?.codigo || 'N/D' }}</p>
+      <p><strong>Ubicación:</strong> {{ reserva?.puesto?.ubicacion || 'N/D' }}</p>
+      <p><strong>Desde:</strong> {{ reserva?.puesto?.fechaOcupacion || 'N/D' }}</p>
+    </div>
+    <div *ngIf="!reserva?.exito">
+      <p>No hay reserva activa.</p>
+    </div>
+  </div>
+
+  <div class="card">
+    <h3>Zona actual</h3>
+    <div *ngIf="zona">
+      <p>{{ zona }}</p>
+    </div>
+    <div *ngIf="!zona">
+      <p>No hay zona activa.</p>
+    </div>
+  </div>
+
+</div>
+
+<div *ngIf="loading" class="loading">Cargando...</div>

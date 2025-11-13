@@ -12,6 +12,7 @@ import { RouterModule } from '@angular/router';
 export class NavigationComponent {
   menuItems = [
     { route: '/', icon: 'fas fa-home', title: 'Inicio' },
+    { route: '/perfil', icon: 'fas fa-user', title: 'Perfil' },
     { route: '/puestos', icon: 'fas fa-list', title: 'Gestión de Puestos' },
     { route: '/puestos/ocupar', icon: 'fas fa-parking', title: 'Ocupar Puesto' },
     { route: '/puestos/estadisticas', icon: 'fas fa-chart-bar', title: 'Estadísticas' },
