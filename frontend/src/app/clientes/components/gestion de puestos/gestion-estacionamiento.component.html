@@ -1,0 +1,130 @@
+<div class="container-fluid p-0">
+  <!-- Header -->
+  <app-header></app-header>
+
+  <!-- Navigation -->
+  <app-navigation></app-navigation>
+
+  <!-- Hero Section -->
+  <div class="hero-section">
+    <div class="container">
+      <div class="row align-items-center">
+        <div class="col-lg-8">
+          <h1 class="display-4 fw-bold text-white mb-3">🚗 Gestión de Estacionamiento</h1>
+          <p class="lead text-white mb-4">Sistema integral para la administración y control del estacionamiento UCAB</p>
+
+          <!-- Estadísticas Rápidas -->
+          <div class="stats-quickview">
+            <div class="stat-item">
+              <span class="stat-number">{{ estadisticas.totalPuestos }}</span>
+              <span class="stat-label">Total Puestos</span>
+            </div>
+            <div class="stat-item">
+              <span class="stat-number text-success">{{ estadisticas.disponibles }}</span>
+              <span class="stat-label">Disponibles</span>
+            </div>
+            <div class="stat-item">
+              <span class="stat-number text-warning">{{ estadisticas.ocupados }}</span>
+              <span class="stat-label">Ocupados</span>
+            </div>
+            <div class="stat-item">
+              <span class="stat-number text-info">{{ estadisticas.porcentajeOcupacion }}%</span>
+              <span class="stat-label">Ocupación</span>
+            </div>
+          </div>
+        </div>
+        <div class="col-lg-4 text-center">
+          <div class="hero-icon">
+            <i class="fas fa-car-side"></i>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Main Content -->
+  <div class="container-custom">
+    <!-- Sección de Cards Grid -->
+    <div class="section-title">
+      <h2>📋 Módulos del Sistema</h2>
+      <p class="text-muted">Selecciona una opción para gestionar el estacionamiento</p>
+    </div>
+
+    <div class="cards-grid">
+      <div class="row g-4">
+        <div *ngFor="let card of menuCards" class="col-xl-3 col-lg-4 col-md-6">
+          <a [routerLink]="card.route" class="card-link">
+            <div class="management-card" [class]="'card-' + card.color">
+              <div class="card-header">
+                <div class="card-icon">
+                  <i [class]="card.icon"></i>
+                </div>
+                <span class="card-badge" [class]="'badge-' + card.color">
+                  {{ card.badge }}
+                </span>
+              </div>
+              <div class="card-body">
+                <h5 class="card-title">{{ card.title }}</h5>
+                <p class="card-description">{{ card.description }}</p>
+              </div>
+              <div class="card-footer">
+                <span class="action-text">Acceder →</span>
+              </div>
+              <div class="card-hover-effect"></div>
+            </div>
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <!-- Sección de Información Rápida -->
+    <div class="quick-info-section">
+      <div class="row">
+        <div class="col-lg-4">
+          <div class="info-card">
+            <div class="info-icon bg-primary">
+              <i class="fas fa-clock"></i>
+            </div>
+            <div class="info-content">
+              <h5>Horario de Operación</h5>
+              <p>Lunes a Viernes: 6:00 AM - 10:00 PM</p>
+              <small class="text-muted">Sábados: 7:00 AM - 8:00 PM</small>
+            </div>
+          </div>
+        </div>
+        <div class="col-lg-4">
+          <div class="info-card">
+            <div class="info-icon bg-success">
+              <i class="fas fa-users"></i>
+            </div>
+            <div class="info-content">
+              <h5>Clientes Activos</h5>
+              <p>+250 clientes registrados</p>
+              <small class="text-muted">UCAB, Visitantes, Docentes</small>
+            </div>
+          </div>
+        </div>
+        <div class="col-lg-4">
+          <div class="info-card">
+            <div class="info-icon bg-warning">
+              <i class="fas fa-chart-line"></i>
+            </div>
+            <div class="info-content">
+              <h5>Estadísticas del Día</h5>
+              <p>45 puestos ocupados actualmente</p>
+              <small class="text-muted">Promedio diario: 30% ocupación</small>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="container">
+      <p class="mb-2">© 2025 UCAB Montalbán - Sistema de Gestión de Estacionamiento</p>
+      <small class="opacity-75">Plataforma integral para la administración eficiente del estacionamiento universitario</small>
+    </div>
+  </footer>
+</div>

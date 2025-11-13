@@ -2,13 +2,19 @@ import { Routes } from '@angular/router';
 import { RegistroClienteComponent } from './clientes/components/registro de cliente/registro-cliente.component';
 
 export const routes: Routes = [
-    // Página principal: Registro de cliente
+    // Página principal: Gestión de Estacionamiento (NUEVA PÁGINA PRINCIPAL)
     {
         path: '',
-        component: RegistroClienteComponent
+        loadComponent: () => import('./clientes/components/gestion de puestos/gestion-estacionamiento.component').then(m => m.GestionEstacionamientoComponent)
     },
 
-    // Ruta alternativa para registro
+    // Ruta alternativa para gestión
+    {
+        path: 'gestion',
+        loadComponent: () => import('./clientes/components/gestion de puestos/gestion-estacionamiento.component').then(m => m.GestionEstacionamientoComponent)
+    },
+
+    // Ruta para registro de cliente
     {
         path: 'registrar-cliente',
         component: RegistroClienteComponent
@@ -50,13 +56,13 @@ export const routes: Routes = [
         loadComponent: () => import('./clientes/components/ocuparPuesto/historial/historial.component').then(m => m.HistorialComponent)
     },
 
-    // Ruta para crear puestos - CORREGIDA
+    // Ruta para crear puestos
     {
         path: 'puestos/crear',
         loadComponent: () => import('./clientes/components/ocuparPuesto/crear/crear-puestos.component').then(m => m.CrearPuestosComponent)
     },
 
-    // Ruta de inicio del sistema (dashboard)
+    // Ruta de inicio del sistema (dashboard alternativo)
     {
         path: 'inicio',
         loadComponent: () => import('./clientes/components/ocuparPuesto/home/home.component').then(m => m.HomeComponent)
@@ -70,7 +76,7 @@ export const routes: Routes = [
     },
     {
         path: 'home',
-        redirectTo: 'inicio',
+        redirectTo: 'gestion', // Ahora redirige a gestión en lugar de inicio
         pathMatch: 'full'
     },
     {
@@ -88,10 +94,15 @@ export const routes: Routes = [
         redirectTo: 'puestos/crear',
         pathMatch: 'full'
     },
+    {
+        path: 'dashboard',
+        redirectTo: 'gestion',
+        pathMatch: 'full'
+    },
 
     // Ruta comodín (si no encuentra ninguna ruta)
     {
         path: '**',
-        redirectTo: ''
+        redirectTo: '' // Redirige a la gestión de estacionamiento
     }
 ];
