@@ -51,7 +51,7 @@ public class ClienteServiceImpl implements ClienteService {
         //Usuario 
         if(clienteRepository.findByUsuario(nuevoCliente.getUsuario()).isPresent())
         {
-            throw new RegistroClienteException("El usuario ingresado se encuentra esta registrado  ingresa otro para continuar", 409); 
+            throw new RegistroClienteException("El usuario ingresado se encuentra registrado ingresa otro para continuar", 409); 
         }
 
         //Cedula 
