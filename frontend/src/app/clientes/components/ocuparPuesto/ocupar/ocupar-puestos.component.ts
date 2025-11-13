@@ -1,3 +1,4 @@
+// ocupar-puestos.component.ts - CORREGIDO
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
@@ -6,7 +7,8 @@ import { PuestoService } from '../../../service/puesto.service';
 import { NavigationComponent } from '../navegador/navigation.component';
 import { HeaderComponent } from '../header/header.component';
 
-interface Puesto {
+// Interface mejorada y exportada
+export interface Puesto {
   id: string;
   numero: string;
   tipoPuesto: string;
@@ -14,7 +16,7 @@ interface Puesto {
   ubicacion: string;
 }
 
-interface OcuparPuestoRequest {
+export interface OcuparPuestoRequest {
   puestoId: string;
   usuario: string;
   clienteId: string;
@@ -46,11 +48,29 @@ export class OcuparPuestoComponent implements OnInit {
   mensajeTipo: 'success' | 'danger' | 'warning' | 'info' = 'info';
   procesando: boolean = false;
 
-  // Datos de ejemplo
+  // Datos de ejemplo con tipo explícito
   private datosEjemplo: Puesto[] = [
-    { id: '1', numero: 'A-01', tipoPuesto: 'REGULAR', estadoPuesto: 'DISPONIBLE', ubicacion: 'Zona A' },
-    { id: '4', numero: 'M-01', tipoPuesto: 'MOTOCICLETA', estadoPuesto: 'DISPONIBLE', ubicacion: 'Zona Motos' },
-    { id: '6', numero: 'A-03', tipoPuesto: 'REGULAR', estadoPuesto: 'DISPONIBLE', ubicacion: 'Zona A' }
+    {
+      id: '1',
+      numero: 'A-01',
+      tipoPuesto: 'REGULAR',
+      estadoPuesto: 'DISPONIBLE',
+      ubicacion: 'Zona A'
+    },
+    {
+      id: '4',
+      numero: 'M-01',
+      tipoPuesto: 'MOTOCICLETA',
+      estadoPuesto: 'DISPONIBLE',
+      ubicacion: 'Zona Motos'
+    },
+    {
+      id: '6',
+      numero: 'A-03',
+      tipoPuesto: 'REGULAR',
+      estadoPuesto: 'DISPONIBLE',
+      ubicacion: 'Zona A'
+    }
   ];
 
   constructor(
@@ -63,13 +83,13 @@ export class OcuparPuestoComponent implements OnInit {
   }
 
   cargarPuestosDisponibles() {
-    // Simulación
+    // Simulación con tipo explícito
     this.puestosDisponibles = this.datosEjemplo.filter(p => p.estadoPuesto === 'DISPONIBLE');
 
     // Descomenta para usar el servicio real:
     /*
     this.puestoService.obtenerPuestosPorEstado('DISPONIBLE').subscribe({
-      next: (data) => {
+      next: (data: Puesto[]) => {
         this.puestosDisponibles = data;
       },
       error: (error) => {
@@ -166,5 +186,10 @@ export class OcuparPuestoComponent implements OnInit {
     setTimeout(() => {
       this.mensaje = '';
     }, 5000);
+  }
+
+  // Método auxiliar para verificar si un puesto está seleccionado
+  estaSeleccionado(puesto: Puesto): boolean {
+    return this.puestoSeleccionado?.id === puesto.id;
   }
 }

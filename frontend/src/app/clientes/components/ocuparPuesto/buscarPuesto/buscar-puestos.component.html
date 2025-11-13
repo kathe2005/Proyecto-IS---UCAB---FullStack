@@ -1,14 +1,16 @@
+<!-- buscar-puestos.component.html - Mejorado -->
 <div class="container-fluid p-0">
   <!-- Header -->
   <app-header></app-header>
 
-  <!-- Navigation Unificada -->
+  <!-- Navigation -->
   <app-navigation></app-navigation>
 
   <div class="container-custom">
-    <h1 class="mb-4">🔍 Buscar Puestos</h1>
+    <h1>🔍 Búsqueda Avanzada de Puestos</h1>
 
     <div class="row">
+      <!-- Buscar por Estado -->
       <div class="col-md-4">
         <div class="card">
           <div class="card-header bg-success text-white">
@@ -33,6 +35,7 @@
         </div>
       </div>
 
+      <!-- Buscar por Tipo -->
       <div class="col-md-4">
         <div class="card">
           <div class="card-header bg-info text-white">
@@ -57,6 +60,7 @@
         </div>
       </div>
 
+      <!-- Buscar por Ubicación -->
       <div class="col-md-4">
         <div class="card">
           <div class="card-header bg-warning text-white">
@@ -78,18 +82,22 @@
       </div>
     </div>
 
-    <div class="mt-4">
-      <button (click)="volverAPuestos()" class="btn btn-outline-primary me-2">
-        <i class="fas fa-arrow-left"></i> Volver a Puestos
+    <!-- Botones de Navegación -->
+    <div class="mt-4 text-center">
+      <button (click)="volverAPuestos()" class="btn btn-outline-primary me-3">
+        <i class="fas fa-arrow-left me-2"></i> Volver a Puestos
       </button>
       <button (click)="irAInicio()" class="btn btn-outline-secondary">
-        <i class="fas fa-home"></i> Ir al Inicio
+        <i class="fas fa-home me-2"></i> Ir al Inicio
       </button>
     </div>
   </div>
 
   <!-- Footer -->
   <footer class="footer">
-    © 2025 UCAB Montalbán - Sistema de Estacionamiento
+    <div class="container">
+      <p class="mb-2">© 2025 UCAB Montalbán - Sistema de Estacionamiento</p>
+      <small class="opacity-75">Búsqueda avanzada de puestos disponibles</small>
+    </div>
   </footer>
 </div>

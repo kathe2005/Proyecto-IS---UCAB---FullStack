@@ -1,3 +1,4 @@
+<!-- ocupar-puestos.component.html - CORREGIDO -->
 <div class="container-fluid p-0">
   <!-- Header Component -->
   <app-header></app-header>
@@ -7,83 +8,141 @@
 
   <div class="container-custom">
     <div class="row justify-content-center">
-      <div class="col-md-8">
+      <div class="col-lg-10">
         <div class="card shadow">
           <div class="card-header bg-primary text-white">
             <h4 class="mb-0"><i class="fas fa-parking"></i> Ocupar Puesto de Estacionamiento</h4>
           </div>
-          <div class="card-body">
+          <div class="card-body p-4">
             <!-- Mensajes de resultado -->
             <div *ngIf="mensaje" [class]="'alert alert-' + mensajeTipo" class="alert">
-              {{ mensaje }}
+              <div class="d-flex align-items-center">
+                <i class="fas fa-info-circle me-3 fs-5"></i>
+                <div class="flex-grow-1">
+                  {{ mensaje }}
+                </div>
+              </div>
             </div>
 
+            <!-- Selección de Puesto -->
             <div *ngIf="!puestoSeleccionado">
-              <h5>Seleccionar Puesto Disponible</h5>
-              <div class="row">
-                <div *ngFor="let puesto of puestosDisponibles" class="col-md-4 mb-3">
-                  <div class="card puesto-card" (click)="seleccionarPuesto(puesto)">
+              <h5 class="mb-4 text-dark fw-600">
+                <i class="fas fa-map-marker-alt me-2 text-primary"></i>
+                Seleccionar Puesto Disponible
+              </h5>
+
+              <div *ngIf="puestosDisponibles.length === 0" class="alert alert-warning text-center py-4">
+                <i class="fas fa-exclamation-triangle fa-2x mb-3"></i>
+                <h5 class="fw-600">No hay puestos disponibles</h5>
+                <p class="mb-0">Todos los puestos están ocupados o en mantenimiento en este momento.</p>
+              </div>
+
+              <div class="row g-3">
+                <div *ngFor="let puesto of puestosDisponibles" class="col-xl-3 col-lg-4 col-md-6">
+                  <div class="puesto-card"
+                       (click)="seleccionarPuesto(puesto)"
+                       [class.selected]="estaSeleccionado(puesto)">
                     <div class="card-body text-center">
-                      <h5>{{ puesto.numero }}</h5>
-                      <span class="badge" [style.background-color]="getTipoColor(puesto.tipoPuesto)">
+                      <h5 class="fw-bold">{{ puesto.numero }}</h5>
+                      <span class="badge mb-2" [style.background-color]="getTipoColor(puesto.tipoPuesto)">
                         {{ getTipoDescripcion(puesto.tipoPuesto) }}
                       </span>
-                      <p class="mb-1">{{ puesto.ubicacion }}</p>
-                      <small class="text-muted">ID: {{ puesto.id }}</small>
+                      <p class="mb-2 text-muted">
+                        <i class="fas fa-location-dot me-1"></i>
+                        {{ puesto.ubicacion }}
+                      </p>
+                      <small class="text-muted d-block">
+                        <i class="fas fa-fingerprint me-1"></i>
+                        ID: {{ puesto.id }}
+                      </small>
+                      <div class="mt-3">
+                        <span class="badge bg-success">
+                          <i class="fas fa-check me-1"></i>
+                          Disponible
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Confirmación de Ocupación -->
+            <div *ngIf="puestoSeleccionado" class="confirmacion-section">
+              <h5 class="mb-4 text-dark fw-600">
+                <i class="fas fa-clipboard-check me-2 text-success"></i>
+                Confirmar Ocupación
+              </h5>
+
+              <div class="card mb-4 border-success">
+                <div class="card-header bg-success text-white">
+                  <h6 class="mb-0"><i class="fas fa-car me-2"></i>Puesto Seleccionado</h6>
+                </div>
+                <div class="card-body">
+                  <div class="row">
+                    <div class="col-md-6">
+                      <p class="mb-2">
+                        <strong class="text-dark">Número:</strong>
+                        <span class="badge bg-primary fs-6">{{ puestoSeleccionado.numero }}</span>
+                      </p>
+                      <p class="mb-2">
+                        <strong class="text-dark">Ubicación:</strong>
+                        <span class="fw-500">{{ puestoSeleccionado.ubicacion }}</span>
+                      </p>
+                    </div>
+                    <div class="col-md-6">
+                      <p class="mb-2">
+                        <strong class="text-dark">Tipo:</strong>
+                        <span class="badge" [style.background-color]="getTipoColor(puestoSeleccionado.tipoPuesto)">
+                          {{ getTipoDescripcion(puestoSeleccionado.tipoPuesto) }}
+                        </span>
+                      </p>
+                      <p class="mb-0">
+                        <strong class="text-dark">ID:</strong>
+                        <code class="bg-light px-2 py-1 rounded">{{ puestoSeleccionado.id }}</code>
+                      </p>
                     </div>
                   </div>
                 </div>
               </div>
 
-              <div *ngIf="puestosDisponibles.length === 0" class="alert alert-warning">
-                No hay puestos disponibles en este momento.
-              </div>
-            </div>
+              <form (ngSubmit)="confirmarOcupacion()" class="needs-validation" novalidate>
+                <div class="row g-3">
+                  <div class="col-md-4">
+                    <label class="form-label">Usuario (ID del Cliente):</label>
+                    <input type="text" [(ngModel)]="ocuparRequest.usuario" name="usuario"
+                           class="form-control" placeholder="Ingrese su usuario" required>
+                    <div class="form-text">Identificador único del cliente</div>
+                  </div>
 
-            <div *ngIf="puestoSeleccionado">
-              <h5>Confirmar Ocupación</h5>
-              <div class="card mb-3">
-                <div class="card-body">
-                  <h6>Puesto Seleccionado:</h6>
-                  <p><strong>Número:</strong> {{ puestoSeleccionado.numero }}</p>
-                  <p><strong>Ubicación:</strong> {{ puestoSeleccionado.ubicacion }}</p>
-                  <p><strong>Tipo:</strong>
-                    <span class="badge" [style.background-color]="getTipoColor(puestoSeleccionado.tipoPuesto)">
-                      {{ getTipoDescripcion(puestoSeleccionado.tipoPuesto) }}
-                    </span>
-                  </p>
-                </div>
-              </div>
+                  <div class="col-md-4">
+                    <label class="form-label">ID del Cliente:</label>
+                    <input type="text" [(ngModel)]="ocuparRequest.clienteId" name="clienteId"
+                           class="form-control" placeholder="Ingrese ID del cliente" required>
+                    <div class="form-text">Número de identificación</div>
+                  </div>
 
-              <form (ngSubmit)="confirmarOcupacion()">
-                <div class="mb-3">
-                  <label class="form-label">Usuario (ID del Cliente):</label>
-                  <input type="text" [(ngModel)]="ocuparRequest.usuario" name="usuario"
-                         class="form-control" placeholder="Ingrese su usuario" required>
-                </div>
-
-                <div class="mb-3">
-                  <label class="form-label">ID del Cliente:</label>
-                  <input type="text" [(ngModel)]="ocuparRequest.clienteId" name="clienteId"
-                         class="form-control" placeholder="Ingrese ID del cliente" required>
+                  <div class="col-md-4">
+                    <label class="form-label">Tipo de Cliente:</label>
+                    <select [(ngModel)]="ocuparRequest.tipoCliente" name="tipoCliente" class="form-select" required>
+                      <option value="">-- Seleccione tipo --</option>
+                      <option value="UCAB">UCAB</option>
+                      <option value="VISITANTE">Visitante</option>
+                      <option value="DOCENTE">Docente</option>
+                      <option value="DISCAPACITADO">Discapacitado</option>
+                    </select>
+                    <div class="form-text">Seleccione el tipo de cliente</div>
+                  </div>
                 </div>
 
-                <div class="mb-3">
-                  <label class="form-label">Tipo de Cliente:</label>
-                  <select [(ngModel)]="ocuparRequest.tipoCliente" name="tipoCliente" class="form-select" required>
-                    <option value="">-- Seleccione tipo --</option>
-                    <option value="UCAB">UCAB</option>
-                    <option value="VISITANTE">Visitante</option>
-                  </select>
-                </div>
-
-                <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                <div class="d-grid gap-2 d-md-flex justify-content-md-end mt-4">
                   <button type="button" (click)="cancelarSeleccion()" class="btn btn-secondary me-md-2">
-                    <i class="fas fa-arrow-left"></i> Cancelar
+                    <i class="fas fa-arrow-left me-2"></i> Cancelar
                   </button>
                   <button type="submit" class="btn btn-primary" [disabled]="procesando">
-                    <i class="fas fa-car"></i>
+                    <i class="fas fa-car me-2"></i>
                     {{ procesando ? 'Procesando...' : 'Confirmar Ocupación' }}
+                    <span *ngIf="procesando" class="spinner-border spinner-border-sm ms-2"></span>
                   </button>
                 </div>
               </form>
@@ -96,6 +155,9 @@
 
   <!-- Footer -->
   <footer class="footer">
-    © 2025 UCAB Montalbán - Sistema de Estacionamiento
+    <div class="container">
+      <p class="mb-2">© 2025 UCAB Montalbán - Sistema de Estacionamiento</p>
+      <small class="opacity-75">Sistema de ocupación de puestos en tiempo real</small>
+    </div>
   </footer>
 </div>

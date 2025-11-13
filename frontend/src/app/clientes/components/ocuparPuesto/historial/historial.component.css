@@ -1,7 +1,8 @@
+/* historial.component.css - Mejorado */
 :host {
   display: block;
   min-height: 100vh;
-  background-color: #f8f9fa;
+  background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 
@@ -10,69 +11,188 @@
   margin: 0 50px;
 }
 
-/* Card Styles */
+/* Card Styles Mejoradas */
 .card {
   border: none;
-  border-radius: 15px;
-  box-shadow: 0 4px 15px rgba(0,0,0,0.1);
-  margin-bottom: 20px;
+  border-radius: 20px;
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.12);
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  margin-bottom: 25px;
+  background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
+  overflow: hidden;
+}
+
+.card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 12px 35px rgba(0, 0, 0, 0.15);
 }
 
 .card-header {
-  border-radius: 15px 15px 0 0 !important;
-  background-color: rgb(28, 85, 255) !important;
-  color: white;
+  border-radius: 20px 20px 0 0 !important;
+  background: linear-gradient(135deg, rgb(28, 85, 255) 0%, rgb(20, 65, 200) 100%) !important;
+  padding: 20px 25px;
+  border-bottom: none;
 }
 
-/* List Group Styles */
+.card-header h4, .card-header h5 {
+  margin: 0;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+/* Información del Puesto Mejorada */
+.puesto-info {
+  background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+  border-radius: 15px;
+  padding: 20px;
+  margin-bottom: 20px;
+  border-left: 4px solid #1c55ff;
+}
+
+.puesto-info p {
+  margin-bottom: 10px;
+  font-size: 1rem;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.puesto-info strong {
+  color: #2c3e50;
+  min-width: 100px;
+  font-weight: 600;
+}
+
+/* List Group Styles Mejorados */
 .list-group-item {
   border: none;
-  border-bottom: 1px solid #e9ecef;
-  transition: background-color 0.3s ease;
-  padding: 15px 20px;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+  transition: all 0.3s ease;
+  padding: 20px 25px;
+  background: linear-gradient(135deg, #ffffff, #f8f9fa);
+  position: relative;
+  overflow: hidden;
+}
+
+.list-group-item::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0;
+  height: 100%;
+  width: 4px;
+  background: linear-gradient(135deg, #1c55ff, #0d3fd4);
+  opacity: 0;
+  transition: opacity 0.3s ease;
 }
 
 .list-group-item:hover {
-  background-color: rgba(28, 85, 255, 0.1);
+  background: linear-gradient(135deg, rgba(28, 85, 255, 0.05), rgba(13, 63, 212, 0.02));
+  transform: translateX(5px);
+}
+
+.list-group-item:hover::before {
+  opacity: 1;
 }
 
 .list-group-item:last-child {
   border-bottom: none;
+  border-radius: 0 0 15px 15px;
 }
 
-/* Badge Styles */
+.list-group-item h6 {
+  color: #2c3e50;
+  font-weight: 600;
+  margin-bottom: 5px;
+  font-size: 1rem;
+}
+
+.list-group-item small {
+  color: #6c757d;
+  font-weight: 500;
+}
+
+/* Badge Styles Mejorados */
 .badge {
-  font-size: 0.9em;
-  padding: 0.5em 0.8em;
-  border-radius: 8px;
-  font-weight: 500;
+  font-size: 0.85rem;
+  padding: 8px 12px;
+  border-radius: 10px;
+  font-weight: 600;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  border: 2px solid rgba(255, 255, 255, 0.2);
 }
 
-/* Button Styles */
+/* Button Styles Mejorados */
 .btn {
-  border-radius: 8px;
-  transition: all 0.3s ease;
-  font-weight: 500;
-  padding: 8px 16px;
+  border-radius: 12px;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  font-weight: 600;
+  padding: 12px 24px;
+  border: 2px solid transparent;
+  font-size: 0.95rem;
+  display: flex;
+  align-items: center;
+  gap: 8px;
 }
 
 .btn:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+  transform: translateY(-3px);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
 }
 
-/* Footer */
+.btn-outline-primary {
+  border-color: #1c55ff;
+  color: #1c55ff;
+}
+
+.btn-outline-primary:hover {
+  background: linear-gradient(135deg, #1c55ff, #0d3fd4);
+  border-color: transparent;
+  color: white;
+}
+
+/* Estado vacío mejorado */
+.text-center.py-4 {
+  padding: 60px 20px !important;
+  background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+  border-radius: 0 0 15px 15px;
+}
+
+.text-center.py-4 i {
+  opacity: 0.2;
+  margin-bottom: 20px;
+}
+
+.text-center.py-4 h4 {
+  color: #6c757d;
+  font-weight: 600;
+}
+
+/* Footer Mejorado */
 .footer {
-  background-color: rgb(28, 85, 255);
+  background: linear-gradient(135deg, #1c55ff 0%, #0d3fd4 100%);
   color: white;
   text-align: center;
-  padding: 20px;
-  margin-top: 50px;
+  padding: 30px 20px;
+  margin-top: 60px;
   width: 100%;
-  font-size: 14px;
+  font-size: 0.95rem;
+  position: relative;
 }
 
-/* Responsive Design */
+.footer::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.6), transparent);
+}
+
+/* Responsive Design Mejorado */
 @media (max-width: 768px) {
   .container-custom {
     margin: 0 20px;
@@ -88,13 +208,27 @@
   }
 
   .list-group-item {
-    padding: 12px 15px;
+    padding: 15px 20px;
+  }
+
+  .puesto-info {
+    padding: 15px;
+  }
+
+  .puesto-info p {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 4px;
+  }
+
+  .puesto-info strong {
+    min-width: auto;
   }
 }
 
 @media (max-width: 480px) {
   .container-custom {
-    margin: 0 10px;
+    margin: 0 15px;
   }
 
   .card-header h4 {
@@ -102,11 +236,56 @@
   }
 
   .list-group-item {
-    padding: 10px 12px;
+    padding: 12px 15px;
   }
 
   .btn {
     width: 100%;
     margin-bottom: 10px;
+    justify-content: center;
   }
+}
+
+/* Animaciones */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.list-group-item {
+  animation: fadeInUp 0.5s ease forwards;
+}
+
+.list-group-item:nth-child(odd) {
+  animation-delay: 0.1s;
+}
+
+.list-group-item:nth-child(even) {
+  animation-delay: 0.2s;
+}
+
+/* Efectos de timeline */
+.list-group-item {
+  position: relative;
+}
+
+.list-group-item::after {
+  content: '';
+  position: absolute;
+  left: 25px;
+  top: -15px;
+  width: 2px;
+  height: 15px;
+  background: linear-gradient(135deg, #1c55ff, #0d3fd4);
+  opacity: 0.3;
+}
+
+.list-group-item:first-child::after {
+  display: none;
 }

@@ -6,8 +6,8 @@ import { PuestoService } from '../../../service/puesto.service';
 import { HeaderComponent } from '../header/header.component';
 import { NavigationComponent } from '../navegador/navigation.component';
 
-// Interfaces temporales
-interface Puesto {
+// Interface exportada para reutilizar
+export interface Puesto {
   id: string;
   numero: string;
   tipoPuesto: string;
@@ -36,13 +36,45 @@ export class ListaPuestosComponent implements OnInit {
   criterioBusqueda = '';
   filtroNumero: string = '';
 
-  // Datos de ejemplo
+  // Datos de ejemplo con tipo explícito
   private datosEjemplo: Puesto[] = [
-    { id: '1', numero: 'A-01', tipoPuesto: 'REGULAR', estadoPuesto: 'DISPONIBLE', ubicacion: 'Zona A' },
-    { id: '2', numero: 'A-02', tipoPuesto: 'DISCAPACITADO', estadoPuesto: 'OCUPADO', ubicacion: 'Zona A', usuarioOcupante: 'Juan Pérez' },
-    { id: '3', numero: 'B-01', tipoPuesto: 'DOCENTE', estadoPuesto: 'BLOQUEADO', ubicacion: 'Zona B' },
-    { id: '4', numero: 'M-01', tipoPuesto: 'MOTOCICLETA', estadoPuesto: 'DISPONIBLE', ubicacion: 'Zona Motos' },
-    { id: '5', numero: 'V-01', tipoPuesto: 'VISITANTE', estadoPuesto: 'OCUPADO', ubicacion: 'Zona Visitantes', usuarioOcupante: 'María García' }
+    {
+      id: '1',
+      numero: 'A-01',
+      tipoPuesto: 'REGULAR',
+      estadoPuesto: 'DISPONIBLE',
+      ubicacion: 'Zona A'
+    },
+    {
+      id: '2',
+      numero: 'A-02',
+      tipoPuesto: 'DISCAPACITADO',
+      estadoPuesto: 'OCUPADO',
+      ubicacion: 'Zona A',
+      usuarioOcupante: 'Juan Pérez'
+    },
+    {
+      id: '3',
+      numero: 'B-01',
+      tipoPuesto: 'DOCENTE',
+      estadoPuesto: 'BLOQUEADO',
+      ubicacion: 'Zona B'
+    },
+    {
+      id: '4',
+      numero: 'M-01',
+      tipoPuesto: 'MOTOCICLETA',
+      estadoPuesto: 'DISPONIBLE',
+      ubicacion: 'Zona Motos'
+    },
+    {
+      id: '5',
+      numero: 'V-01',
+      tipoPuesto: 'VISITANTE',
+      estadoPuesto: 'OCUPADO',
+      ubicacion: 'Zona Visitantes',
+      usuarioOcupante: 'María García'
+    }
   ];
 
   constructor(
@@ -66,7 +98,7 @@ export class ListaPuestosComponent implements OnInit {
   }
 
   cargarPuestos() {
-    // Simulación
+    // Simulación con tipo explícito
     this.puestos = [...this.datosEjemplo];
     this.puestosFiltrados = [...this.puestos];
     this.titulo = 'Todos los Puestos';
@@ -75,7 +107,7 @@ export class ListaPuestosComponent implements OnInit {
     // Descomenta para usar el servicio real:
     /*
     this.puestoService.obtenerTodosLosPuestos().subscribe({
-      next: (data) => {
+      next: (data: Puesto[]) => {
         this.puestos = data;
         this.puestosFiltrados = data;
         this.titulo = 'Todos los Puestos';
@@ -248,15 +280,29 @@ export class ListaPuestosComponent implements OnInit {
 
   // Utilidades
   private mostrarMensajeExito(mensaje: string) {
+    // En lugar de alert, podrías implementar un sistema de notificaciones
+    console.log(`✅ ${mensaje}`);
+    // Opcional: Mostrar toast/notificación
     alert(`✅ ${mensaje}`);
   }
 
   private mostrarError(mensaje: string) {
+    console.error(`❌ ${mensaje}`);
     alert(`❌ ${mensaje}`);
   }
 
   // Estadísticas
   getCountByEstado(estado: string): number {
     return this.puestosFiltrados.filter(puesto => puesto.estadoPuesto === estado).length;
+  }
+
+  // Método auxiliar para obtener el total de puestos filtrados
+  getTotalPuestosFiltrados(): number {
+    return this.puestosFiltrados.length;
+  }
+
+  // Método para verificar si hay puestos filtrados
+  hayPuestosFiltrados(): boolean {
+    return this.puestosFiltrados.length > 0;
   }
 }

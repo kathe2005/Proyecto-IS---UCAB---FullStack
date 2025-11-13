@@ -1,42 +1,148 @@
+/* home.component.css */
 :host {
   display: block;
   min-height: 100vh;
-  background-color: #f8f9fa;
-  font-family: Arial, sans-serif;
+  background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 
-/* Navigation Styles */
-.navbar {
-  background-color: #ffffff;
-  overflow: hidden;
-  margin: 20px 50px;
-  border-radius: 10px;
-  padding: 10px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  box-shadow: 0 0 10px rgba(55, 55, 55, 0.737);
-  gap: 20px;
-}
-
-.nav-link {
-  display: block;
-  color: rgb(0, 0, 0);
+/* Hero Section Mejorada */
+.hero-section {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  padding: 100px 0;
+  margin: 30px 50px;
+  border-radius: 20px;
   text-align: center;
-  padding: 14px 16px;
-  text-decoration: none;
-  padding-left: 30px;
-  padding-right: 30px;
-  transition: all 0.3s ease;
-  border-radius: 10px;
+  position: relative;
+  overflow: hidden;
 }
 
-.nav-link:hover,
-.nav-link.active {
-  background-color: rgb(28, 85, 255);
-  color: rgb(255, 255, 255);
-  transform: scale(1.05);
-  box-shadow: 0 0 10px rgba(55, 55, 55, 0.737);
+.hero-section::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 100" fill="%23ffffff" opacity="0.1"><polygon points="1000,100 1000,0 0,100"/></svg>');
+  background-size: cover;
+}
+
+.hero-section .container {
+  position: relative;
+  z-index: 2;
+}
+
+.hero-section h1 {
+  font-size: 3.5rem;
+  font-weight: 800;
+  margin-bottom: 1rem;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+.hero-section .lead {
+  font-size: 1.4rem;
+  margin-bottom: 1rem;
+  font-weight: 300;
+  opacity: 0.9;
+}
+
+/* Statistics Cards Mejoradas */
+.stat-card {
+  border: none;
+  border-radius: 20px;
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.12);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  margin-bottom: 25px;
+  overflow: hidden;
+  position: relative;
+}
+
+.stat-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.6), transparent);
+}
+
+.stat-card:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 15px 40px rgba(0, 0, 0, 0.2);
+}
+
+.stat-card i {
+  transition: transform 0.3s ease;
+}
+
+.stat-card:hover i {
+  transform: scale(1.1);
+}
+
+/* Menu Cards Mejoradas */
+.menu-card {
+  background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
+  border-radius: 20px;
+  padding: 40px 30px;
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.08);
+  margin-bottom: 25px;
+  text-align: center;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  border: 2px solid transparent;
+  cursor: pointer;
+  height: 100%;
+  position: relative;
+  overflow: hidden;
+}
+
+.menu-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(135deg, rgba(28, 85, 255, 0.1) 0%, rgba(13, 63, 212, 0.05) 100%);
+  transition: left 0.5s ease;
+}
+
+.menu-card:hover::before {
+  left: 0;
+}
+
+.menu-card:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 15px 40px rgba(28, 85, 255, 0.15);
+  border-color: #1c55ff;
+}
+
+.menu-icon {
+  font-size: 3.5rem;
+  margin-bottom: 20px;
+  background: linear-gradient(135deg, #1c55ff, #0d3fd4);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  transition: all 0.3s ease;
+}
+
+.menu-card:hover .menu-icon {
+  transform: scale(1.1);
+}
+
+.menu-card h4 {
+  color: #2c3e50;
+  font-weight: 600;
+  margin-bottom: 15px;
+  font-size: 1.3rem;
+}
+
+.menu-card .text-muted {
+  color: #6c757d !important;
+  line-height: 1.5;
 }
 
 /* Container */
@@ -44,122 +150,72 @@
   margin: 0 50px;
 }
 
-/* Hero Section */
-.hero-section {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  color: white;
-  padding: 80px 0;
-  margin: 20px 50px;
-  border-radius: 15px;
-  text-align: center;
-}
-
-/* Stat Cards */
-.stat-card {
-  border: none;
-  border-radius: 15px;
-  box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-  transition: transform 0.3s ease;
-  margin-bottom: 20px;
-}
-
-.stat-card:hover {
-  transform: translateY(-5px);
-}
-
-/* Menu Cards */
-.menu-card {
-  background: white;
-  border-radius: 15px;
-  padding: 30px;
-  box-shadow: 0 4px 15px rgba(0,0,0,0.1);
-  margin-bottom: 20px;
-  text-align: center;
-  transition: all 0.3s ease;
-  border: 2px solid transparent;
-  cursor: pointer;
-  height: 100%;
-}
-
-.menu-card:hover {
-  transform: translateY(-3px);
-  box-shadow: 0 8px 25px rgba(0,0,0,0.15);
-  border-color: rgb(28, 85, 255);
-}
-
-.menu-icon {
-  font-size: 3rem;
-  margin-bottom: 15px;
-  color: rgb(28, 85, 255);
-}
-
-/* Footer */
+/* Footer Mejorado */
 .footer {
-  background-color: rgb(28, 85, 255);
+  background: linear-gradient(135deg, #1c55ff 0%, #0d3fd4 100%);
   color: white;
   text-align: center;
-  padding: 20px;
-  margin-top: 50px;
+  padding: 30px 20px;
+  margin-top: 80px;
   width: 100%;
-  font-size: 14px;
+  font-size: 0.95rem;
+  position: relative;
+}
+
+.footer::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.6), transparent);
 }
 
 /* Responsive Design */
 @media (max-width: 768px) {
-  .navbar {
-    margin: 20px 20px;
-    flex-wrap: wrap;
-    gap: 10px;
-  }
-
-  .nav-link {
-    padding: 10px 15px;
-    font-size: 14px;
-  }
-
   .container-custom {
     margin: 0 20px;
   }
 
   .hero-section {
     margin: 20px 20px;
-    padding: 40px 0;
+    padding: 60px 0;
+  }
+
+  .hero-section h1 {
+    font-size: 2.5rem;
+  }
+
+  .hero-section .lead {
+    font-size: 1.2rem;
   }
 
   .menu-card {
-    padding: 20px;
+    padding: 30px 20px;
   }
 
   .menu-icon {
-    font-size: 2rem;
+    font-size: 2.8rem;
   }
 }
 
 @media (max-width: 480px) {
-  .navbar {
-    margin: 10px;
-    flex-direction: column;
-  }
-
-  .nav-link {
-    width: 100%;
-    margin-bottom: 5px;
-  }
-
   .container-custom {
-    margin: 0 10px;
+    margin: 0 15px;
   }
 
   .hero-section {
-    margin: 10px;
-    padding: 30px 0;
+    margin: 15px;
+    padding: 40px 0;
   }
 
-  .stat-card {
-    padding: 20px;
+  .hero-section h1 {
+    font-size: 2rem;
   }
 
+  .stat-card,
   .menu-card {
-    padding: 15px;
+    margin-bottom: 15px;
   }
 }

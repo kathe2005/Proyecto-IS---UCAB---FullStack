@@ -1,5 +1,5 @@
 import { Routes } from '@angular/router';
-import { RegistroClienteComponent } from './clientes/components/registro-cliente.component';
+import { RegistroClienteComponent } from './clientes/components/registro de cliente/registro-cliente.component';
 
 export const routes: Routes = [
     // Página principal: Registro de cliente

@@ -1,12 +1,64 @@
-body{
+/* app.component.css - Mejorado */
+:host {
+  display: block;
+  min-height: 100vh;
+}
+
+body {
   margin: 0;
+  background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 
 .main-content {
   min-height: calc(100vh - 200px);
-  padding: 20px 0;
+  padding: 0;
 }
 
 footer {
   background: linear-gradient(135deg, #1c55ff 0%, #0d3fd4 100%);
+  color: white;
+  margin-top: auto;
+}
+
+/* Utilidades adicionales */
+.fw-500 { font-weight: 500 !important; }
+.fw-600 { font-weight: 600 !important; }
+
+.text-gradient {
+  background: linear-gradient(135deg, #1c55ff, #0d3fd4);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.shadow-soft {
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08) !important;
+}
+
+.shadow-medium {
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.12) !important;
+}
+
+.shadow-strong {
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.15) !important;
+}
+
+/* Scrollbar personalizado */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: linear-gradient(135deg, #1c55ff, #0d3fd4);
+  border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(135deg, #0d3fd4, #0a2da0);
 }

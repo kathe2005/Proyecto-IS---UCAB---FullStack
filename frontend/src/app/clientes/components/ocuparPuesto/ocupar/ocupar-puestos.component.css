@@ -1,69 +1,183 @@
+:host {
+  display: block;
+  min-height: 100vh;
+  background: #f8f9fa;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
 .container-fluid {
-  margin: 20px 50px;
+  margin: 0;
+  padding: 0;
 }
 
 .card {
   border: none;
   border-radius: 15px;
   box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+  transition: all 0.3s ease;
+}
+
+.card:hover {
+  transform: translateY(-3px);
 }
 
 .card-header {
   border-radius: 15px 15px 0 0 !important;
-  background-color: rgb(28, 85, 255) !important;
+  background: #1c55ff !important;
+  padding: 15px 20px;
 }
 
-.btn-primary {
-  background-color: rgb(28, 85, 255);
-  border-color: rgb(28, 85, 255);
-}
-
-.btn-primary:hover {
-  background-color: rgb(20, 65, 200);
-  border-color: rgb(20, 65, 200);
-  transform: scale(1.05);
+.card-header h4 {
+  margin: 0;
+  font-weight: 600;
+  font-size: 1.3rem;
 }
 
 .puesto-card {
   cursor: pointer;
-  transition: transform 0.2s;
-  border: 1px solid #dee2e6;
-  border-radius: 10px;
+  transition: all 0.3s ease;
+  border: 2px solid transparent;
+  border-radius: 12px;
 }
 
 .puesto-card:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+  transform: translateY(-5px);
+  box-shadow: 0 6px 20px rgba(28,85,255,0.2);
+  border-color: #1c55ff;
+}
+
+.puesto-card .card-body {
+  padding: 20px 15px;
+}
+
+.puesto-card h5 {
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: #2c3e50;
+  margin-bottom: 12px;
 }
 
 .badge {
   color: white;
-  padding: 4px 8px;
-  border-radius: 4px;
-  font-size: 0.8em;
+  padding: 6px 10px;
+  border-radius: 8px;
+  font-size: 0.8rem;
+  font-weight: 600;
 }
 
 .alert {
-  border-radius: 10px;
+  border-radius: 12px;
   margin-bottom: 1rem;
+  border: none;
+  padding: 12px 16px;
+  font-weight: 500;
 }
 
 .form-control, .form-select {
   border-radius: 8px;
-  border: 1px solid #ced4da;
+  border: 2px solid #e9ecef;
+  padding: 10px 14px;
+  font-size: 0.9rem;
+  transition: all 0.2s ease;
 }
 
 .form-control:focus, .form-select:focus {
-  border-color: rgb(28, 85, 255);
-  box-shadow: 0 0 0 0.2rem rgba(28, 85, 255, 0.25);
+  border-color: #1c55ff;
+  box-shadow: 0 0 0 0.2rem rgba(28,85,255,0.15);
+}
+
+.form-label {
+  font-weight: 600;
+  color: #495057;
+  margin-bottom: 6px;
+  font-size: 0.9rem;
 }
 
 .btn {
   border-radius: 8px;
-  transition: all 0.3s ease;
+  transition: all 0.2s ease;
+  font-weight: 600;
+  padding: 10px 20px;
+  font-size: 0.9rem;
 }
 
-.btn:disabled {
-  opacity: 0.6;
+.btn:hover {
+  transform: translateY(-2px);
+}
+
+.btn-primary {
+  background: #1c55ff;
+  border: none;
+}
+
+.btn-primary:hover {
+  background: #0d3fd4;
+}
+
+.btn-primary:disabled {
+  background: #6c757d;
   cursor: not-allowed;
+}
+
+.btn-secondary {
+  background: #6c757d;
+  border: none;
+}
+
+.btn-secondary:hover {
+  background: #495057;
+}
+
+.footer {
+  background: #1c55ff;
+  color: white;
+  text-align: center;
+  padding: 20px;
+  margin-top: 40px;
+}
+
+@media (max-width: 768px) {
+  .container-custom {
+    margin: 0 20px;
+  }
+
+  .card-body {
+    padding: 15px;
+  }
+
+  .puesto-card .card-body {
+    padding: 15px 12px;
+  }
+
+  .btn {
+    padding: 8px 16px;
+    font-size: 0.85rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .container-custom {
+    margin: 0 15px;
+  }
+
+  .card-header h4 {
+    font-size: 1.1rem;
+  }
+
+  .puesto-card h5 {
+    font-size: 1rem;
+  }
+
+  .btn {
+    padding: 10px 14px;
+    font-size: 0.85rem;
+    width: 100%;
+    margin-bottom: 8px;
+  }
+}
+
+.puesto-card.selected {
+  border-color: #28a745;
+  background: rgba(40,167,69,0.05);
+  transform: scale(1.02);
 }

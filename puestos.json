@@ -7,7 +7,7 @@
     "tipoPuesto": "REGULAR",
     "estadoPuesto": "DISPONIBLE",
     "fechaOcupacion": null,
-    "fechaCreacion": "2025-11-12T17:47:14.459244500",
+    "fechaCreacion": "2025-11-12T20:07:53.538281200",
     "historialOcupacion": [
     ]
   },
@@ -18,10 +18,10 @@
     "usuarioOcupante": "profesor_garcia",
     "tipoPuesto": "DOCENTE",
     "estadoPuesto": "OCUPADO",
-    "fechaOcupacion": "2025-11-12T15:47:14.459244500",
-    "fechaCreacion": "2025-11-12T17:47:14.459244500",
+    "fechaOcupacion": "2025-11-12T18:07:53.538281200",
+    "fechaCreacion": "2025-11-12T20:07:53.538281200",
     "historialOcupacion": [
-      "Ocupado por profesor_garcia en 2025-11-12T15:47:14.459244500"
+      "Ocupado por profesor_garcia en 2025-11-12T18:07:53.538281200"
     ]
   },
   {
@@ -32,7 +32,7 @@
     "tipoPuesto": "DISCAPACITADO",
     "estadoPuesto": "DISPONIBLE",
     "fechaOcupacion": null,
-    "fechaCreacion": "2025-11-12T17:47:14.459799",
+    "fechaCreacion": "2025-11-12T20:07:53.538281200",
     "historialOcupacion": [
     ]
   },
@@ -44,7 +44,7 @@
     "tipoPuesto": "VISITANTE",
     "estadoPuesto": "BLOQUEADO",
     "fechaOcupacion": null,
-    "fechaCreacion": "2025-11-12T17:47:14.459799",
+    "fechaCreacion": "2025-11-12T20:07:53.538281200",
     "historialOcupacion": [
     ]
   },
@@ -56,7 +56,7 @@
     "tipoPuesto": "MOTOCICLETA",
     "estadoPuesto": "DISPONIBLE",
     "fechaOcupacion": null,
-    "fechaCreacion": "2025-11-12T17:47:14.459799",
+    "fechaCreacion": "2025-11-12T20:07:53.538281200",
     "historialOcupacion": [
     ]
   }

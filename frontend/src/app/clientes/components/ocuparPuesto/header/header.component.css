@@ -1,50 +1,92 @@
-header {
-  display: flex;
-  background-color: rgb(28, 85, 255);
-  color: white;
-  padding: 10px 0;
-  text-align: center;
-  align-items: center;
-  justify-content: space-between;
+/* header.component.css */
+:host {
+  display: block;
 }
 
-.topbar h1 {
-  margin: 0;
-  font-size: 24px;
-  margin-left: 50px;
+header {
+  background: linear-gradient(135deg, #1c55ff 0%, #0d3fd4 100%);
+  color: white;
+  padding: 0;
+  box-shadow: 0 4px 12px rgba(28, 85, 255, 0.3);
 }
 
 .topbar {
-  padding-bottom: 50px;
-  padding-top: 50px;
+  padding: 30px 50px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 20px;
 }
 
-.topbar h5 {
+.header-content h1 {
   margin: 0;
-  font-size: 16px;
-  margin-left: 50px;
-  color: #ffffff;
+  font-size: 2.2rem;
+  font-weight: 700;
+  background: linear-gradient(45deg, #ffffff, #e3f2fd);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.header-content h5 {
+  margin: 8px 0 0 0;
+  font-size: 1.1rem;
+  color: #e3f2fd;
+  font-weight: 400;
 }
 
 #fechaHeader {
-  background-color: rgba(105, 143, 255, 0.615);
-  width: 300px;
-  height: 100px;
-  margin-right: 50px;
-  border-radius: 10px;
-  transition: transform 0.3s ease;
+  background: rgba(255, 255, 255, 0.15);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  width: 280px;
+  height: 90px;
+  border-radius: 12px;
+  transition: all 0.3s ease;
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
+  padding: 15px;
 }
 
 #fechaHeader:hover {
-  transform: scale(1.10);
-  box-shadow: 0 0 10px rgba(55, 55, 55, 0.737);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+  background: rgba(255, 255, 255, 0.2);
 }
 
 #fechaHeader h3 {
-  margin: 10px;
-  font-size: 20px;
+  margin: 0 0 8px 0;
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: #ffffff;
+}
+
+#fechaHeader p {
+  margin: 0;
+  font-size: 0.95rem;
+  color: #e3f2fd;
+  font-weight: 500;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .topbar {
+    padding: 20px;
+    flex-direction: column;
+    text-align: center;
+  }
+
+  .header-content h1 {
+    font-size: 1.8rem;
+  }
+
+  #fechaHeader {
+    width: 100%;
+    max-width: 280px;
+    height: auto;
+    padding: 12px;
+  }
 }
