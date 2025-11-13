@@ -56,6 +56,11 @@ export const routes: Routes = [
         loadComponent: () => import('./clientes/components/ocuparPuesto/home/home.component').then(m => m.HomeComponent)
     },
 
+    {
+        path: 'crear',
+        loadComponent: () => import('./clientes/components/ocuparPuesto/crear/crear-puestos.component').then(m => m.CrearPuestosComponent)
+    },
+
     // Redirecciones
     {
         path: 'clientes',

@@ -1,62 +1,81 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { RouterModule, ActivatedRoute, Router } from '@angular/router';
+import { RouterModule, Router } from '@angular/router';
+import { FormsModule } from '@angular/forms';
 import { PuestoService } from '../../../service/puesto.service';
 import { HeaderComponent } from '../header/header.component';
 import { NavigationComponent } from '../navegador/navigation.component';
 import { Puesto, TipoPuestoInfo, EstadoPuestoInfo, EstadoPuesto, TipoPuesto } from '../../../models/puestos.model';
 
 @Component({
-  selector: 'app-lista-puestos',
+  selector: 'app-crear-puestos',
   standalone: true,
   imports: [
     CommonModule,
     RouterModule,
+    FormsModule,
     HeaderComponent,
     NavigationComponent
   ],
-  templateUrl: './lista-puestos.component.html',
-  styleUrls: ['./lista-puestos.component.css']
+  templateUrl: './crear-puestos.component.html',
+  styleUrls: ['./crear-puestos.component.css']
 })
-export class ListaPuestosComponent implements OnInit {
+export class CrearPuestosComponent implements OnInit {
+
+  titulo = 'Crear Nuevo Puesto de Estacionamiento';
   puestos: Puesto[] = [];
-  titulo = 'Todos los Puestos';
   criterioBusqueda = '';
+  puesto: Puesto = {
+    id: '',
+    numero: '',
+    ubicacion: '',
+    tipoPuesto: TipoPuesto.REGULAR,
+    estadoPuesto: EstadoPuesto.DISPONIBLE,
+    fechaCreacion: '',
+    historialOcupacion: [],
+    usuarioOcupante: null,
+    fechaOcupacion: null
+  };
+
+  tiposPuesto = Object.values(TipoPuesto);
+  estadosPuesto = Object.values(EstadoPuesto);
+  mensaje: string = '';
+  isError: boolean = false;
+  ubicacionesDisponibles: string[] = [
+    'Zona A',
+    'Zona B',
+    'Zona C',
+    'Zona Motocicletas'
+  ];
 
   constructor(
     private puestoService: PuestoService,
-    private route: ActivatedRoute,
     private router: Router
   ) {}
 
   ngOnInit() {
-    this.route.queryParams.subscribe(params => {
-      if (params['estado']) {
-        this.buscarPorEstado(params['estado']);
-      } else if (params['tipo']) {
-        this.buscarPorTipo(params['tipo']);
-      } else if (params['ubicacion']) {
-        this.buscarPorUbicacion(params['ubicacion']);
-      } else {
-        this.cargarPuestos();
-      }
-    });
-
-    this.route.url.subscribe(urlSegments => {
-      const path = urlSegments.join('/');
-      if (path === 'disponibles') {
-        this.cargarPuestosDisponibles();
-      } else if (path === 'ocupados') {
-        this.cargarPuestosOcupados();
-      } else if (path === 'bloqueados') {
-        this.cargarPuestosBloqueados();
-      } else if (path === '') {
-        this.cargarPuestos();
-      }
-    });
+    this.tiposPuesto = Object.values(TipoPuesto);
+    this.estadosPuesto = Object.values(EstadoPuesto);
   }
-
-  // === MÉTODOS PRINCIPALES DE CARGA ===
+  crearPuesto() {
+      this.mensaje = '';
+      this.isError = false;
+      if (!this.puesto.numero || !this.puesto.ubicacion) {
+          this.mostrarFeedback('❌ Error: El número y la ubicación del puesto son obligatorios.', true);
+          return;
+      }
+      this.puestoService.crearPuesto(this.puesto).subscribe({
+        next: (respuesta) => {
+          this.mostrarFeedback(`✅ Puesto N° ${respuesta.numero} creado exitosamente. ID: ${respuesta.id}`, false);
+          this.resetFormulario();
+        },
+        error: (error) => {
+          console.error('Error al crear el puesto:', error);
+          const errorMsg = error.error?.mensaje || error.message || 'Error de conexión o validación en el servidor.';
+          this.mostrarFeedback('❌ Error al crear el puesto: ' + errorMsg, true);
+        }
+      });
+    }
   cargarPuestos() {
     this.puestoService.obtenerTodosLosPuestos().subscribe({
       next: (data) => {
@@ -257,125 +276,28 @@ export class ListaPuestosComponent implements OnInit {
   verDetallesPuesto(id: string) {
     this.router.navigate(['/puestos/detalle', id]);
   }
-
-  // === MÉTODOS DE ACCIÓN SOBRE PUESTOS ===
-  ocuparPuesto(id: string) {
-    this.router.navigate(['/puestos/ocupar'], { queryParams: { puestoId: id } });
+  resetFormulario() {
+    this.puesto = {
+     id: '',
+      numero: '',
+      ubicacion: '',
+      tipoPuesto: TipoPuesto.REGULAR,
+      estadoPuesto: EstadoPuesto.DISPONIBLE,
+      fechaCreacion: '',
+      historialOcupacion: [],
+      usuarioOcupante: null,
+      fechaOcupacion: null,
+    };
   }
 
-  liberarPuesto(id: string) {
-    if (confirm('¿Está seguro de que desea liberar este puesto?')) {
-      this.puestoService.liberarPuesto(id).subscribe({
-        next: () => {
-          this.cargarPuestos();
-          this.mostrarMensajeExito('Puesto liberado exitosamente');
-        },
-        error: (error) => {
-          console.error('Error liberando puesto:', error);
-          this.mostrarError('Error al liberar el puesto');
-        }
-      });
-    }
+  mostrarFeedback(msg: string, isError: boolean) {
+    this.mensaje = msg;
+    this.isError = isError;
+    setTimeout(() => this.mensaje = '', 5000);
   }
 
-  bloquearPuesto(id: string) {
-    if (confirm('¿Está seguro de que desea bloquear este puesto?')) {
-      this.puestoService.bloquearPuesto(id).subscribe({
-        next: () => {
-          this.cargarPuestos();
-          this.mostrarMensajeExito('Puesto bloqueado exitosamente');
-        },
-        error: (error) => {
-          console.error('Error bloqueando puesto:', error);
-          this.mostrarError('Error al bloquear el puesto');
-        }
-      });
-    }
-  }
-
-  desbloquearPuesto(id: string) {
-    if (confirm('¿Está seguro de que desea desbloquear este puesto?')) {
-      this.puestoService.desbloquearPuesto(id).subscribe({
-        next: () => {
-          this.cargarPuestos();
-          this.mostrarMensajeExito('Puesto desbloqueado exitosamente');
-        },
-        error: (error) => {
-          console.error('Error desbloqueando puesto:', error);
-          this.mostrarError('Error al desbloquear el puesto');
-        }
-      });
-    }
-  }
-
-  ponerEnMantenimiento(id: string) {
-    if (confirm('¿Está seguro de que desea poner este puesto en mantenimiento?')) {
-      this.puestoService.ponerEnMantenimiento(id).subscribe({
-        next: () => {
-          this.cargarPuestos();
-          this.mostrarMensajeExito('Puesto puesto en mantenimiento exitosamente');
-        },
-        error: (error) => {
-          console.error('Error poniendo en mantenimiento:', error);
-          this.mostrarError('Error al poner el puesto en mantenimiento');
-        }
-      });
-    }
-  }
-
-  // === MÉTODOS MEJORADOS CON FEEDBACK ===
-  liberarPuestoConFeedback(id: string) {
-    if (confirm('¿Está seguro de que desea liberar este puesto? El usuario actual será desconectado.')) {
-      this.puestoService.liberarPuesto(id).subscribe({
-        next: () => {
-          this.cargarPuestos();
-          this.mostrarMensajeExito('Puesto liberado exitosamente');
-        },
-        error: (error) => {
-          console.error('Error liberando puesto:', error);
-          this.mostrarError('Error al liberar el puesto: ' + (error.error?.mensaje || 'Error desconocido'));
-        }
-      });
-    }
-  }
-
-  bloquearPuestoConFeedback(id: string) {
-    if (confirm('¿Está seguro de que desea bloquear este puesto? No estará disponible hasta que sea desbloqueado.')) {
-      this.puestoService.bloquearPuesto(id).subscribe({
-        next: () => {
-          this.cargarPuestos();
-          this.mostrarMensajeExito('Puesto bloqueado exitosamente');
-        },
-        error: (error) => {
-          console.error('Error bloqueando puesto:', error);
-          this.mostrarError('Error al bloquear el puesto: ' + (error.error?.mensaje || 'Error desconocido'));
-        }
-      });
-    }
-  }
-
-  // === MÉTODOS DE NAVEGACIÓN ===
   volverAInicio() {
     this.router.navigate(['/']);
-  }
-
-  irABuscarPuestos() {
-    this.router.navigate(['/puestos/buscar']);
-  }
-
-  irAEstadisticas() {
-    this.router.navigate(['/puestos/estadisticas']);
-  }
-
-  irACrear() {
-    this.router.navigate(['/puestos/crear']);
-  }
-
-
-  // === MÉTODOS DE NOTIFICACIÓN ===
-  private mostrarMensajeExito(mensaje: string) {
-    // En lugar de alert, podrías usar un servicio de notificaciones
-    alert(`✅ ${mensaje}`);
   }
 
   private mostrarError(mensaje: string) {

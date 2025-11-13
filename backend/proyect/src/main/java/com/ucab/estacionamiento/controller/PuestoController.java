@@ -17,6 +17,9 @@ public class PuestoController {
     @Autowired
     private PuestoService puestoService;
 
+    @Autowired
+    private JsonManager jsonManager;
+
     @GetMapping
     public String mostrarTodosLosPuestos(Model model) {
         List<Puesto> puestos = puestoService.obtenerPuestos();
@@ -198,13 +201,12 @@ public class PuestoController {
         return "puestos/historial";
     }
 
-    @GetMapping("/json")
+@GetMapping("/json")
     public String mostrarJson(Model model) {
-        JsonManager.mostrarArchivoJSON();
+        jsonManager.mostrarArchivoJSON();
         model.addAttribute("mensaje", "Contenido del archivo JSON mostrado en la consola del servidor");
         return "puestos/json";
     }
-
     @GetMapping("/reasignar/{id}")
     public String mostrarFormularioReasignar(@PathVariable String id, Model model) {
         Puesto puesto = puestoService.obtenerPuestoPorId(id).orElse(null);

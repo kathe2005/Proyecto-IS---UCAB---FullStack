@@ -66,4 +66,7 @@ export class PuestoService {
   obtenerHistorial(id: string): Observable<string[]> {
     return this.http.get<string[]>(`${this.apiUrl}/historial/${id}`);
   }
+  crearPuesto(nuevoPuesto: Puesto): Observable<Puesto> {
+    return this.http.post<Puesto>(this.apiUrl, nuevoPuesto);
+  }
 }

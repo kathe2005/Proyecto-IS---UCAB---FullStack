@@ -1,9 +1,15 @@
 package com.ucab.estacionamiento.service;
 
 import com.ucab.estacionamiento.model.*;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule; // Importante para LocalDateTime
 import org.springframework.stereotype.Component;
 
-import java.io.*;
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
 import java.nio.file.Files;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -12,140 +18,68 @@ import java.util.List;
 
 @Component
 public class JsonManager {
-    private static final String DATA_FILE = "puestos.json";
+    // Archivo externo donde se guardan/leen los datos (directorio de trabajo al ejecutar la app)
+    private static final String EXTERNAL_DATA_FILE = System.getProperty("user.dir") + File.separator + "puestos.json";
+    // Recurso embebido en el classpath (src/main/resources/puestos.json)
+    private static final String CLASSPATH_RESOURCE = "/puestos.json";
+    private static final ObjectMapper mapper = new ObjectMapper();
+    static {
+        mapper.registerModule(new JavaTimeModule());
+        mapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
+        mapper.enable(SerializationFeature.INDENT_OUTPUT);
+    }
 
-    public static void guardarPuestos(List<Puesto> puestos) {
+    public void guardarPuestos(List<Puesto> puestos) {
         if (puestos == null) {
             puestos = new ArrayList<>();
         }
-        
-        try (PrintWriter writer = new PrintWriter(new FileWriter(DATA_FILE))) {
-            writer.println("[");
-            for (int i = 0; i < puestos.size(); i++) {
-                Puesto puesto = puestos.get(i);
-                writer.println("  {");
-                writer.println("    \"id\": \"" + puesto.getId() + "\",");
-                writer.println("    \"numero\": \"" + puesto.getNumero() + "\",");
-                writer.println("    \"ubicacion\": \"" + puesto.getUbicacion() + "\",");
-                writer.println("    \"usuarioOcupante\": " + (puesto.getUsuarioOcupante() != null ? "\"" + puesto.getUsuarioOcupante() + "\"" : "null") + ",");
-                writer.println("    \"tipoPuesto\": \"" + puesto.getTipoPuesto() + "\",");
-                writer.println("    \"estadoPuesto\": \"" + puesto.getEstadoPuesto() + "\",");
-                writer.println("    \"fechaOcupacion\": " + (puesto.getFechaOcupacion() != null ? "\"" + puesto.getFechaOcupacion() + "\"" : "null") + ",");
-                writer.println("    \"fechaCreacion\": \"" + puesto.getFechaCreacion() + "\",");
-                
-                writer.println("    \"historialOcupacion\": [");
-                List<String> historial = puesto.getHistorialOcupacion();
-                for (int j = 0; j < historial.size(); j++) {
-                    writer.println("      \"" + escapeJson(historial.get(j)) + "\"" + (j < historial.size() - 1 ? "," : ""));
-                }
-                writer.println("    ]");
-                
-                writer.println("  }" + (i < puestos.size() - 1 ? "," : ""));
-            }
-            writer.println("]");
-            
-            System.out.println("💾 Datos guardados en JSON: " + DATA_FILE + " (" + puestos.size() + " puestos)");
+
+        try {
+            File out = new File(EXTERNAL_DATA_FILE);
+            mapper.writeValue(out, puestos);
+
+            System.out.println("💾 Datos guardados en JSON: " + out.getAbsolutePath() + " (" + puestos.size() + " puestos)");
         } catch (IOException e) {
             System.err.println("❌ Error guardando datos: " + e.getMessage());
+            e.printStackTrace();
         }
     }
 
-    public static List<Puesto> cargarPuestos() {
-        File file = new File(DATA_FILE);
+    public List<Puesto> cargarPuestos() {
+        File external = new File(EXTERNAL_DATA_FILE);
         try {
-            if (!file.exists()) {
-                System.out.println("📁 Archivo JSON no encontrado, creando datos iniciales...");
-                return crearDatosIniciales();
+            // 1) Intentar cargar desde archivo externo (directorio de trabajo)
+            if (external.exists() && external.length() > 0) {
+                System.out.println("� Cargando desde JSON externo: " + external.getAbsolutePath());
+                List<Puesto> puestos = mapper.readValue(external, new TypeReference<List<Puesto>>() {});
+                System.out.println("✅ Datos cargados desde externo: " + puestos.size() + " puestos");
+                return puestos;
             }
 
-            if (file.length() == 0) {
-                System.out.println("📁 Archivo JSON vacío, creando datos iniciales...");
-                return crearDatosIniciales();
+            // 2) Si no existe, intentar cargar desde recurso en classpath (src/main/resources/puestos.json)
+            InputStream is = JsonManager.class.getResourceAsStream(CLASSPATH_RESOURCE);
+            if (is != null) {
+                System.out.println("📂 Archivo externo no encontrado. Cargando desde recurso en classpath: " + CLASSPATH_RESOURCE);
+                List<Puesto> puestos = mapper.readValue(is, new TypeReference<List<Puesto>>() {});
+                // Persistir una copia en el archivo externo para futuras ejecuciones
+                guardarPuestos(puestos);
+                System.out.println("✅ Datos cargados desde classpath y guardados en externo: " + puestos.size() + " puestos");
+                return puestos;
             }
 
-            System.out.println("📂 Cargando desde JSON: " + file.getAbsolutePath());
-            String content = Files.readString(file.toPath());
-            
-            List<Puesto> puestos = parseJson(content);
-            
-            System.out.println("✅ Datos cargados: " + puestos.size() + " puestos");
-            return puestos;
+            // 3) Si tampoco está en classpath, crear datos iniciales y guardarlos
+            System.out.println("📁 Archivo JSON no encontrado en externo ni classpath, creando datos iniciales...");
+            return crearDatosIniciales();
 
         } catch (IOException e) {
             System.err.println("❌ Error cargando datos: " + e.getMessage());
+            e.printStackTrace(); // Ver el error de parseo si ocurre
             System.out.println("🔄 Creando datos iniciales debido al error...");
             return crearDatosIniciales();
         }
     }
 
-    private static List<Puesto> parseJson(String jsonContent) {
-        List<Puesto> puestos = new ArrayList<>();
-        
-        try {
-            String[] puestoBlocks = jsonContent.split("\\},\\s*\\{");
-            
-            for (String block : puestoBlocks) {
-                block = block.replaceAll("[\\[\\]\\{\\}]", "").trim();
-                
-                if (block.isEmpty()) continue;
-                
-                Puesto puesto = new Puesto();
-                String[] lines = block.split("\\n");
-                
-                for (String line : lines) {
-                    line = line.trim();
-                    if (line.contains("\"id\":")) {
-                        puesto.setId(extractValue(line));
-                    } else if (line.contains("\"numero\":")) {
-                        puesto.setNumero(extractValue(line));
-                    } else if (line.contains("\"ubicacion\":")) {
-                        puesto.setUbicacion(extractValue(line));
-                    } else if (line.contains("\"usuarioOcupante\":")) {
-                        String value = extractValue(line);
-                        puesto.setUsuarioOcupante("null".equals(value) ? null : value);
-                    } else if (line.contains("\"tipoPuesto\":")) {
-                        puesto.setTipoPuesto(TipoPuesto.valueOf(extractValue(line)));
-                    } else if (line.contains("\"estadoPuesto\":")) {
-                        puesto.setEstadoPuesto(EstadoPuesto.valueOf(extractValue(line)));
-                    } else if (line.contains("\"fechaOcupacion\":")) {
-                        String value = extractValue(line);
-                        if (!"null".equals(value)) {
-                            puesto.setFechaOcupacion(LocalDateTime.parse(value.replace("T", "T")));
-                        }
-                    } else if (line.contains("\"fechaCreacion\":")) {
-                        String value = extractValue(line);
-                        puesto.setFechaCreacion(LocalDateTime.parse(value.replace("T", "T")));
-                    }
-                }
-                
-                puestos.add(puesto);
-            }
-        } catch (Exception e) {
-            System.err.println("⚠️  Error parseando JSON, usando datos iniciales: " + e.getMessage());
-            return crearDatosIniciales();
-        }
-        
-        return puestos;
-    }
-
-    private static String extractValue(String line) {
-        String[] parts = line.split(":");
-        if (parts.length > 1) {
-            String value = parts[1].trim().replace("\"", "").replace(",", "");
-            return value.equals("null") ? null : value;
-        }
-        return "";
-    }
-
-    private static String escapeJson(String text) {
-        return text.replace("\\", "\\\\")
-                  .replace("\"", "\\\"")
-                  .replace("\n", "\\n")
-                  .replace("\r", "\\r")
-                  .replace("\t", "\\t");
-    }
-
-    private static List<Puesto> crearDatosIniciales() {
+    public List<Puesto> crearDatosIniciales() {
         System.out.println("📝 Creando datos iniciales...");
 
         Puesto puesto1 = new Puesto("P1", "A-01", TipoPuesto.REGULAR, EstadoPuesto.DISPONIBLE, "Zona A");
@@ -159,27 +93,27 @@ public class JsonManager {
         Puesto puesto5 = new Puesto("P5", "M-01", TipoPuesto.MOTOCICLETA, EstadoPuesto.DISPONIBLE, "Zona Motos");
 
         List<Puesto> puestosIniciales = Arrays.asList(puesto1, puesto2, puesto3, puesto4, puesto5);
+
         guardarPuestos(puestosIniciales);
 
         return new ArrayList<>(puestosIniciales);
     }
 
-    public static void mostrarArchivoJSON() {
+    public void mostrarArchivoJSON() {
         try {
-            File file = new File(DATA_FILE);
+            File file = new File(EXTERNAL_DATA_FILE);
             if (!file.exists()) {
-                System.out.println("❌ El archivo JSON no existe aún");
+                System.out.println("❌ El archivo JSON externo no existe aún: " + file.getAbsolutePath());
                 return;
             }
-            
+
             String content = Files.readString(file.toPath());
             System.out.println("\n📄 CONTENIDO DEL ARCHIVO JSON:");
             System.out.println("==================================");
             System.out.println(content);
-            
+
         } catch (IOException e) {
             System.err.println("❌ Error leyendo archivo JSON: " + e.getMessage());
         }
     }
 }
-

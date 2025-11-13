@@ -1,6 +1,8 @@
 package com.ucab.estacionamiento.service;
 
 import com.ucab.estacionamiento.model.*;
+
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -10,9 +12,13 @@ import java.util.stream.Collectors;
 @Service
 public class PuestoServiceImpl implements PuestoService {
     private List<Puesto> puestos;
+    private final JsonManager jsonManager;
 
-    public PuestoServiceImpl() {
-        this.puestos = JsonManager.cargarPuestos();
+    @Autowired
+    public PuestoServiceImpl(JsonManager jsonManager) {
+        this.jsonManager = jsonManager; // Guarda la instancia
+        this.puestos = jsonManager.cargarPuestos(); // Usa la instancia (¡sin 'static'!)
+        
         if (this.puestos == null) {
             System.err.println("❌ ERROR: Lista de puestos es null, inicializando lista vacía");
             this.puestos = new ArrayList<>();
@@ -20,9 +26,11 @@ public class PuestoServiceImpl implements PuestoService {
         System.out.println("🚀 Servicio Spring inicializado con " + puestos.size() + " puestos");
     }
 
+    // --- MODIFICADO ---
     private void guardarCambios() {
-        JsonManager.guardarPuestos(puestos);
+        jsonManager.guardarPuestos(puestos); // Usa la instancia (¡sin 'static'!)
     }
+
 
     @Override
     public List<Puesto> obtenerPuestos() {
@@ -39,21 +47,17 @@ public class PuestoServiceImpl implements PuestoService {
                 .findFirst();
     }
 
-    @Override
-    public Puesto crearPuesto(Puesto puesto) {
+@Override
+    public Puesto crearPuesto(Puesto puesto) throws IllegalArgumentException {
         boolean numeroExiste = puestos.stream()
                 .anyMatch(p -> p.getNumero().equals(puesto.getNumero()));
-
         if (numeroExiste) {
-            throw new IllegalArgumentException("El número de puesto ya existe: " + puesto.getNumero());
+            throw new IllegalArgumentException("El número de puesto '" + puesto.getNumero() + "' ya existe.");
         }
-
-        if (puesto.getId() == null) {
-            puesto.setId(generarNuevoId());
-        }
-
+        puesto.setId(UUID.randomUUID().toString());
         puesto.setFechaCreacion(LocalDateTime.now());
-        puestos.add(puesto);
+        puesto.agregarRegistroHistorial("Puesto creado en " + puesto.getFechaCreacion());
+        this.puestos.add(puesto);
         guardarCambios();
         return puesto;
     }

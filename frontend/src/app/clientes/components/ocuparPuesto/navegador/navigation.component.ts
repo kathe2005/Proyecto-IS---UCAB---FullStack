@@ -15,6 +15,7 @@ export class NavigationComponent {
     { route: '/puestos', icon: 'fas fa-list', title: 'Gestión de Puestos' },
     { route: '/puestos/ocupar', icon: 'fas fa-parking', title: 'Ocupar Puesto' },
     { route: '/puestos/estadisticas', icon: 'fas fa-chart-bar', title: 'Estadísticas' },
-    { route: '/puestos/buscar', icon: 'fas fa-search', title: 'Buscar Puestos' }
+    { route: '/puestos/buscar', icon: 'fas fa-search', title: 'Buscar Puestos' },
+    { route: '/', icon: 'fas fa-home', title: 'Crear puestos' }
   ];
 }
