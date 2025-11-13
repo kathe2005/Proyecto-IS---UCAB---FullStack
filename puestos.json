@@ -4,20 +4,20 @@
   "ubicacion" : "Zona A",
   "usuarioOcupante" : null,
   "tipoPuesto" : "REGULAR",
-  "estadoPuesto" : "DISPONIBLE",
+  "estadoPuesto" : "BLOQUEADO",
   "fechaOcupacion" : null,
   "fechaCreacion" : "2025-11-12T20:07:53.5382812",
-  "historialOcupacion" : [ ]
+  "historialOcupacion" : [ "Bloqueado en 2025-11-13T09:31:48.562889" ]
 }, {
   "id" : "P2",
   "numero" : "A-02",
   "ubicacion" : "Zona A",
-  "usuarioOcupante" : "profesor_garcia",
+  "usuarioOcupante" : null,
   "tipoPuesto" : "DOCENTE",
-  "estadoPuesto" : "OCUPADO",
-  "fechaOcupacion" : "2025-11-12T18:07:53.5382812",
+  "estadoPuesto" : "DISPONIBLE",
+  "fechaOcupacion" : null,
   "fechaCreacion" : "2025-11-12T20:07:53.5382812",
-  "historialOcupacion" : [ "Ocupado por profesor_garcia en 2025-11-12T18:07:53.538281200" ]
+  "historialOcupacion" : [ "Ocupado por profesor_garcia en 2025-11-12T18:07:53.538281200", "Liberado en 2025-11-13T09:27:14.950500800" ]
 }, {
   "id" : "P3",
   "numero" : "B-01",
@@ -34,10 +34,10 @@
   "ubicacion" : "Zona C",
   "usuarioOcupante" : null,
   "tipoPuesto" : "VISITANTE",
-  "estadoPuesto" : "BLOQUEADO",
+  "estadoPuesto" : "DISPONIBLE",
   "fechaOcupacion" : null,
   "fechaCreacion" : "2025-11-12T20:07:53.5382812",
-  "historialOcupacion" : [ ]
+  "historialOcupacion" : [ "Desbloqueado en 2025-11-13T09:28:36.961708400" ]
 }, {
   "id" : "P5",
   "numero" : "M-01",

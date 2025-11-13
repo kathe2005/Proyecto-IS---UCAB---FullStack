@@ -175,3 +175,77 @@
 2025-11-13T07:05:04.695-04:00  INFO 36284 --- [proyect] [http-nio-127.0.0.1-8080-exec-2] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring DispatcherServlet 'dispatcherServlet'
 2025-11-13T07:05:04.697-04:00  INFO 36284 --- [proyect] [http-nio-127.0.0.1-8080-exec-2] o.s.web.servlet.DispatcherServlet        : Initializing Servlet 'dispatcherServlet'
 2025-11-13T07:05:04.699-04:00  INFO 36284 --- [proyect] [http-nio-127.0.0.1-8080-exec-2] o.s.web.servlet.DispatcherServlet        : Completed initialization in 2 ms
+2025-11-13T09:25:51.715-04:00  INFO 5940 --- [proyect] [restartedMain] c.u.estacionamiento.ProyectApplication   : Starting ProyectApplication using Java 21.0.8 with PID 5940 (C:\Users\admin\Documents\Proyecto-IS---UCAB---FullStack\backend\proyect\target\classes started by admin in C:\Users\admin\Documents\Proyecto-IS---UCAB---FullStack)
+2025-11-13T09:25:51.724-04:00 DEBUG 5940 --- [proyect] [restartedMain] c.u.estacionamiento.ProyectApplication   : Running with Spring Boot v3.5.7, Spring v6.2.12
+2025-11-13T09:25:51.724-04:00  INFO 5940 --- [proyect] [restartedMain] c.u.estacionamiento.ProyectApplication   : No active profile set, falling back to 1 default profile: "default"
+2025-11-13T09:25:51.806-04:00  INFO 5940 --- [proyect] [restartedMain] .e.DevToolsPropertyDefaultsPostProcessor : Devtools property defaults active! Set 'spring.devtools.add-properties' to 'false' to disable
+2025-11-13T09:25:51.806-04:00  INFO 5940 --- [proyect] [restartedMain] .e.DevToolsPropertyDefaultsPostProcessor : For additional web related logging consider setting the 'logging.level.web' property to 'DEBUG'
+2025-11-13T09:25:53.217-04:00  INFO 5940 --- [proyect] [restartedMain] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2025-11-13T09:25:53.269-04:00  INFO 5940 --- [proyect] [restartedMain] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 33 ms. Found 0 JPA repository interfaces.
+2025-11-13T09:25:54.213-04:00  INFO 5940 --- [proyect] [restartedMain] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat initialized with port 8080 (http)
+2025-11-13T09:25:54.246-04:00  INFO 5940 --- [proyect] [restartedMain] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2025-11-13T09:25:54.246-04:00  INFO 5940 --- [proyect] [restartedMain] o.apache.catalina.core.StandardEngine    : Starting Servlet engine: [Apache Tomcat/10.1.48]
+2025-11-13T09:25:54.327-04:00  INFO 5940 --- [proyect] [restartedMain] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring embedded WebApplicationContext
+2025-11-13T09:25:54.328-04:00  INFO 5940 --- [proyect] [restartedMain] w.s.c.ServletWebServerApplicationContext : Root WebApplicationContext: initialization completed in 2521 ms
+2025-11-13T09:25:54.550-04:00  INFO 5940 --- [proyect] [restartedMain] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
+2025-11-13T09:25:54.877-04:00  INFO 5940 --- [proyect] [restartedMain] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Added connection conn0: url=jdbc:h2:mem:5b0a190e-aca7-449d-b58d-cda0829c91fd user=SA
+2025-11-13T09:25:54.879-04:00  INFO 5940 --- [proyect] [restartedMain] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
+2025-11-13T09:25:54.957-04:00  INFO 5940 --- [proyect] [restartedMain] o.hibernate.jpa.internal.util.LogHelper  : HHH000204: Processing PersistenceUnitInfo [name: default]
+2025-11-13T09:25:55.044-04:00  INFO 5940 --- [proyect] [restartedMain] org.hibernate.Version                    : HHH000412: Hibernate ORM core version 6.6.33.Final
+2025-11-13T09:25:55.094-04:00  INFO 5940 --- [proyect] [restartedMain] o.h.c.internal.RegionFactoryInitiator    : HHH000026: Second-level cache disabled
+2025-11-13T09:25:55.570-04:00  INFO 5940 --- [proyect] [restartedMain] o.s.o.j.p.SpringPersistenceUnitInfo      : No LoadTimeWeaver setup: ignoring JPA class transformer
+2025-11-13T09:25:55.696-04:00  INFO 5940 --- [proyect] [restartedMain] org.hibernate.orm.connections.pooling    : HHH10001005: Database info:
+	Database JDBC URL [Connecting through datasource 'HikariDataSource (HikariPool-1)']
+	Database driver: undefined/unknown
+	Database version: 2.3.232
+	Autocommit mode: undefined/unknown
+	Isolation level: undefined/unknown
+	Minimum pool size: undefined/unknown
+	Maximum pool size: undefined/unknown
+2025-11-13T09:25:56.186-04:00  INFO 5940 --- [proyect] [restartedMain] o.h.e.t.j.p.i.JtaPlatformInitiator       : HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+2025-11-13T09:25:56.207-04:00  INFO 5940 --- [proyect] [restartedMain] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
+2025-11-13T09:25:56.499-04:00  WARN 5940 --- [proyect] [restartedMain] JpaBaseConfiguration$JpaWebConfiguration : spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+2025-11-13T09:25:56.986-04:00  INFO 5940 --- [proyect] [restartedMain] o.s.b.a.h2.H2ConsoleAutoConfiguration    : H2 console available at '/h2-console'. Database available at 'jdbc:h2:mem:5b0a190e-aca7-449d-b58d-cda0829c91fd'
+2025-11-13T09:25:57.109-04:00  INFO 5940 --- [proyect] [restartedMain] o.s.b.d.a.OptionalLiveReloadServer       : LiveReload server is running on port 35729
+2025-11-13T09:25:57.169-04:00  INFO 5940 --- [proyect] [restartedMain] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat started on port 8080 (http) with context path '/'
+2025-11-13T09:25:57.183-04:00  INFO 5940 --- [proyect] [restartedMain] c.u.estacionamiento.ProyectApplication   : Started ProyectApplication in 6.217 seconds (process running for 6.936)
+2025-11-13T09:26:58.971-04:00  INFO 5940 --- [proyect] [http-nio-127.0.0.1-8080-exec-1] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring DispatcherServlet 'dispatcherServlet'
+2025-11-13T09:26:58.971-04:00  INFO 5940 --- [proyect] [http-nio-127.0.0.1-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Initializing Servlet 'dispatcherServlet'
+2025-11-13T09:26:58.976-04:00  INFO 5940 --- [proyect] [http-nio-127.0.0.1-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Completed initialization in 5 ms
+2025-11-13T11:03:38.870-04:00  INFO 25172 --- [proyect] [restartedMain] c.u.estacionamiento.ProyectApplication   : Starting ProyectApplication using Java 21.0.8 with PID 25172 (C:\Users\admin\Documents\Proyecto-IS---UCAB---FullStack\backend\proyect\target\classes started by admin in C:\Users\admin\Documents\Proyecto-IS---UCAB---FullStack)
+2025-11-13T11:03:38.878-04:00 DEBUG 25172 --- [proyect] [restartedMain] c.u.estacionamiento.ProyectApplication   : Running with Spring Boot v3.5.7, Spring v6.2.12
+2025-11-13T11:03:38.880-04:00  INFO 25172 --- [proyect] [restartedMain] c.u.estacionamiento.ProyectApplication   : No active profile set, falling back to 1 default profile: "default"
+2025-11-13T11:03:38.961-04:00  INFO 25172 --- [proyect] [restartedMain] .e.DevToolsPropertyDefaultsPostProcessor : Devtools property defaults active! Set 'spring.devtools.add-properties' to 'false' to disable
+2025-11-13T11:03:38.964-04:00  INFO 25172 --- [proyect] [restartedMain] .e.DevToolsPropertyDefaultsPostProcessor : For additional web related logging consider setting the 'logging.level.web' property to 'DEBUG'
+2025-11-13T11:03:40.402-04:00  INFO 25172 --- [proyect] [restartedMain] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2025-11-13T11:03:40.451-04:00  INFO 25172 --- [proyect] [restartedMain] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 33 ms. Found 0 JPA repository interfaces.
+2025-11-13T11:03:41.360-04:00  INFO 25172 --- [proyect] [restartedMain] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat initialized with port 8080 (http)
+2025-11-13T11:03:41.398-04:00  INFO 25172 --- [proyect] [restartedMain] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2025-11-13T11:03:41.400-04:00  INFO 25172 --- [proyect] [restartedMain] o.apache.catalina.core.StandardEngine    : Starting Servlet engine: [Apache Tomcat/10.1.48]
+2025-11-13T11:03:41.480-04:00  INFO 25172 --- [proyect] [restartedMain] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring embedded WebApplicationContext
+2025-11-13T11:03:41.480-04:00  INFO 25172 --- [proyect] [restartedMain] w.s.c.ServletWebServerApplicationContext : Root WebApplicationContext: initialization completed in 2516 ms
+2025-11-13T11:03:41.713-04:00  INFO 25172 --- [proyect] [restartedMain] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
+2025-11-13T11:03:42.025-04:00  INFO 25172 --- [proyect] [restartedMain] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Added connection conn0: url=jdbc:h2:mem:cee9701c-2648-4ce7-9ab4-0fd987dd204c user=SA
+2025-11-13T11:03:42.032-04:00  INFO 25172 --- [proyect] [restartedMain] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
+2025-11-13T11:03:42.112-04:00  INFO 25172 --- [proyect] [restartedMain] o.hibernate.jpa.internal.util.LogHelper  : HHH000204: Processing PersistenceUnitInfo [name: default]
+2025-11-13T11:03:42.217-04:00  INFO 25172 --- [proyect] [restartedMain] org.hibernate.Version                    : HHH000412: Hibernate ORM core version 6.6.33.Final
+2025-11-13T11:03:42.279-04:00  INFO 25172 --- [proyect] [restartedMain] o.h.c.internal.RegionFactoryInitiator    : HHH000026: Second-level cache disabled
+2025-11-13T11:03:42.752-04:00  INFO 25172 --- [proyect] [restartedMain] o.s.o.j.p.SpringPersistenceUnitInfo      : No LoadTimeWeaver setup: ignoring JPA class transformer
+2025-11-13T11:03:42.867-04:00  INFO 25172 --- [proyect] [restartedMain] org.hibernate.orm.connections.pooling    : HHH10001005: Database info:
+	Database JDBC URL [Connecting through datasource 'HikariDataSource (HikariPool-1)']
+	Database driver: undefined/unknown
+	Database version: 2.3.232
+	Autocommit mode: undefined/unknown
+	Isolation level: undefined/unknown
+	Minimum pool size: undefined/unknown
+	Maximum pool size: undefined/unknown
+2025-11-13T11:03:43.369-04:00  INFO 25172 --- [proyect] [restartedMain] o.h.e.t.j.p.i.JtaPlatformInitiator       : HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+2025-11-13T11:03:43.393-04:00  INFO 25172 --- [proyect] [restartedMain] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
+2025-11-13T11:03:43.728-04:00  WARN 25172 --- [proyect] [restartedMain] JpaBaseConfiguration$JpaWebConfiguration : spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+2025-11-13T11:03:44.284-04:00  INFO 25172 --- [proyect] [restartedMain] o.s.b.a.h2.H2ConsoleAutoConfiguration    : H2 console available at '/h2-console'. Database available at 'jdbc:h2:mem:cee9701c-2648-4ce7-9ab4-0fd987dd204c'
+2025-11-13T11:03:44.506-04:00  INFO 25172 --- [proyect] [restartedMain] o.s.b.d.a.OptionalLiveReloadServer       : LiveReload server is running on port 35729
+2025-11-13T11:03:44.562-04:00  INFO 25172 --- [proyect] [restartedMain] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat started on port 8080 (http) with context path '/'
+2025-11-13T11:03:44.580-04:00  INFO 25172 --- [proyect] [restartedMain] c.u.estacionamiento.ProyectApplication   : Started ProyectApplication in 6.613 seconds (process running for 7.303)
+2025-11-13T11:09:00.256-04:00  INFO 25172 --- [proyect] [http-nio-127.0.0.1-8080-exec-1] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring DispatcherServlet 'dispatcherServlet'
+2025-11-13T11:09:00.256-04:00  INFO 25172 --- [proyect] [http-nio-127.0.0.1-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Initializing Servlet 'dispatcherServlet'
+2025-11-13T11:09:00.264-04:00  INFO 25172 --- [proyect] [http-nio-127.0.0.1-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Completed initialization in 8 ms
