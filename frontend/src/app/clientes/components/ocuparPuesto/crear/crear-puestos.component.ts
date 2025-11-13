@@ -48,6 +48,10 @@ export class CrearPuestosComponent implements OnInit {
     'Zona Motocicletas'
   ];
 
+  // Para validación del formulario
+  formSubmitted = false;
+  isLoading = false;
+
   constructor(
     private puestoService: PuestoService,
     private router: Router
@@ -57,228 +61,71 @@ export class CrearPuestosComponent implements OnInit {
     this.tiposPuesto = Object.values(TipoPuesto);
     this.estadosPuesto = Object.values(EstadoPuesto);
   }
+
   crearPuesto() {
-      this.mensaje = '';
-      this.isError = false;
-      if (!this.puesto.numero || !this.puesto.ubicacion) {
-          this.mostrarFeedback('❌ Error: El número y la ubicación del puesto son obligatorios.', true);
-          return;
-      }
-      this.puestoService.crearPuesto(this.puesto).subscribe({
-        next: (respuesta) => {
-          this.mostrarFeedback(`✅ Puesto N° ${respuesta.numero} creado exitosamente. ID: ${respuesta.id}`, false);
-          this.resetFormulario();
-        },
-        error: (error) => {
-          console.error('Error al crear el puesto:', error);
-          const errorMsg = error.error?.mensaje || error.message || 'Error de conexión o validación en el servidor.';
-          this.mostrarFeedback('❌ Error al crear el puesto: ' + errorMsg, true);
-        }
-      });
+    this.formSubmitted = true;
+    this.mensaje = '';
+    this.isError = false;
+
+    // Validación del formulario
+    if (!this.validarFormulario()) {
+      this.mostrarFeedback('❌ Por favor, complete todos los campos obligatorios correctamente.', true);
+      return;
     }
-  cargarPuestos() {
-    this.puestoService.obtenerTodosLosPuestos().subscribe({
-      next: (data) => {
-        this.puestos = data;
-        this.titulo = 'Todos los Puestos';
-        this.criterioBusqueda = '';
+
+    this.isLoading = true;
+
+    // Preparar el objeto puesto para enviar
+    const puestoParaEnviar: Puesto = {
+      ...this.puesto,
+      fechaCreacion: new Date().toISOString(),
+      historialOcupacion: [],
+      usuarioOcupante: null,
+      fechaOcupacion: null
+    };
+
+    this.puestoService.crearPuesto(puestoParaEnviar).subscribe({
+      next: (respuesta) => {
+        this.mostrarFeedback(`✅ Puesto N° ${respuesta.numero} creado exitosamente. ID: ${respuesta.id}`, false);
+        this.resetFormulario();
+        this.isLoading = false;
+
+        // Redirigir después de 2 segundos
+        setTimeout(() => {
+          this.router.navigate(['/puestos']);
+        }, 2000);
       },
       error: (error) => {
-        console.error('Error cargando puestos:', error);
-        this.mostrarError('Error al cargar los puestos');
+        console.error('Error al crear el puesto:', error);
+        const errorMsg = error.error?.mensaje || error.message || 'Error de conexión o validación en el servidor.';
+        this.mostrarFeedback('❌ Error al crear el puesto: ' + errorMsg, true);
+        this.isLoading = false;
       }
     });
   }
 
-  cargarPuestosDisponibles() {
-    this.puestoService.obtenerPuestosPorEstado(EstadoPuesto.DISPONIBLE).subscribe({
-      next: (data) => {
-        this.puestos = data;
-        this.titulo = 'Puestos Disponibles';
-        this.criterioBusqueda = '';
-      },
-      error: (error) => {
-        console.error('Error cargando puestos disponibles:', error);
-        this.mostrarError('Error al cargar puestos disponibles');
-      }
-    });
+  validarFormulario(): boolean {
+    return !!(
+      this.puesto.numero &&
+      this.puesto.numero.trim() !== '' &&
+      this.puesto.ubicacion &&
+      this.puesto.ubicacion.trim() !== '' &&
+      this.puesto.tipoPuesto &&
+      this.puesto.estadoPuesto
+    );
   }
 
-  cargarPuestosOcupados() {
-    this.puestoService.obtenerPuestosPorEstado(EstadoPuesto.OCUPADO).subscribe({
-      next: (data) => {
-        this.puestos = data;
-        this.titulo = 'Puestos Ocupados';
-        this.criterioBusqueda = '';
-      },
-      error: (error) => {
-        console.error('Error cargando puestos ocupados:', error);
-        this.mostrarError('Error al cargar puestos ocupados');
-      }
-    });
-  }
-
-  cargarPuestosBloqueados() {
-    this.puestoService.obtenerPuestosPorEstado(EstadoPuesto.BLOQUEADO).subscribe({
-      next: (data) => {
-        this.puestos = data;
-        this.titulo = 'Puestos Bloqueados';
-        this.criterioBusqueda = '';
-      },
-      error: (error) => {
-        console.error('Error cargando puestos bloqueados:', error);
-        this.mostrarError('Error al cargar puestos bloqueados');
-      }
-    });
-  }
-
-  // === MÉTODOS DE BÚSQUEDA ===
-  buscarPorEstado(estado: string) {
-    this.puestoService.obtenerPuestosPorEstado(estado as EstadoPuesto).subscribe({
-      next: (data) => {
-        this.puestos = data;
-        this.titulo = `Puestos - Estado: ${this.getEstadoDescripcion(estado)}`;
-        this.criterioBusqueda = `Estado: ${this.getEstadoDescripcion(estado)}`;
-      },
-      error: (error) => {
-        console.error('Error buscando por estado:', error);
-        this.mostrarError('Error al buscar por estado');
-      }
-    });
-  }
-
-  buscarPorTipo(tipo: string) {
-    this.puestoService.obtenerPuestosPorTipo(tipo as TipoPuesto).subscribe({
-      next: (data) => {
-        this.puestos = data;
-        this.titulo = `Puestos - Tipo: ${this.getTipoDescripcion(tipo)}`;
-        this.criterioBusqueda = `Tipo: ${this.getTipoDescripcion(tipo)}`;
-      },
-      error: (error) => {
-        console.error('Error buscando por tipo:', error);
-        this.mostrarError('Error al buscar por tipo');
-      }
-    });
-  }
-
-  buscarPorUbicacion(ubicacion: string) {
-    this.puestoService.filtrarPuestosPorUbicacion(ubicacion).subscribe({
-      next: (data) => {
-        this.puestos = data;
-        this.titulo = `Puestos - Ubicación: ${ubicacion}`;
-        this.criterioBusqueda = `Ubicación: ${ubicacion}`;
-      },
-      error: (error) => {
-        console.error('Error buscando por ubicación:', error);
-        this.mostrarError('Error al buscar por ubicación');
-      }
-    });
-  }
-
-  // === MÉTODOS DE INFORMACIÓN Y UTILIDAD ===
   getTipoDescripcion(tipo: string): string {
     return TipoPuestoInfo[tipo as keyof typeof TipoPuestoInfo]?.descripcion || tipo;
-  }
-
-  getTipoColor(tipo: string): string {
-    return TipoPuestoInfo[tipo as keyof typeof TipoPuestoInfo]?.color || 'gray';
   }
 
   getEstadoDescripcion(estado: string): string {
     return EstadoPuestoInfo[estado as keyof typeof EstadoPuestoInfo]?.descripcion || estado;
   }
 
-  getEstadoColor(estado: string): string {
-    return EstadoPuestoInfo[estado as keyof typeof EstadoPuestoInfo]?.color || 'gray';
-  }
-
-  getEstadoIcon(estado: string): string {
-    const icons: any = {
-      'DISPONIBLE': 'fas fa-check-circle',
-      'OCUPADO': 'fas fa-car',
-      'BLOQUEADO': 'fas fa-lock',
-      'MANTENIMIENTO': 'fas fa-tools'
-    };
-    return icons[estado] || 'fas fa-question-circle';
-  }
-
-  // === MÉTODOS NUEVOS PARA ESTADÍSTICAS Y MEJORAS VISUALES ===
-  getCountByEstado(estado: string): number {
-    return this.puestos.filter(puesto => puesto.estadoPuesto === estado).length;
-  }
-
-  getTextColor(backgroundColor: string): string {
-    // Función para determinar si el texto debe ser claro u oscuro según el fondo
-    if (!backgroundColor || backgroundColor === 'gray') return '#FFFFFF';
-
-    const hex = backgroundColor.replace('#', '');
-    if (hex.length !== 6) return '#FFFFFF';
-
-    try {
-      const r = parseInt(hex.substr(0, 2), 16);
-      const g = parseInt(hex.substr(2, 2), 16);
-      const b = parseInt(hex.substr(4, 2), 16);
-      const brightness = ((r * 299) + (g * 587) + (b * 114)) / 1000;
-      return brightness > 128 ? '#000000' : '#FFFFFF';
-    } catch (error) {
-      return '#FFFFFF';
-    }
-  }
-
-  getCountByTipo(tipo: string): number {
-    return this.puestos.filter(puesto => puesto.tipoPuesto === tipo).length;
-  }
-
-  getPorcentajeOcupacion(): number {
-    if (this.puestos.length === 0) return 0;
-    const ocupados = this.getCountByEstado('OCUPADO');
-    return (ocupados / this.puestos.length) * 100;
-  }
-
-  refrescarDatos() {
-    this.cargarPuestos();
-  }
-
-  exportarDatos() {
-    console.log('Exportando datos de puestos:', this.puestos);
-    // Aquí puedes implementar la lógica para exportar a CSV, Excel, etc.
-    alert('Funcionalidad de exportación en desarrollo');
-  }
-
-  buscarPorNumero(numero: string) {
-    if (!numero.trim()) {
-      this.cargarPuestos();
-      return;
-    }
-
-    this.puestos = this.puestos.filter(puesto =>
-      puesto.numero.toLowerCase().includes(numero.toLowerCase())
-    );
-    this.titulo = `Puestos - Número: ${numero}`;
-    this.criterioBusqueda = `Número: ${numero}`;
-  }
-
-  limpiarFiltros() {
-    this.cargarPuestos();
-  }
-
-  getEstadisticasResumen() {
-    return {
-      total: this.puestos.length,
-      disponibles: this.getCountByEstado('DISPONIBLE'),
-      ocupados: this.getCountByEstado('OCUPADO'),
-      bloqueados: this.getCountByEstado('BLOQUEADO'),
-      mantenimiento: this.getCountByEstado('MANTENIMIENTO'),
-      porcentajeOcupacion: this.getPorcentajeOcupacion()
-    };
-  }
-
-  verDetallesPuesto(id: string) {
-    this.router.navigate(['/puestos/detalle', id]);
-  }
   resetFormulario() {
     this.puesto = {
-     id: '',
+      id: '',
       numero: '',
       ubicacion: '',
       tipoPuesto: TipoPuesto.REGULAR,
@@ -286,8 +133,9 @@ export class CrearPuestosComponent implements OnInit {
       fechaCreacion: '',
       historialOcupacion: [],
       usuarioOcupante: null,
-      fechaOcupacion: null,
+      fechaOcupacion: null
     };
+    this.formSubmitted = false;
   }
 
   mostrarFeedback(msg: string, isError: boolean) {
@@ -300,8 +148,13 @@ export class CrearPuestosComponent implements OnInit {
     this.router.navigate(['/']);
   }
 
-  private mostrarError(mensaje: string) {
-    // En lugar de alert, podrías usar un servicio de notificaciones
-    alert(`❌ ${mensaje}`);
+  volverAListaPuestos() {
+    this.router.navigate(['/puestos']);
+  }
+
+  // Método para verificar si un campo es inválido
+  isFieldInvalid(fieldName: string): boolean {
+    const field = this.puesto[fieldName as keyof Puesto];
+    return this.formSubmitted && (!field || (typeof field === 'string' && field.trim() === ''));
   }
 }

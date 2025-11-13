@@ -10,68 +10,160 @@
     <div class="d-flex justify-content-between align-items-center mb-4">
       <h1 class="page-title">{{ titulo }}</h1>
       <div class="btn-group">
-        <a routerLink="/puestos" class="btn btn-outline-primary btn-sm" [class.active]="!criterioBusqueda">
-          <i class="fas fa-list"></i> Todos
+        <a routerLink="/puestos" class="btn btn-outline-primary btn-sm">
+          <i class="fas fa-list"></i> Ver Todos
         </a>
-        <a routerLink="/puestos/disponibles" class="btn btn-success btn-sm">
-          <i class="fas fa-check"></i> Disponibles
-        </a>
-        <a routerLink="/puestos/ocupados" class="btn btn-warning btn-sm">
-          <i class="fas fa-car"></i> Ocupados
-        </a>
-        <a routerLink="/puestos/ocupar" class="btn btn-primary btn-sm">
-          <i class="fas fa-parking"></i> Ocupar Puesto
+        <a routerLink="/puestos/crear" class="btn btn-success btn-sm active">
+          <i class="fas fa-plus"></i> Crear Nuevo
         </a>
       </div>
     </div>
-  </div>
-  <div class="crear-puesto-container">
-      <h2>Crear Nuevo Puesto de Estacionamiento</h2>
-      <form (ngSubmit)="crearPuesto()">
-          <div class="form-group">
-              <label for="numero">Número de Puesto:</label>
-              <input id="numero" name="numero" [(ngModel)]="puesto.numero" required placeholder="Ej: A-01">
-          </div>
-          <div class="form-group">
-              <label for="ubicacion">Ubicación (Zona):</label>
-              <select id="ubicacion" name="ubicacion" [(ngModel)]="puesto.ubicacion" required>
-                  <option value="" disabled>-- Seleccione una zona --</option>
+
+    <!-- Mensaje de feedback -->
+    <div *ngIf="mensaje"
+         [class]="isError ? 'alert alert-danger alert-custom' : 'alert alert-success alert-custom'"
+         class="mb-4">
+      <i [class]="isError ? 'fas fa-exclamation-circle' : 'fas fa-check-circle'"></i>
+      {{ mensaje }}
+    </div>
+
+    <!-- Formulario de creación -->
+    <div class="crear-puesto-container">
+      <div class="card table-card">
+        <div class="card-header">
+          <h5 class="mb-0"><i class="fas fa-plus-circle"></i> Información del Nuevo Puesto</h5>
+        </div>
+        <div class="card-body">
+          <form (ngSubmit)="crearPuesto()" #puestoForm="ngForm">
+            <div class="row">
+              <!-- Número de Puesto -->
+              <div class="col-md-6 mb-3">
+                <label for="numero" class="form-label">
+                  Número de Puesto <span class="text-danger">*</span>
+                </label>
+                <input
+                  type="text"
+                  id="numero"
+                  name="numero"
+                  class="form-control"
+                  [class.is-invalid]="isFieldInvalid('numero')"
+                  [(ngModel)]="puesto.numero"
+                  required
+                  placeholder="Ej: A-01, B-12, M-05">
+                <div class="invalid-feedback" *ngIf="isFieldInvalid('numero')">
+                  El número de puesto es obligatorio
+                </div>
+                <div class="form-text">
+                  Ingrese un identificador único para el puesto (ej: A-01 para Zona A, M-05 para motocicletas)
+                </div>
+              </div>
+
+              <!-- Ubicación -->
+              <div class="col-md-6 mb-3">
+                <label for="ubicacion" class="form-label">
+                  Ubicación (Zona) <span class="text-danger">*</span>
+                </label>
+                <select
+                  id="ubicacion"
+                  name="ubicacion"
+                  class="form-select"
+                  [class.is-invalid]="isFieldInvalid('ubicacion')"
+                  [(ngModel)]="puesto.ubicacion"
+                  required>
+                  <option value="" disabled selected>-- Seleccione una zona --</option>
                   <option *ngFor="let zona of ubicacionesDisponibles" [value]="zona">
-                      {{ zona }}
+                    {{ zona }}
                   </option>
-              </select>
-          </div>
-          <div class="form-group">
-              <label for="tipo">Tipo de Puesto:</label>
-              <select id="tipo" name="tipo" [(ngModel)]="puesto.tipoPuesto" required>
-                  <option *ngFor="let tipo of tiposPuesto" [ngValue]="tipo">{{ getTipoDescripcion(tipo) }}</option>
-              </select>
-          </div>
-          <div class="form-group">
-              <label for="estado">Estado Inicial:</label>
-              <select id="estado" name="estado" [(ngModel)]="puesto.estadoPuesto" required>
-                  <option *ngFor="let estado of estadosPuesto" [ngValue]="estado">{{ getEstadoDescripcion(estado) }}</option>
-              </select>
-          </div>
-          <button type="submit" class="submit-button">Guardar Puesto</button>
-      </form>
-  </div>
+                </select>
+                <div class="invalid-feedback" *ngIf="isFieldInvalid('ubicacion')">
+                  La ubicación es obligatoria
+                </div>
+              </div>
+            </div>
+
+            <div class="row">
+              <!-- Tipo de Puesto -->
+              <div class="col-md-6 mb-3">
+                <label for="tipo" class="form-label">
+                  Tipo de Puesto <span class="text-danger">*</span>
+                </label>
+                <select
+                  id="tipo"
+                  name="tipo"
+                  class="form-select"
+                  [(ngModel)]="puesto.tipoPuesto"
+                  required>
+                  <option *ngFor="let tipo of tiposPuesto" [ngValue]="tipo">
+                    {{ getTipoDescripcion(tipo) }}
+                  </option>
+                </select>
+              </div>
+
+              <!-- Estado Inicial -->
+              <div class="col-md-6 mb-3">
+                <label for="estado" class="form-label">
+                  Estado Inicial <span class="text-danger">*</span>
+                </label>
+                <select
+                  id="estado"
+                  name="estado"
+                  class="form-select"
+                  [(ngModel)]="puesto.estadoPuesto"
+                  required>
+                  <option *ngFor="let estado of estadosPuesto" [ngValue]="estado">
+                    {{ getEstadoDescripcion(estado) }}
+                  </option>
+                </select>
+                <div class="form-text">
+                  Recomendado: "Disponible" para nuevos puestos
+                </div>
+              </div>
+            </div>
+
+            <!-- Botones de acción -->
+            <div class="d-flex gap-2 mt-4">
+              <button
+                type="submit"
+                class="btn btn-primary"
+                [disabled]="isLoading">
+                <span *ngIf="isLoading" class="spinner-border spinner-border-sm me-2"></span>
+                <i class="fas fa-save me-2"></i>
+                {{ isLoading ? 'Creando...' : 'Guardar Puesto' }}
+              </button>
+
+              <button
+                type="button"
+                class="btn btn-secondary"
+                (click)="resetFormulario()"
+                [disabled]="isLoading">
+                <i class="fas fa-undo me-2"></i>
+                Limpiar
+              </button>
+
+              <button
+                type="button"
+                class="btn btn-outline-secondary"
+                (click)="volverAListaPuestos()"
+                [disabled]="isLoading">
+                <i class="fas fa-arrow-left me-2"></i>
+                Cancelar
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
 
     <!-- Botones de navegación -->
     <div class="navigation-buttons mt-4">
-      <button (click)="volverAInicio()" class="btn btn-outline-primary">
-        <i class="fas fa-arrow-left"></i> Volver al Inicio
+      <button (click)="volverAListaPuestos()" class="btn btn-outline-primary">
+        <i class="fas fa-arrow-left"></i> Volver a Lista de Puestos
       </button>
-      <button routerLink="/puestos/buscar" class="btn btn-outline-info ms-2">
-        <i class="fas fa-search"></i> Búsqueda Avanzada
-      </button>
-      <button routerLink="/puestos/estadisticas" class="btn btn-outline-success ms-2">
-        <i class="fas fa-chart-bar"></i> Ver Estadísticas
-      </button>
-      <button routerLink="/puestos/crear" class="btn btn-outline-success ms-2">
-        <i class="fas fa-check"></i> Crear Puesto
+      <button (click)="volverAInicio()" class="btn btn-outline-secondary ms-2">
+        <i class="fas fa-home"></i> Volver al Inicio
       </button>
     </div>
+  </div>
 
   <!-- Footer -->
   <footer class="footer">
