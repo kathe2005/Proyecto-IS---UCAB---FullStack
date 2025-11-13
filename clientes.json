@@ -152,4 +152,37 @@
   "email" : "kamaya.223@ucab.edu.ve",
   "tipoPersona" : "UCAB",
   "confirmarContrasena" : null
+}, {
+  "usuario" : "Juan12314",
+  "contrasena" : "Juan1234",
+  "nombre" : "Juan",
+  "apellido" : "Ortiz",
+  "cedula" : "V-12345672",
+  "direccion" : "",
+  "telefono" : "0424-4579244",
+  "email" : "Juanort.22@est.ucab.edu.ve",
+  "tipoPersona" : "UCAB",
+  "confirmarContrasena" : null
+}, {
+  "usuario" : "Kils123",
+  "contrasena" : "Kils1234",
+  "nombre" : "Martin",
+  "apellido" : "Gomez",
+  "cedula" : "V-31342672",
+  "direccion" : "",
+  "telefono" : "0424-4971244",
+  "email" : "Kils1314@gmail.com",
+  "tipoPersona" : "VISITANTE",
+  "confirmarContrasena" : null
+}, {
+  "usuario" : "Carlos12341254",
+  "contrasena" : "Nose1234",
+  "nombre" : "Carlos ",
+  "apellido" : "Fernadez",
+  "cedula" : "V-31224669",
+  "direccion" : "",
+  "telefono" : "0424-4199254",
+  "email" : "caltoai.22@est.ucab.edu.ve",
+  "tipoPersona" : "UCAB",
+  "confirmarContrasena" : null
 } ]

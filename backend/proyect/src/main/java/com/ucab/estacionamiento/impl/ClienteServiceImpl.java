@@ -360,4 +360,9 @@ public class ClienteServiceImpl implements ClienteService {
         //Devolver la lista al controlador 
         return clientes; 
     }
+
+    @Override
+    public Cliente obtenerPorUsuario(String usuario) {
+        return clienteRepository.findByUsuario(usuario).orElse(null);
+    }
 }

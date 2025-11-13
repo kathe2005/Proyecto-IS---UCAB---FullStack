@@ -1,0 +1,23 @@
+[ {
+  "usuario" : "ucabtest",
+  "contrasena" : "Password123",
+  "nombre" : "Juan",
+  "apellido" : "Perez",
+  "cedula" : "V-12345678",
+  "direccion" : "Av. Principal",
+  "telefono" : "0414-1112233",
+  "email" : "prueba@est.ucab.edu.ve",
+  "tipoPersona" : "UCAB",
+  "confirmarContrasena" : null
+}, {
+  "usuario" : "hola",
+  "contrasena" : "Consta1234",
+  "nombre" : "Pedro",
+  "apellido" : "Gomez",
+  "cedula" : "V-1569310",
+  "direccion" : "Av. Principal La Hacienda",
+  "telefono" : "0416-9310940",
+  "email" : "prueba@gmail.com",
+  "tipoPersona" : "VISITANTE",
+  "confirmarContrasena" : null
+} ]

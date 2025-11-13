@@ -12,7 +12,23 @@ import java.util.List;
 
 @Component
 public class JsonManager {
+    // Nombre del archivo de puestos (se busca en la raíz del repositorio)
     private static final String DATA_FILE = "puestos.json";
+
+    private static File resolvePuestosFile() {
+        File cwd = new File(System.getProperty("user.dir"));
+        File current = cwd;
+        File lastFound = null;
+        while (current != null) {
+            File candidate = new File(current, DATA_FILE);
+            if (candidate.exists()) {
+                lastFound = candidate; // keep searching so we can prefer topmost occurrence
+            }
+            current = current.getParentFile();
+        }
+        if (lastFound != null) return lastFound;
+        return new File(DATA_FILE);
+    }
 
     public static void guardarPuestos(List<Puesto> puestos) {
         if (puestos == null) {
@@ -51,7 +67,7 @@ public class JsonManager {
     }
 
     public static List<Puesto> cargarPuestos() {
-        File file = new File(DATA_FILE);
+        File file = resolvePuestosFile();
         try {
             if (!file.exists()) {
                 System.out.println("📁 Archivo JSON no encontrado, creando datos iniciales...");
@@ -109,12 +125,15 @@ public class JsonManager {
                         puesto.setEstadoPuesto(EstadoPuesto.valueOf(extractValue(line)));
                     } else if (line.contains("\"fechaOcupacion\":")) {
                         String value = extractValue(line);
-                        if (!"null".equals(value)) {
+                        // Evitar NPE: comprobar que value no sea null antes de invocar métodos sobre él
+                        if (value != null && !"null".equals(value)) {
                             puesto.setFechaOcupacion(LocalDateTime.parse(value.replace("T", "T")));
                         }
                     } else if (line.contains("\"fechaCreacion\":")) {
                         String value = extractValue(line);
-                        puesto.setFechaCreacion(LocalDateTime.parse(value.replace("T", "T")));
+                        if (value != null && !"null".equals(value)) {
+                            puesto.setFechaCreacion(LocalDateTime.parse(value.replace("T", "T")));
+                        }
                     }
                 }
                 
@@ -129,12 +148,20 @@ public class JsonManager {
     }
 
     private static String extractValue(String line) {
-        String[] parts = line.split(":");
-        if (parts.length > 1) {
-            String value = parts[1].trim().replace("\"", "").replace(",", "");
-            return value.equals("null") ? null : value;
+        int idx = line.indexOf(":");
+        if (idx >= 0 && idx + 1 < line.length()) {
+            String value = line.substring(idx + 1).trim();
+            // Remove surrounding quotes if present
+            if (value.startsWith("\"") && value.endsWith(",")) {
+                value = value.substring(1, value.length() - 2); // remove leading " and trailing ",
+            } else if (value.startsWith("\"")) {
+                value = value.substring(1).replaceAll(",?$", "");
+            } else {
+                value = value.replaceAll(",?$", "");
+            }
+            return "null".equals(value) ? null : value;
         }
-        return "";
+        return null;
     }
 
     private static String escapeJson(String text) {
@@ -166,7 +193,7 @@ public class JsonManager {
 
     public static void mostrarArchivoJSON() {
         try {
-            File file = new File(DATA_FILE);
+            File file = resolvePuestosFile();
             if (!file.exists()) {
                 System.out.println("❌ El archivo JSON no existe aún");
                 return;

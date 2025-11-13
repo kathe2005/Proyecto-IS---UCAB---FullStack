@@ -27,4 +27,7 @@ public interface ClienteService {
 
     Cliente actualizarCliente(Cliente clienteActualizado); 
 
+    // Obtener cliente por usuario (perfil)
+    Cliente obtenerPorUsuario(String usuario);
+
 }
