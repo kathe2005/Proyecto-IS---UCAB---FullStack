@@ -47,18 +47,74 @@ public class PuestoServiceImpl implements PuestoService {
                 .findFirst();
     }
 
-@Override
+    @Override
     public Puesto crearPuesto(Puesto puesto) throws IllegalArgumentException {
+        // Validar que el puesto no sea nulo
+        if (puesto == null) {
+            throw new IllegalArgumentException("El puesto no puede ser nulo");
+        }
+        
+        // Validar número de puesto
+        if (puesto.getNumero() == null || puesto.getNumero().trim().isEmpty()) {
+            throw new IllegalArgumentException("El número de puesto es obligatorio");
+        }
+        
+        // Validar ubicación
+        if (puesto.getUbicacion() == null || puesto.getUbicacion().trim().isEmpty()) {
+            throw new IllegalArgumentException("La ubicación es obligatoria");
+        }
+        
+        // Validar tipo de puesto
+        if (puesto.getTipoPuesto() == null) {
+            throw new IllegalArgumentException("El tipo de puesto es obligatorio");
+        }
+        
+        // Validar estado de puesto
+        if (puesto.getEstadoPuesto() == null) {
+            throw new IllegalArgumentException("El estado de puesto es obligatorio");
+        }
+        
+        // Verificar si ya existe un puesto con el mismo número
         boolean numeroExiste = puestos.stream()
-                .anyMatch(p -> p.getNumero().equals(puesto.getNumero()));
+                .anyMatch(p -> p.getNumero().equalsIgnoreCase(puesto.getNumero().trim()));
         if (numeroExiste) {
             throw new IllegalArgumentException("El número de puesto '" + puesto.getNumero() + "' ya existe.");
         }
-        puesto.setId(UUID.randomUUID().toString());
+        
+        // Generar ID único
+        String nuevoId = "P" + (puestos.size() + 1);
+        puesto.setId(nuevoId);
+        
+        // Establecer fecha de creación
         puesto.setFechaCreacion(LocalDateTime.now());
-        puesto.agregarRegistroHistorial("Puesto creado en " + puesto.getFechaCreacion());
+        
+        // Inicializar historial si es nulo
+        if (puesto.getHistorialOcupacion() == null) {
+            puesto.setHistorialOcupacion(new ArrayList<>());
+        }
+        
+        // Agregar registro inicial al historial
+        String registroHistorial = String.format("Puesto creado el %s - Número: %s, Ubicación: %s, Tipo: %s", 
+                LocalDateTime.now().format(java.time.format.DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")),
+                puesto.getNumero(),
+                puesto.getUbicacion(),
+                puesto.getTipoPuesto().getDescripcion());
+        puesto.agregarRegistroHistorial(registroHistorial);
+        
+        // Asegurar que los campos opcionales estén inicializados
+        if (puesto.getUsuarioOcupante() == null) {
+            puesto.setUsuarioOcupante(null);
+        }
+        if (puesto.getFechaOcupacion() == null) {
+            puesto.setFechaOcupacion(null);
+        }
+        
+        // Agregar a la lista y guardar
         this.puestos.add(puesto);
         guardarCambios();
+        
+        System.out.println("✅ Puesto creado exitosamente: " + puesto.getNumero() + " - ID: " + puesto.getId());
+        
         return puesto;
     }
 

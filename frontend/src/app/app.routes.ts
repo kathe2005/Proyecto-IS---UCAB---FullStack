@@ -50,15 +50,16 @@ export const routes: Routes = [
         loadComponent: () => import('./clientes/components/ocuparPuesto/historial/historial.component').then(m => m.HistorialComponent)
     },
 
+    // Ruta para crear puestos - CORREGIDA
+    {
+        path: 'puestos/crear',
+        loadComponent: () => import('./clientes/components/ocuparPuesto/crear/crear-puestos.component').then(m => m.CrearPuestosComponent)
+    },
+
     // Ruta de inicio del sistema (dashboard)
     {
         path: 'inicio',
         loadComponent: () => import('./clientes/components/ocuparPuesto/home/home.component').then(m => m.HomeComponent)
-    },
-
-    {
-        path: 'crear',
-        loadComponent: () => import('./clientes/components/ocuparPuesto/crear/crear-puestos.component').then(m => m.CrearPuestosComponent)
     },
 
     // Redirecciones
@@ -80,6 +81,11 @@ export const routes: Routes = [
     {
         path: 'buscar',
         redirectTo: 'puestos/buscar',
+        pathMatch: 'full'
+    },
+    {
+        path: 'crear',
+        redirectTo: 'puestos/crear',
         pathMatch: 'full'
     },
 

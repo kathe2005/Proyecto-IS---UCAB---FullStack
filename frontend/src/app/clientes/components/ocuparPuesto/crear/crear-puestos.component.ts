@@ -21,10 +21,7 @@ import { Puesto, TipoPuestoInfo, EstadoPuestoInfo, EstadoPuesto, TipoPuesto } fr
   styleUrls: ['./crear-puestos.component.css']
 })
 export class CrearPuestosComponent implements OnInit {
-
   titulo = 'Crear Nuevo Puesto de Estacionamiento';
-  puestos: Puesto[] = [];
-  criterioBusqueda = '';
   puesto: Puesto = {
     id: '',
     numero: '',
@@ -45,10 +42,12 @@ export class CrearPuestosComponent implements OnInit {
     'Zona A',
     'Zona B',
     'Zona C',
-    'Zona Motocicletas'
+    'Zona Motocicletas',
+    'Zona Docentes',
+    'Zona Visitantes',
+    'Zona Discapacitados'
   ];
 
-  // Para validación del formulario
   formSubmitted = false;
   isLoading = false;
 
@@ -67,7 +66,6 @@ export class CrearPuestosComponent implements OnInit {
     this.mensaje = '';
     this.isError = false;
 
-    // Validación del formulario
     if (!this.validarFormulario()) {
       this.mostrarFeedback('❌ Por favor, complete todos los campos obligatorios correctamente.', true);
       return;
@@ -75,14 +73,17 @@ export class CrearPuestosComponent implements OnInit {
 
     this.isLoading = true;
 
-    // Preparar el objeto puesto para enviar
+    // Preparar el objeto puesto para enviar (sin ID, el backend lo genera)
     const puestoParaEnviar: Puesto = {
       ...this.puesto,
+      id: '', // El backend generará el ID
       fechaCreacion: new Date().toISOString(),
       historialOcupacion: [],
       usuarioOcupante: null,
       fechaOcupacion: null
     };
+
+    console.log('Enviando puesto:', puestoParaEnviar);
 
     this.puestoService.crearPuesto(puestoParaEnviar).subscribe({
       next: (respuesta) => {
@@ -90,14 +91,13 @@ export class CrearPuestosComponent implements OnInit {
         this.resetFormulario();
         this.isLoading = false;
 
-        // Redirigir después de 2 segundos
         setTimeout(() => {
           this.router.navigate(['/puestos']);
         }, 2000);
       },
       error: (error) => {
         console.error('Error al crear el puesto:', error);
-        const errorMsg = error.error?.mensaje || error.message || 'Error de conexión o validación en el servidor.';
+        const errorMsg = error.error?.message || error.message || 'Error de conexión con el servidor.';
         this.mostrarFeedback('❌ Error al crear el puesto: ' + errorMsg, true);
         this.isLoading = false;
       }
@@ -145,14 +145,13 @@ export class CrearPuestosComponent implements OnInit {
   }
 
   volverAInicio() {
-    this.router.navigate(['/']);
+    this.router.navigate(['/inicio']);
   }
 
   volverAListaPuestos() {
     this.router.navigate(['/puestos']);
   }
 
-  // Método para verificar si un campo es inválido
   isFieldInvalid(fieldName: string): boolean {
     const field = this.puesto[fieldName as keyof Puesto];
     return this.formSubmitted && (!field || (typeof field === 'string' && field.trim() === ''));

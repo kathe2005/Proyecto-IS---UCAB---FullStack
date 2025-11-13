@@ -8,9 +8,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.http.HttpStatus;
 import java.util.List;
-/*import java.util.UUID;
-import java.time.LocalDateTime;
-import java.util.List;*/
 
 @RestController
 @RequestMapping("/api/puestos")
@@ -23,9 +20,9 @@ public class ApiController {
     private JsonManager jsonManager;
 
     @GetMapping
-        public List<Puesto> obtenerTodosLosPuestos() {
-            return puestoService.obtenerPuestos();
-        }
+    public List<Puesto> obtenerTodosLosPuestos() {
+        return puestoService.obtenerPuestos();
+    }
 
     @GetMapping("/{id}")
     public ResponseEntity<Puesto> obtenerPuestoPorId(@PathVariable String id) {
@@ -48,17 +45,48 @@ public class ApiController {
     @PostMapping
     public ResponseEntity<?> crearPuesto(@RequestBody Puesto nuevoPuesto) {
         try {
-            Puesto puestoCreado = puestoService.crearPuesto(nuevoPuesto); 
+            System.out.println("📥 Recibiendo solicitud para crear puesto: " + nuevoPuesto.getNumero());
+            
+            // Validar campos requeridos
+            if (nuevoPuesto.getNumero() == null || nuevoPuesto.getNumero().trim().isEmpty()) {
+                return ResponseEntity.badRequest().body("{\"error\": \"El número de puesto es obligatorio\"}");
+            }
+            
+            if (nuevoPuesto.getUbicacion() == null || nuevoPuesto.getUbicacion().trim().isEmpty()) {
+                return ResponseEntity.badRequest().body("{\"error\": \"La ubicación es obligatoria\"}");
+            }
+            
+            if (nuevoPuesto.getTipoPuesto() == null) {
+                return ResponseEntity.badRequest().body("{\"error\": \"El tipo de puesto es obligatorio\"}");
+            }
+            
+            if (nuevoPuesto.getEstadoPuesto() == null) {
+                return ResponseEntity.badRequest().body("{\"error\": \"El estado de puesto es obligatorio\"}");
+            }
+            
+            Puesto puestoCreado = puestoService.crearPuesto(nuevoPuesto);
+            
+            // Crear respuesta de éxito
+            String respuesta = String.format(
+                "{\"mensaje\": \"Puesto creado exitosamente\", \"id\": \"%s\", \"numero\": \"%s\"}",
+                puestoCreado.getId(),
+                puestoCreado.getNumero()
+            );
+            
             return new ResponseEntity<>(puestoCreado, HttpStatus.CREATED);
             
         } catch (IllegalArgumentException e) {
-            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+            System.err.println("❌ Error al crear puesto: " + e.getMessage());
+            return ResponseEntity.badRequest().body("{\"error\": \"" + e.getMessage() + "\"}");
             
         } catch (Exception e) {
+            System.err.println("❌ Error interno al crear puesto: " + e.getMessage());
             e.printStackTrace();
-            return new ResponseEntity<>("Error interno al crear el puesto", HttpStatus.INTERNAL_SERVER_ERROR);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("{\"error\": \"Error interno del servidor al crear el puesto\"}");
         }
     }
+
     @PostMapping("/liberar/{id}")
     public ResponseEntity<?> liberarPuesto(@PathVariable String id) {
         boolean exito = puestoService.liberarPuesto(id);

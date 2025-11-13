@@ -27,17 +27,17 @@ export enum EstadoPuesto {
 }
 
 export const TipoPuestoInfo = {
-  [TipoPuesto.REGULAR]: { descripcion: 'Regular', color: 'blue' },
-  [TipoPuesto.DISCAPACITADO]: { descripcion: 'Discapacitado', color: 'purple' },
-  [TipoPuesto.DOCENTE]: { descripcion: 'Docente', color: 'green' },
-  [TipoPuesto.VISITANTE]: { descripcion: 'Visitante', color: 'yellow' },
-  [TipoPuesto.MOTOCICLETA]: { descripcion: 'Motocicleta', color: 'orange' }
+  [TipoPuesto.REGULAR]: { descripcion: 'Regular', color: '#007bff' },
+  [TipoPuesto.DISCAPACITADO]: { descripcion: 'Discapacitado', color: '#6f42c1' },
+  [TipoPuesto.DOCENTE]: { descripcion: 'Docente', color: '#28a745' },
+  [TipoPuesto.VISITANTE]: { descripcion: 'Visitante', color: '#ffc107' },
+  [TipoPuesto.MOTOCICLETA]: { descripcion: 'Motocicleta', color: '#fd7e14' }
 };
 
 export const EstadoPuestoInfo = {
-  [EstadoPuesto.DISPONIBLE]: { descripcion: 'Disponible', color: 'green' },
-  [EstadoPuesto.OCUPADO]: { descripcion: 'Ocupado', color: 'red' },
-  [EstadoPuesto.RESERVADO]: { descripcion: 'Reservado', color: 'yellow' },
-  [EstadoPuesto.BLOQUEADO]: { descripcion: 'Bloqueado', color: 'gray' },
-  [EstadoPuesto.MANTENIMIENTO]: { descripcion: 'En Mantenimiento', color: 'orange' }
+  [EstadoPuesto.DISPONIBLE]: { descripcion: 'Disponible', color: '#28a745' },
+  [EstadoPuesto.OCUPADO]: { descripcion: 'Ocupado', color: '#ffc107' },
+  [EstadoPuesto.RESERVADO]: { descripcion: 'Reservado', color: '#17a2b8' },
+  [EstadoPuesto.BLOQUEADO]: { descripcion: 'Bloqueado', color: '#6c757d' },
+  [EstadoPuesto.MANTENIMIENTO]: { descripcion: 'En Mantenimiento', color: '#fd7e14' }
 };
