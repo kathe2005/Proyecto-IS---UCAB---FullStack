@@ -3,12 +3,12 @@
 /* ------------------------------------------- */
 .main-container {
     /* Centra la tarjeta en la página */
-    display: flex;
-    justify-content: center;
-    align-items: flex-start; /* Alineación al inicio para formularios largos */
-    min-height: 100vh;
-    padding: 30px;
-    background-color: #f4f6f8; /* Fondo suave fuera de la tarjeta */
+    display: grid;
+    grid-template-columns: repeat(1, 1fr);
+    grid-template-rows: repeat(1, 1fr);
+    place-items: center;
+    min-height: 85vh;
+    background-color: aliceblue; /* Fondo suave fuera de la tarjeta */
     font-family: 'Arial', sans-serif;
 }
 
@@ -16,7 +16,7 @@
     /* Estilo de la tarjeta flotante */
     max-width: 750px;
     width: 100%;
-    padding: 40px;
+    /*padding: 40px;*/
     background-color: white;
     border-radius: 12px; /* Esquinas suaves */
     box-shadow: 0 10px 30px rgba(18, 59, 103, 0.05); /* Sombra muy sutil */
@@ -196,4 +196,15 @@ form {
     background-color: #f0f0f0;
     color: #333;
     border: 1px solid #ccc;
+}
+
+.footer {
+  background-color: rgb(28, 85, 255);
+  color: white;
+  text-align: center;
+  padding: 20px;
+  margin-top: 50px;
+  width: 100%;
+  font-size: 14px;
+  border-radius: 0 0 15px 15px;
 }

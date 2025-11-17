@@ -1,4 +1,5 @@
-package com.ucab.estacionamiento.service;
+/*
+package com.ucab.estacionamiento.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -22,3 +23,4 @@ public class CorsConfig {
         };
     }
 }
+*/

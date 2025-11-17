@@ -1,0 +1,35 @@
+<div id="ContenedorMain">
+  <div id="contenedor">
+    <h1 class="titulo-principal">Gestión de Perfiles</h1>
+    <p class="subtitulo">Administre los perfiles de clientes</p>
+
+    <div
+      *ngFor="let opcion of opciones"
+      class="card"
+      [id]="opcion.id"
+      (click)="seleccionarOpcion(opcion)">
+      <div class="card-content">
+        <div class="icono">
+          <i [class]="opcion.icono"></i>
+        </div>
+        <div class="texto">
+          <h3>{{ opcion.titulo }}</h3>
+          <p>{{ opcion.descripcion }}</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Botón para volver al inicio -->
+    <div class="card card-volver" (click)="volverAInicio()">
+      <div class="card-content">
+        <div class="icono">
+          <i class="fas fa-arrow-left"></i>
+        </div>
+        <div class="texto">
+          <h3>Volver al Inicio</h3>
+          <p>Regresar al menú principal</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

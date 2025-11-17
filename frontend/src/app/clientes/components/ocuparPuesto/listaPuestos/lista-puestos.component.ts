@@ -3,8 +3,6 @@ import { CommonModule } from '@angular/common';
 import { RouterModule, ActivatedRoute, Router } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { PuestoService } from '../../../service/puesto.service';
-import { HeaderComponent } from '../header/header.component';
-import { NavigationComponent } from '../navegador/navigation.component';
 
 // Interfaces temporales
 interface Puesto {
@@ -22,9 +20,7 @@ interface Puesto {
   imports: [
     CommonModule,
     RouterModule,
-    FormsModule,
-    HeaderComponent,
-    NavigationComponent
+    FormsModule
   ],
   templateUrl: './lista-puestos.component.html',
   styleUrls: ['./lista-puestos.component.css']

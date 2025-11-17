@@ -2,13 +2,11 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { PuestoService } from '../../../service/puesto.service';
-import { HeaderComponent } from '../header/header.component';
-import { NavigationComponent } from '../navegador/navigation.component';
 
 @Component({
   selector: 'app-estadisticas',
   standalone: true,
-  imports: [CommonModule, HeaderComponent, NavigationComponent],
+  imports: [CommonModule],
   templateUrl: './estadisticas.component.html',
   styleUrls: ['./estadisticas.component.css']
 })

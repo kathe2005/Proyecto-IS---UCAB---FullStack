@@ -1,20 +1,32 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { Cliente } from '../models/cliente'; 
+import { Cliente } from '../models/cliente';
 
 @Injectable({
     providedIn: 'root'
 })
-
 export class ClienteService {
 
-    //URL de Sprint Boot 
-    private apiURL = 'http://localhost:8080/api/clientes/registrar'; 
+    private apiURL = 'http://localhost:8080/api/clientes';
 
     constructor(private http: HttpClient) { }
 
-    registrarCliente(cliente: any): Observable<any> {
-    return this.http.post(this.apiURL, cliente)
-}
+    registrarCliente(cliente: Cliente): Observable<Cliente> {
+        return this.http.post<Cliente>(`${this.apiURL}/registrar`, cliente);
+    }
+
+    consultarClientes(): Observable<Cliente[]> {
+        return this.http.get<Cliente[]>(`${this.apiURL}/consultar`);
+    }
+
+    // NUEVO: Obtener cliente por ID
+    obtenerClientePorId(id: string): Observable<Cliente> {
+        return this.http.get<Cliente>(`${this.apiURL}/${id}`);
+    }
+
+    // NUEVO: Modificar cliente
+    modificarCliente(id: string, cliente: Cliente): Observable<Cliente> {
+        return this.http.put<Cliente>(`${this.apiURL}/${id}`, cliente);
+    }
 }

@@ -1,0 +1,186 @@
+<div class="main-container">
+  <div class="modificar-perfiles-card">
+    <!-- Header -->
+    <div class="card-header">
+      <h1>Modificar Perfiles de Clientes</h1>
+      <p>Busque y modifique la información de los clientes registrados</p>
+    </div>
+
+    <!-- Mensajes de error -->
+    <div *ngIf="errorMensaje && !mostrarFormulario" class="alert alert-danger">
+      {{ errorMensaje }}
+    </div>
+
+    <!-- Filtros de búsqueda -->
+    <div class="filtros-section">
+      <div class="filtro-group">
+        <label for="filtroTexto">Buscar:</label>
+        <input
+          type="text"
+          id="filtroTexto"
+          [(ngModel)]="filtroTexto"
+          placeholder="Nombre, cédula, email, usuario..."
+          (input)="aplicarFiltros()">
+      </div>
+
+      <div class="filtro-group">
+        <label for="filtroTipo">Tipo de Persona:</label>
+        <select
+          id="filtroTipo"
+          [(ngModel)]="filtroTipo"
+          (change)="aplicarFiltros()">
+          <option *ngFor="let tipo of tiposPersona" [value]="tipo.value">
+            {{ tipo.label }}
+          </option>
+        </select>
+      </div>
+
+      <div class="filtro-actions">
+        <button class="btn btn-secondary" (click)="limpiarFiltros()">
+          Limpiar Filtros
+        </button>
+      </div>
+    </div>
+
+    <!-- Resultados -->
+    <div class="resultados-section">
+      <div class="resultados-header">
+        <h3>Resultados ({{ clientesFiltrados.length }})</h3>
+        <span class="total-clientes">Total de clientes: {{ clientes.length }}</span>
+      </div>
+
+      <!-- Estado de carga -->
+      <div *ngIf="cargando" class="loading-state">
+        <div class="spinner"></div>
+        <p>Cargando perfiles de clientes...</p>
+      </div>
+
+      <!-- Lista de clientes -->
+      <div *ngIf="!cargando" class="clientes-list">
+        <div *ngFor="let cliente of clientesFiltrados" class="cliente-card">
+          <div class="cliente-info">
+            <div class="cliente-header">
+              <h4>{{ cliente.nombre }} {{ cliente.apellido }}</h4>
+              <span class="estado-badge estado-activo">
+                ACTIVO
+              </span>
+            </div>
+            <div class="cliente-details">
+              <p><strong>Cédula:</strong> {{ cliente.cedula }}</p>
+              <p><strong>Email:</strong> {{ cliente.email }}</p>
+              <p><strong>Tipo:</strong> {{ cliente.tipoPersona }}</p>
+              <p><strong>Usuario:</strong> {{ cliente.usuario }}</p>
+            </div>
+          </div>
+          <div class="cliente-actions">
+            <button class="btn btn-primary" (click)="modificarCliente(cliente)">
+              Modificar
+            </button>
+          </div>
+        </div>
+
+        <!-- Mensaje cuando no hay resultados -->
+        <div *ngIf="clientesFiltrados.length === 0 && !cargando" class="no-results">
+          <p>No se encontraron clientes que coincidan con los filtros aplicados.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Botón volver -->
+    <div class="actions-footer">
+      <button class="btn btn-secondary" (click)="volverAGestion()">
+        Volver a Gestión de Perfiles
+      </button>
+    </div>
+  </div>
+
+  <!-- Modal de modificación -->
+  <div *ngIf="mostrarFormulario && clienteSeleccionado" class="modal-overlay">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2>Modificar Cliente</h2>
+        <button class="close-btn" (click)="cerrarFormulario()">×</button>
+      </div>
+
+      <div class="modal-body">
+        <!-- Mensajes de error en el modal -->
+        <div *ngIf="errorMensaje" class="alert alert-danger">
+          {{ errorMensaje }}
+        </div>
+
+        <!-- Mensaje de éxito en el modal -->
+        <div *ngIf="mensajeExito" class="alert alert-success">
+          {{ mensajeExito }}
+        </div>
+
+        <form (ngSubmit)="guardarCambios()" #clienteForm="ngForm">
+          <div class="detalles-grid">
+            <div class="form-group">
+              <label for="id">ID:</label>
+              <input type="text" id="id" [(ngModel)]="clienteSeleccionado.id" name="id" class="form-control" readonly>
+            </div>
+
+            <div class="form-group">
+              <label for="nombre">Nombre *</label>
+              <input type="text" id="nombre" [(ngModel)]="clienteSeleccionado.nombre" name="nombre" class="form-control" required>
+            </div>
+
+            <div class="form-group">
+              <label for="apellido">Apellido *</label>
+              <input type="text" id="apellido" [(ngModel)]="clienteSeleccionado.apellido" name="apellido" class="form-control" required>
+            </div>
+
+            <div class="form-group">
+              <label for="cedula">Cédula *</label>
+              <input type="text" id="cedula" [(ngModel)]="clienteSeleccionado.cedula" name="cedula" class="form-control" required placeholder="V-12345678">
+            </div>
+
+            <div class="form-group">
+              <label for="email">Email *</label>
+              <input type="email" id="email" [(ngModel)]="clienteSeleccionado.email" name="email" class="form-control" required>
+            </div>
+
+            <div class="form-group">
+              <label for="usuario">Usuario *</label>
+              <input type="text" id="usuario" [(ngModel)]="clienteSeleccionado.usuario" name="usuario" class="form-control" required>
+            </div>
+
+            <div class="form-group">
+              <label for="tipoPersona">Tipo de persona *</label>
+              <select id="tipoPersona" [(ngModel)]="clienteSeleccionado.tipoPersona" name="tipoPersona" class="form-control" required>
+                <option value="">-- Seleccione --</option>
+                <option value="UCAB">UCAB</option>
+                <option value="VISITANTE">VISITANTE</option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label for="direccion">Dirección *</label>
+              <input type="text" id="direccion" [(ngModel)]="clienteSeleccionado.direccion" name="direccion" class="form-control" required>
+            </div>
+
+            <div class="form-group">
+              <label for="telefono">Teléfono *</label>
+              <input type="text" id="telefono" [(ngModel)]="clienteSeleccionado.telefono" name="telefono" class="form-control" required placeholder="0412-6112225">
+            </div>
+          </div>
+
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" (click)="cerrarFormulario()" [disabled]="guardando">
+              Cancelar
+            </button>
+            <button type="submit" class="btn btn-primary" [disabled]="guardando">
+              <span *ngIf="guardando" class="loading-text">
+                <span class="mini-spinner"></span>
+                Guardando...
+              </span>
+              <span *ngIf="!guardando">
+                Guardar Cambios
+              </span>
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>

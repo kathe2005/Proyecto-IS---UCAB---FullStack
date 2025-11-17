@@ -1,13 +1,13 @@
 export interface Cliente {
-    id?: String; 
-    usuario:String; 
-    contrasena: String; 
-    confirmarContrasena: String;
-    nombre: String; 
-    apellido: String; 
+    id?: string;
+    usuario: string;
+    contrasena: string;
+    confirmarContrasena: string;
+    nombre: string;
+    apellido: string;
     cedula: string;
     email: string;
     tipoPersona: string; // 'UCAB' o 'VISITANTE'
-    direccion: String;
-    telefono: String; 
+    direccion: string;
+    telefono: string;
 }

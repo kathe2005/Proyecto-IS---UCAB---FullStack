@@ -1,0 +1,11 @@
+<div id="ContenedorMain">
+  <div id="contenedor">
+    <div
+      *ngFor="let opcion of opciones"
+      class="card"
+      [id]="opcion.id"
+      (click)="seleccionarOpcion(opcion)">
+      <h3>{{ opcion.titulo }}</h3>
+    </div>
+  </div>
+</div>

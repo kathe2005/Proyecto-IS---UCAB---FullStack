@@ -3,8 +3,6 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { PuestoService } from '../../../service/puesto.service';
-import { NavigationComponent } from '../navegador/navigation.component';
-import { HeaderComponent } from '../header/header.component';
 
 interface Puesto {
   id: string;
@@ -26,9 +24,7 @@ interface OcuparPuestoRequest {
   standalone: true,
   imports: [
     CommonModule,
-    FormsModule,
-    NavigationComponent,
-    HeaderComponent
+    FormsModule
   ],
   templateUrl: './ocupar-puestos.component.html',
   styleUrls: ['./ocupar-puestos.component.css']

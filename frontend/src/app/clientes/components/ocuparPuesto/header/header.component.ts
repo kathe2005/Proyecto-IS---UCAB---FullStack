@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
 @Component({
@@ -8,11 +8,15 @@ import { CommonModule } from '@angular/common';
   templateUrl: './header.component.html',
   styleUrls: ['./header.component.css']
 })
-export class HeaderComponent {
+export class HeaderComponent implements OnInit {
   fechaActual: string = '';
 
   ngOnInit() {
     this.actualizarFecha();
+    // Actualizar la fecha cada minuto (opcional)
+    setInterval(() => {
+      this.actualizarFecha();
+    }, 60000);
   }
 
   actualizarFecha() {
@@ -20,7 +24,9 @@ export class HeaderComponent {
       weekday: 'long',
       year: 'numeric',
       month: 'long',
-      day: 'numeric'
+      day: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit'
     };
     this.fechaActual = new Date().toLocaleDateString('es-ES', opciones);
   }

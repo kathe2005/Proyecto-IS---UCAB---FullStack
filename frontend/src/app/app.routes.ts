@@ -1,20 +1,67 @@
 import { Routes } from '@angular/router';
-import { RegistroClienteComponent } from './clientes/components/registro-cliente.component';
+import { RegistroClienteComponent } from './clientes/components/registroCliente/registro-cliente.component';
+import { GestionEstacionamientoComponent } from './clientes/components/gestionEstacionamiento/gestion-estacionamiento.component';
 
 export const routes: Routes = [
-    // Página principal: Registro de cliente
+    // Página principal: Menú de gestión de estacionamiento
     {
         path: '',
-        component: RegistroClienteComponent
+        component: GestionEstacionamientoComponent
     },
 
-    // Ruta alternativa para registro
+    // Ruta alternativa para el menú principal
+    {
+        path: 'inicio',
+        component: GestionEstacionamientoComponent
+    },
+
+    // Gestión de puestos - Menú principal de puestos
+    {
+        path: 'gestion-puestos',
+        loadComponent: () => import('./clientes/components/gestionEstacionamiento/gestionPuestos/gestion-puestos.component').then(m => m.GestionPuestosComponent)
+    },
+
+    // Gestión de perfiles - Menú principal de perfiles
+    {
+        path: 'gestion-perfiles',
+        loadComponent: () => import('./clientes/components/gestionEstacionamiento/gestionPerfiles/gestion-perfiles.component').then(m => m.GestionPerfilesComponent)
+    },
+
+    // Registro de cliente (ruta existente)
     {
         path: 'registrar-cliente',
         component: RegistroClienteComponent
     },
 
-    // Ocupar puestos como siguiente paso
+    // Nueva ruta para registrar cliente desde gestión de perfiles
+    {
+        path: 'perfiles/registrar',
+        component: RegistroClienteComponent
+    },
+
+    // Rutas para gestión de perfiles
+    {
+        path: 'perfiles/consultar',
+        loadComponent: () => import('./clientes/components/consultarPerfiles/consultar-perfiles.component').then(m => m.ConsultarPerfilesComponent)
+    },
+
+    {
+        path: 'perfiles/modificar',
+        loadComponent: () => import('./clientes/components/modificarPerfiles/modificar-perfil.component').then(m => m.ModificarPerfilesComponent)
+    },
+
+    /*
+    {
+        path: 'perfiles/historial',
+        loadComponent: () => import('./clientes/components/gestionPerfiles/historial-reservas/historial-reservas.component').then(m => m.HistorialReservasComponent)
+    },
+    {
+        path: 'perfiles/eliminar',
+        loadComponent: () => import('./clientes/components/gestionPerfiles/eliminar-perfil/eliminar-perfil.component').then(m => m.EliminarPerfilComponent)
+    },
+    */
+
+    // Ocupar puestos
     {
         path: 'ocupar',
         loadComponent: () => import('./clientes/components/ocuparPuesto/ocupar/ocupar-puestos.component').then(m => m.OcuparPuestoComponent)
@@ -49,10 +96,15 @@ export const routes: Routes = [
         path: 'puestos/historial/:id',
         loadComponent: () => import('./clientes/components/ocuparPuesto/historial/historial.component').then(m => m.HistorialComponent)
     },
-
-    // Ruta de inicio del sistema (dashboard)
     {
-        path: 'inicio',
+        path: 'puestos/crear',
+        loadComponent: () => import('./clientes/components/ocuparPuesto/listaPuestos/lista-puestos.component').then(m => m.ListaPuestosComponent)
+        // Nota: Deberías crear un componente específico para crear puestos
+    },
+
+    // Dashboard del sistema (home anterior)
+    {
+        path: 'dashboard',
         loadComponent: () => import('./clientes/components/ocuparPuesto/home/home.component').then(m => m.HomeComponent)
     },
 
@@ -60,6 +112,11 @@ export const routes: Routes = [
     {
         path: 'clientes',
         redirectTo: 'registrar-cliente',
+        pathMatch: 'full'
+    },
+    {
+        path: 'perfiles',
+        redirectTo: 'gestion-perfiles',
         pathMatch: 'full'
     },
     {
@@ -75,6 +132,11 @@ export const routes: Routes = [
     {
         path: 'buscar',
         redirectTo: 'puestos/buscar',
+        pathMatch: 'full'
+    },
+    {
+        path: 'gestion',
+        redirectTo: 'gestion-puestos',
         pathMatch: 'full'
     },
 

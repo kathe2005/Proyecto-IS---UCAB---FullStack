@@ -1,179 +1,181 @@
-//Comunicacion con la Base de Datos para ejecutar operaciones básicas
 package com.ucab.estacionamiento.repository;
 
 import org.springframework.stereotype.Repository;
 import com.ucab.estacionamiento.model.Cliente;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
+import com.fasterxml.jackson.core.type.TypeReference;
+
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
-@Repository //Esta clase gestiona el almacenamiento de datos 
-
-
+@Repository
 public class ClienteRepository {
 
-    // Base de datos JSON simulada 
-    private static final List<Cliente> BD_clientes = new ArrayList<>();
-    
-    //Metodo para guardar un nuevo usuario
-    public Cliente guardar(Cliente cliente) {
+    private static final String JSON_FILE_PATH = "clientes.json";
+    private final ObjectMapper objectMapper;
+    private List<Cliente> BD_clientes;
 
-        //Aquí se agrega un nuevo usuario a la lista 
-        BD_clientes.add(cliente); 
+    public ClienteRepository() {
+        System.out.println("🔧 ===== INICIANDO CLIENTE REPOSITORY =====");
+        this.objectMapper = new ObjectMapper();
+        this.objectMapper.enable(SerializationFeature.INDENT_OUTPUT);
         
-        // Muestra un mensaje para confirmar que se guardó en la simulación
-        System.out.println("El nuevo usuario se guardo correctamente");
-
-        return cliente; // Retornamos el objeto guardado
+        File currentDir = new File(".");
+        System.out.println("📂 Directorio actual: " + currentDir.getAbsolutePath());
+        
+        this.BD_clientes = cargarClientesDesdeArchivo();
+        System.out.println("✅ Repository inicializado. Clientes en memoria: " + BD_clientes.size());
+        System.out.println("🔧 ===== FIN INICIALIZACIÓN =====");
     }
 
-    // Metodo para encontrar todos los usuarios 
-    public List<Cliente> findAll()
-    {
-        System.out.println("Todos los usuarios");
-        return BD_clientes;
-    }
-
-    //Buscar
-    //Usuario 
-    public Optional<Cliente> findByUsuario(String usuarioBuscado)
-    {
-        System.out.println("Buscando usuario por email " + usuarioBuscado);
-
-        //Iteramos la lista para buscar email
-        for (Cliente u: BD_clientes)
-        {
-            if (u.getUsuario().equalsIgnoreCase(usuarioBuscado))
-            {
-                return Optional.of(u); 
+    public Cliente guardar(Cliente cliente) {
+        System.out.println("💾 === INICIANDO GUARDADO ===");
+        System.out.println("👤 Cliente a guardar: " + cliente.getUsuario());
+        
+        try {
+            // Asignar ID si no tiene
+            if (cliente.getId() == null) {
+                cliente.setId(UUID.randomUUID());
+                System.out.println("🆕 ID asignado: " + cliente.getId());
             }
-        }
 
-        return Optional.empty(); 
-    }
-
-    //Contraseña
-    public Optional<Cliente> findByContrasena(String contrasenaBuscado)
-    {
-        System.out.println("Buscando usuario por email " + contrasenaBuscado);
-
-        //Iteramos la lista para buscar email
-        for (Cliente u: BD_clientes)
-        {
-            if (u.getContrasena().equalsIgnoreCase(contrasenaBuscado))
-            {
-                return Optional.of(u); 
+            // Verificar si ya existe por ID
+            Optional<Cliente> clienteExistente = BD_clientes.stream()
+                    .filter(c -> c.getId().equals(cliente.getId()))
+                    .findFirst();
+            
+            if (clienteExistente.isPresent()) {
+                System.out.println("🔄 Cliente existe, actualizando...");
+                // Actualizar el existente
+                BD_clientes.remove(clienteExistente.get());
             }
-        }
 
-        return Optional.empty(); 
-    }
+            // Agregar nuevo cliente
+            BD_clientes.add(cliente);
+            System.out.println("📊 Total clientes en memoria: " + BD_clientes.size());
 
-
-    //Nombre 
-    public Optional<Cliente> findByNombre(String nombreBuscado)
-    {
-        System.out.println("Buscando usuario por email " + nombreBuscado);
-
-        //Iteramos la lista para buscar email
-        for (Cliente u: BD_clientes)
-        {
-            if (u.getNombre().equalsIgnoreCase(nombreBuscado))
-            {
-                return Optional.of(u); 
+            // Guardar en archivo
+            System.out.println("💾 Intentando guardar en archivo...");
+            boolean exito = guardarClientesEnArchivo();
+            
+            if (exito) {
+                System.out.println("✅ GUARDADO EXITOSO EN JSON");
+            } else {
+                System.err.println("❌ FALLÓ EL GUARDADO EN JSON");
             }
+            
+        } catch (Exception e) {
+            System.err.println("💥 ERROR CRÍTICO: " + e.getMessage());
+            e.printStackTrace();
         }
-
-        return Optional.empty(); 
+        
+        System.out.println("💾 === FIN GUARDADO ===");
+        return cliente;
     }
 
-
-    //Apellido 
-    public Optional<Cliente> findByApellido(String apellidoBuscado)
-    {
-        System.out.println("Buscando usuario por email " + apellidoBuscado);
-
-        //Iteramos la lista para buscar email
-        for (Cliente u: BD_clientes)
-        {
-            if (u.getApellido().equalsIgnoreCase(apellidoBuscado))
-            {
-                return Optional.of(u); 
+    private List<Cliente> cargarClientesDesdeArchivo() {
+        System.out.println("📥 === CARGANDO DESDE ARCHIVO ===");
+        try {
+            File archivo = new File(JSON_FILE_PATH);
+            System.out.println("📁 Ruta completa: " + archivo.getAbsolutePath());
+            System.out.println("🔍 Archivo existe: " + archivo.exists());
+            
+            if (archivo.exists()) {
+                System.out.println("📏 Tamaño del archivo: " + archivo.length() + " bytes");
             }
-        }
 
-        return Optional.empty(); 
-    }
-
-
-    //Cedula 
-    public Optional<Cliente> findByCedula(String cedulaBuscada)
-    {
-        System.out.println("Buscando usuario por cedula " + cedulaBuscada);
-
-        //Iteramos la lista para buscar cedula
-        for (Cliente u: BD_clientes)
-        {
-            if (u.getCedula().equalsIgnoreCase(cedulaBuscada))
-            {
-                return Optional.of(u); 
+            if (!archivo.exists()) {
+                System.out.println("📝 Creando nuevo archivo...");
+                boolean creado = archivo.createNewFile();
+                System.out.println("📝 Archivo creado: " + creado);
+                
+                if (creado) {
+                    objectMapper.writeValue(archivo, new ArrayList<Cliente>());
+                    System.out.println("✅ Archivo inicializado con array vacío");
+                } else {
+                    System.err.println("❌ No se pudo crear el archivo");
+                }
+                return new ArrayList<>();
             }
-        }
 
-        return Optional.empty(); 
-    }
-
-
-    //Email 
-    public Optional<Cliente> findByEmail(String emailBuscado)
-    {
-        System.out.println("Buscando usuario por email " + emailBuscado);
-
-        //Iteramos la lista para buscar email
-        for (Cliente u: BD_clientes)
-        {
-            if (u.getEmail().equalsIgnoreCase(emailBuscado))
-            {
-                return Optional.of(u); 
+            if (archivo.length() == 0) {
+                System.out.println("📝 Archivo vacío detectado");
+                return new ArrayList<>();
             }
-        }
 
-        return Optional.empty(); 
+            List<Cliente> clientes = objectMapper.readValue(archivo, new TypeReference<List<Cliente>>() {});
+            System.out.println("📥 " + clientes.size() + " clientes cargados desde archivo");
+            return clientes;
+            
+        } catch (Exception e) {
+            System.err.println("❌ ERROR cargando archivo: " + e.getMessage());
+            e.printStackTrace();
+            return new ArrayList<>();
+        }
     }
 
-    //Direccion 
-    public Optional<Cliente> findByDireccion(String direccionBuscado)
-    {
-        System.out.println("Buscando usuario por email " + direccionBuscado);
-
-        //Iteramos la lista para buscar email
-        for (Cliente u: BD_clientes)
-        {
-            if (u.getDireccion().equalsIgnoreCase(direccionBuscado))
-            {
-                return Optional.of(u); 
-            }
+    private boolean guardarClientesEnArchivo() {
+        System.out.println("💾 === GUARDANDO EN ARCHIVO ===");
+        try {
+            File archivo = new File(JSON_FILE_PATH);
+            System.out.println("📁 Guardando en: " + archivo.getAbsolutePath());
+            System.out.println("📊 Guardando " + BD_clientes.size() + " clientes");
+            
+            objectMapper.writeValue(archivo, BD_clientes);
+            System.out.println("✅ Archivo guardado exitosamente");
+            
+            System.out.println("📏 Tamaño después de guardar: " + archivo.length() + " bytes");
+            return true;
+            
+        } catch (Exception e) {
+            System.err.println("❌ ERROR guardando archivo: " + e.getMessage());
+            e.printStackTrace();
+            return false;
         }
-
-        return Optional.empty(); 
     }
 
-
-    //Telefono
-    public Optional<Cliente> findByTelefono(String telefonoBuscado)
-    {
-        System.out.println("Buscando usuario por email " + telefonoBuscado);
-
-        //Iteramos la lista para buscar email
-        for (Cliente u: BD_clientes)
-        {
-            if (u.getTelefono().equalsIgnoreCase(telefonoBuscado))
-            {
-                return Optional.of(u); 
-            }
-        }
-
-        return Optional.empty(); 
+    public List<Cliente> findAll() {
+        return new ArrayList<>(BD_clientes);
     }
 
+    public Optional<Cliente> findByUsuario(String usuarioBuscado) {
+        return BD_clientes.stream()
+                .filter(u -> u.getUsuario().equalsIgnoreCase(usuarioBuscado))
+                .findFirst();
+    }
+
+    public Optional<Cliente> findByCedula(String cedulaBuscada) {
+        return BD_clientes.stream()
+                .filter(u -> u.getCedula().equalsIgnoreCase(cedulaBuscada))
+                .findFirst();
+    }
+
+    public Optional<Cliente> findByEmail(String emailBuscado) {
+        return BD_clientes.stream()
+                .filter(u -> u.getEmail().equalsIgnoreCase(emailBuscado))
+                .findFirst();
+    }
+
+    public Optional<Cliente> findByTelefono(String telefonoBuscado) {
+        return BD_clientes.stream()
+                .filter(u -> u.getTelefono().equalsIgnoreCase(telefonoBuscado))
+                .findFirst();
+    }
+
+    // Método para diagnóstico
+    public void diagnostico() {
+        System.out.println("🩺 === DIAGNÓSTICO DEL REPOSITORY ===");
+        File archivo = new File(JSON_FILE_PATH);
+        System.out.println("📁 Ruta: " + archivo.getAbsolutePath());
+        System.out.println("📂 Existe: " + archivo.exists());
+        System.out.println("🔐 Puede escribir: " + archivo.canWrite());
+        System.out.println("👥 Clientes en memoria: " + BD_clientes.size());
+        System.out.println("💻 Directorio actual: " + System.getProperty("user.dir"));
+        System.out.println("🩺 === FIN DIAGNÓSTICO ===");
+    }
 }

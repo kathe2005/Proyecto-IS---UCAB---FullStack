@@ -2,8 +2,6 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule, ActivatedRoute } from '@angular/router';
 import { PuestoService } from '../../../service/puesto.service';
-import { HeaderComponent } from '../header/header.component';
-import { NavigationComponent } from '../navegador/navigation.component';
 
 // Interfaces temporales
 interface Puesto {
@@ -17,7 +15,7 @@ interface Puesto {
 @Component({
   selector: 'app-historial',
   standalone: true,
-  imports: [CommonModule, RouterModule, HeaderComponent, NavigationComponent],
+  imports: [CommonModule, RouterModule],
   templateUrl: './historial.component.html',
   styleUrls: ['./historial.component.css']
 })

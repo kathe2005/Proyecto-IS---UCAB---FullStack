@@ -11,9 +11,6 @@ import { HeaderComponent } from './clientes/components/ocuparPuesto/header/heade
     <div class="main-content">
       <router-outlet></router-outlet>
     </div>
-    <footer class="bg-primary text-white text-center py-3 mt-5">
-      © 2025 UCAB Montalbán - Sistema de Estacionamiento
-    </footer>
   `,
   styles: [`
     .main-content {

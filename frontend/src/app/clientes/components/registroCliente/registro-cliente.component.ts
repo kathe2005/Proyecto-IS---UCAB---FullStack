@@ -1,23 +1,9 @@
 import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
 import { Router } from '@angular/router';
-import { ClienteService } from '../service/cliente.service';
+import { ClienteService } from '../../service/cliente.service';
 import { FormsModule } from '@angular/forms';
-
-// Interface temporal
-interface Cliente {
-  id?: string;
-  usuario: string;
-  contrasena: string;
-  confirmarContrasena: string;
-  nombre: string;
-  apellido: string;
-  cedula: string;
-  email: string;
-  tipoPersona: string
-  direccion: string;
-  telefono: string;
-}
+import { Cliente } from '../../models/cliente';
 
 @Component({
   selector: 'app-registro-cliente',
@@ -104,13 +90,21 @@ export class RegistroClienteComponent {
         return;
       }
 
+      // Validación de cédula CORREGIDA - formato V-/E-
       if (!this.validarCedula(this.nuevoCliente.cedula)) {
-        this.errorMensaje = 'La cédula debe contener solo números';
+        this.errorMensaje = 'La cédula debe tener formato V-12345678 o E-12345678 (V o E seguido de guion y 6-8 dígitos)';
         return;
       }
 
       if (this.nuevoCliente.nombre.length < 2 || this.nuevoCliente.apellido.length < 2) {
         this.errorMensaje = 'Nombre y apellido deben tener al menos 2 caracteres';
+        return;
+      }
+
+      // Validar email según tipo de persona
+      const errorEmail = this.validarEmailPorTipoPersona(this.nuevoCliente.tipoPersona, this.nuevoCliente.email);
+      if (errorEmail) {
+        this.errorMensaje = errorEmail;
         return;
       }
 
@@ -145,32 +139,14 @@ export class RegistroClienteComponent {
     }
 
     if (!this.validarTelefono(this.nuevoCliente.telefono)) {
-      this.errorMensaje = 'El formato del teléfono no es válido';
+      this.errorMensaje = 'El formato del teléfono no es válido. Debe ser: 0412-6112225';
       return;
     }
 
     this.isProcessing = true;
     this.paso = 'cargando';
 
-    // Simulación de registro - reemplaza con servicio real
-    setTimeout(() => {
-      // Generar ID simulado para el cliente
-      const clienteId = 'CLI-' + Math.random().toString(36).substr(2, 9).toUpperCase();
-
-      this.clienteConfirmado = {
-        ...this.nuevoCliente,
-        id: clienteId
-      };
-
-      this.paso = 'confirmacion';
-      this.isProcessing = false;
-
-      // Mostrar mensaje de éxito
-      console.log('Cliente registrado exitosamente:', this.clienteConfirmado);
-    }, 2000);
-
-    // Descomenta para usar el servicio real:
-    /*
+    // USAR EL SERVICIO REAL
     this.clienteService.registrarCliente(this.nuevoCliente)
       .subscribe({
         next: (clienteRespuesta) => {
@@ -186,7 +162,6 @@ export class RegistroClienteComponent {
           this.isProcessing = false;
         }
       });
-    */
   }
 
   modificarDatos() {
@@ -206,21 +181,41 @@ export class RegistroClienteComponent {
     }, 1500);
   }
 
-  // Métodos de validación
+  // Métodos de validación CORREGIDOS para formato V-/E-
   private validarEmail(email: string): boolean {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     return emailRegex.test(email);
   }
 
   private validarCedula(cedula: string): boolean {
-    // Validar que la cédula contenga solo números
-    return /^\d+$/.test(cedula);
+    // Validar formato V-12345678 o E-12345678 (6-8 dígitos)
+    const cedulaRegex = /^[VEve]-\d{6,8}$/;
+    return cedulaRegex.test(cedula);
   }
 
   private validarTelefono(telefono: string): boolean {
-    // Validar formato de teléfono (mínimo 10 dígitos, puede contener +, espacios, guiones)
-    const telefonoRegex = /^[\+]?[(]?[\d\s\-\(\)]{10,}$/;
-    return telefonoRegex.test(telefono.replace(/\s/g, ''));
+    // Validar formato de teléfono: 0412-6112225
+    const telefonoRegex = /^(0212|0424|0416|0426|0414|0412)-\d{7}$/;
+    return telefonoRegex.test(telefono);
+  }
+
+  private validarEmailPorTipoPersona(tipoPersona: string, email: string): string | null {
+    if (!tipoPersona || !email) return null;
+
+    const dominio = email.substring(email.lastIndexOf("@") + 1).toLowerCase();
+
+    if (tipoPersona === 'UCAB') {
+      if (dominio !== 'ucab.edu.ve' && dominio !== 'est.ucab.edu.ve') {
+        return 'Para el tipo UCAB, el email debe ser @ucab.edu.ve o @est.ucab.edu.ve';
+      }
+    } else if (tipoPersona === 'VISITANTE') {
+      const dominiosPermitidos = ['gmail.com', 'outlook.com', 'yahoo.com', 'hotmail.com'];
+      if (!dominiosPermitidos.includes(dominio)) {
+        return 'Para el tipo VISITANTE, el email debe ser @gmail.com, @outlook.com, @yahoo.com o @hotmail.com';
+      }
+    }
+
+    return null;
   }
 
   // Método para reiniciar el formulario

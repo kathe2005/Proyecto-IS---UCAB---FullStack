@@ -1,0 +1,160 @@
+<div class="main-container">
+  <div class="consultar-perfiles-card">
+    <!-- Header -->
+    <div class="card-header">
+      <h1>Consultar Perfiles de Clientes</h1>
+      <p>Busque y visualice la información de los clientes registrados</p>
+    </div>
+
+    <!-- Filtros de búsqueda -->
+    <div class="filtros-section">
+      <div class="filtro-group">
+        <label for="filtroTexto">Buscar:</label>
+        <input
+          type="text"
+          id="filtroTexto"
+          [(ngModel)]="filtroTexto"
+          placeholder="Nombre, cédula, email, usuario..."
+          (input)="aplicarFiltros()">
+      </div>
+
+      <div class="filtro-group">
+        <label for="filtroTipo">Tipo de Persona:</label>
+        <select
+          id="filtroTipo"
+          [(ngModel)]="filtroTipo"
+          (change)="aplicarFiltros()">
+          <option *ngFor="let tipo of tiposPersona" [value]="tipo.value">
+            {{ tipo.label }}
+          </option>
+        </select>
+      </div>
+
+      <div class="filtro-group">
+        <label for="filtroEstado">Estado:</label>
+        <select
+          id="filtroEstado"
+          [(ngModel)]="filtroEstado"
+          (change)="aplicarFiltros()">
+          <option *ngFor="let estado of estadosCliente" [value]="estado.value">
+            {{ estado.label }}
+          </option>
+        </select>
+      </div>
+
+      <div class="filtro-actions">
+        <button class="btn btn-secondary" (click)="limpiarFiltros()">
+          Limpiar Filtros
+        </button>
+        <button class="btn btn-primary" (click)="exportarDatos()">
+          Exportar Datos
+        </button>
+      </div>
+    </div>
+
+    <!-- Resultados -->
+    <div class="resultados-section">
+      <div class="resultados-header">
+        <h3>Resultados ({{ clientesFiltrados.length }})</h3>
+        <span class="total-clientes">Total de clientes: {{ clientes.length }}</span>
+      </div>
+
+      <!-- Estado de carga -->
+      <div *ngIf="cargando" class="loading-state">
+        <div class="spinner"></div>
+        <p>Cargando perfiles de clientes...</p>
+      </div>
+
+      <!-- Lista de clientes -->
+      <div *ngIf="!cargando" class="clientes-list">
+        <div *ngFor="let cliente of clientesFiltrados" class="cliente-card">
+          <div class="cliente-info">
+            <div class="cliente-header">
+              <h4>{{ cliente.nombre }} {{ cliente.apellido }}</h4>
+              <span class="estado-badge" [class]="getEstadoClass(cliente.estado)">
+                {{ cliente.estado }}
+              </span>
+            </div>
+            <div class="cliente-details">
+              <p><strong>Cédula:</strong> {{ cliente.cedula }}</p>
+              <p><strong>Email:</strong> {{ cliente.email }}</p>
+              <p><strong>Tipo:</strong> {{ cliente.tipoPersona }}</p>
+              <p><strong>Usuario:</strong> {{ cliente.usuario }}</p>
+            </div>
+          </div>
+          <div class="cliente-actions">
+            <button class="btn btn-info" (click)="verDetalles(cliente)">
+              Ver Detalles
+            </button>
+          </div>
+        </div>
+
+        <!-- Mensaje cuando no hay resultados -->
+        <div *ngIf="clientesFiltrados.length === 0 && !cargando" class="no-results">
+          <p>No se encontraron clientes que coincidan con los filtros aplicados.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Botón volver -->
+    <div class="actions-footer">
+      <button class="btn btn-secondary" (click)="volverAGestion()">
+        Volver a Gestión de Perfiles
+      </button>
+    </div>
+  </div>
+
+  <!-- Modal de detalles -->
+  <div *ngIf="mostrarDetalles && clienteSeleccionado" class="modal-overlay">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2>Detalles del Cliente</h2>
+        <button class="close-btn" (click)="cerrarDetalles()">×</button>
+      </div>
+
+      <div class="modal-body">
+        <div class="detalles-grid">
+          <div class="detalle-item">
+            <strong>ID:</strong> {{ clienteSeleccionado.id }}
+          </div>
+          <div class="detalle-item">
+            <strong>Nombre completo:</strong> {{ clienteSeleccionado.nombre }} {{ clienteSeleccionado.apellido }}
+          </div>
+          <div class="detalle-item">
+            <strong>Cédula:</strong> {{ clienteSeleccionado.cedula }}
+          </div>
+          <div class="detalle-item">
+            <strong>Email:</strong> {{ clienteSeleccionado.email }}
+          </div>
+          <div class="detalle-item">
+            <strong>Usuario:</strong> {{ clienteSeleccionado.usuario }}
+          </div>
+          <div class="detalle-item">
+            <strong>Tipo de persona:</strong> {{ clienteSeleccionado.tipoPersona }}
+          </div>
+          <div class="detalle-item">
+            <strong>Dirección:</strong> {{ clienteSeleccionado.direccion }}
+          </div>
+          <div class="detalle-item">
+            <strong>Teléfono:</strong> {{ clienteSeleccionado.telefono }}
+          </div>
+          <div class="detalle-item">
+            <strong>Fecha de registro:</strong> {{ clienteSeleccionado.fechaRegistro }}
+          </div>
+          <div class="detalle-item">
+            <strong>Estado:</strong>
+            <span class="estado-badge" [class]="getEstadoClass(clienteSeleccionado.estado)">
+              {{ clienteSeleccionado.estado }}
+            </span>
+          </div>
+        </div>
+      </div>
+
+      <div class="modal-footer">
+        <button class="btn btn-secondary" (click)="cerrarDetalles()">
+          Cerrar
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

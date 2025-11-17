@@ -13,29 +13,29 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 @EnableWebSecurity
 public class SecurityConfig {
 
-    // CONFIGURACIÓN DE SEGURIDAD 
-    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception
-    {
+    @Bean
+    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
-            .csrf(csrf -> csrf.disable()) 
-                .authorizeHttpRequests(authorize -> authorize
-                .requestMatchers("/api/clientes/registrar").permitAll() 
-                .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll() 
-                .anyRequest().authenticated());
-                return http.build();}
+            .csrf(csrf -> csrf.disable())
+            .authorizeHttpRequests(authorize -> authorize
+                .requestMatchers("/api/**").permitAll() // Permitir todas las rutas de API
+                .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
+                .anyRequest().authenticated()
+            );
+        return http.build();
+    }
 
-    // 2. CONFIGURACIÓN CORS 
     @Bean
     public WebMvcConfigurer corsConfigurer() {
         return new WebMvcConfigurer() {
             @Override
             public void addCorsMappings(CorsRegistry registry) {
-                registry.addMapping("/api/**") // Aplica a todos los endpoints de tu API
-                    .allowedOrigins("http://localhost:*") // Permite cualquier puerto local
+                registry.addMapping("/api/**")
+                    .allowedOrigins("http://localhost:4200")
                     .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
                     .allowedHeaders("*")
-                    .allowCredentials(true); 
-                }
-            };
-        }
+                    .allowCredentials(true);
+            }
+        };
+    }
 }

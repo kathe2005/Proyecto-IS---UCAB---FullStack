@@ -1,6 +1,6 @@
 <div class="main-container">
 
-<h1> Registro de Estacionamiento </h1>
+<h1 style="margin: 0;padding: 0;"> Registro de Estacionamiento </h1>
     @if (paso === 'credenciales')
     {
         <div class="registro-cliente">
@@ -64,8 +64,9 @@
                     <legend> Datos Personales </legend>
 
                     <div class="form-group">
-                        <label for="cedula"> Cédula </label>
-                        <input type="text" id="cedula" name="cedula" [(ngModel)]="nuevoCliente.cedula" required>
+                        <label for="cedula"> Cédula (formato: V-12345678 o E-12345678) </label>
+                        <input type="text" id="cedula" name="cedula" [(ngModel)]="nuevoCliente.cedula"
+                               placeholder="V-12345678" required>
                     </div>
 
                     <div class="form-group">
@@ -110,7 +111,6 @@
         </div>
     }
 
-
     @if (paso === 'contacto_ubicacion')
     {
         <div class="registro-cliente">
@@ -128,8 +128,9 @@
                     </div>
 
                     <div class="form-group">
-                        <label for="telefono"> Teléfono </label>
-                        <input type="text" id="telefono" name="telefono" [(ngModel)]="nuevoCliente.telefono" required>
+                        <label for="telefono"> Teléfono (formato: 0412-6112225) </label>
+                        <input type="text" id="telefono" name="telefono" [(ngModel)]="nuevoCliente.telefono"
+                               placeholder="0412-6112225" required>
                     </div>
 
                 </fieldset>
@@ -193,5 +194,9 @@
             </div>
         </div>
     }
+
+    <footer class="footer">
+    © 2025 UCAB Montalbán - Sistema de Estacionamiento
+  </footer>
 
 </div>
