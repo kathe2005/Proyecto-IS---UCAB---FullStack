@@ -1,0 +1,231 @@
+<div id="ContenedorMain">
+  <div id="contenedor">
+
+    <!-- Título de la sección -->
+    <div class="section-title">
+      <h2>Reportes de Ocupación</h2>
+      <p>Genere reportes detallados de la ocupación de puestos por turno y fecha</p>
+    </div>
+
+    <!-- Mensajes -->
+    <div *ngIf="mensaje" [class]="'alert alert-' + mensajeTipo" class="alert">
+      <i class="fas fa-info-circle"></i> {{ mensaje }}
+    </div>
+
+    <!-- Estadísticas Rápidas -->
+    <div class="card section-card" *ngIf="estadisticasRapidas">
+      <div class="card-content">
+        <div class="icono">
+          <i class="fas fa-chart-line"></i>
+        </div>
+        <div class="texto">
+          <h3>Estadísticas del Día</h3>
+          <p>Resumen de ocupación para hoy {{ estadisticasRapidas.fecha }}</p>
+        </div>
+      </div>
+
+      <div class="estadisticas-grid">
+        <div class="estadistica-item">
+          <div class="estadistica-valor">{{ estadisticasRapidas.totalPuestos }}</div>
+          <div class="estadistica-label">Total Puestos</div>
+        </div>
+        <div class="estadistica-item">
+          <div class="estadistica-valor text-success">{{ estadisticasRapidas.puestosOcupados }}</div>
+          <div class="estadistica-label">Ocupados</div>
+        </div>
+        <div class="estadistica-item">
+          <div class="estadistica-valor text-info">{{ estadisticasRapidas.puestosDisponibles }}</div>
+          <div class="estadistica-label">Disponibles</div>
+        </div>
+        <div class="estadistica-item">
+          <div class="estadistica-valor" [style.color]="getColorPorcentaje(estadisticasRapidas.porcentajeOcupacion)">
+            {{ estadisticasRapidas.porcentajeOcupacion }}%
+          </div>
+          <div class="estadistica-label">Ocupación</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Filtros de Reporte -->
+    <div class="card form-card">
+      <div class="card-content">
+        <h4 class="form-title">
+          <i class="fas fa-filter"></i> Filtros del Reporte
+        </h4>
+
+        <div class="filtros-grid">
+          <div class="form-group">
+            <label class="form-label">
+              <i class="fas fa-calendar"></i> Fecha
+            </label>
+            <input type="date"
+                   [(ngModel)]="fechaSeleccionada"
+                   class="form-control">
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">
+              <i class="fas fa-clock"></i> Turno
+            </label>
+            <select [(ngModel)]="turnoSeleccionado" class="form-control">
+              <option *ngFor="let turno of turnos" [value]="turno.valor">
+                {{ turno.texto }}
+              </option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">
+              <i class="fas fa-file-alt"></i> Tipo de Reporte
+            </label>
+            <select [(ngModel)]="tipoReporte" class="form-control">
+              <option *ngFor="let tipo of tiposReporte" [value]="tipo.valor">
+                {{ tipo.texto }}
+              </option>
+            </select>
+          </div>
+        </div>
+
+        <div class="form-actions">
+          <button type="button"
+                  (click)="generarReporte()"
+                  class="btn btn-primary"
+                  [disabled]="cargando">
+            <i class="fas fa-chart-bar"></i>
+            {{ cargando ? 'Generando...' : 'Generar Reporte' }}
+          </button>
+
+          <button type="button"
+                  (click)="descargarReporte()"
+                  class="btn btn-success"
+                  [disabled]="!reporteActual">
+            <i class="fas fa-download"></i> Descargar
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Reporte Generado -->
+    <div *ngIf="reporteActual && !cargando" class="card reporte-card">
+      <div class="card-content">
+        <h4 class="reporte-title">
+          <i class="fas fa-chart-pie"></i> Reporte de Ocupación
+        </h4>
+
+        <!-- Resumen General -->
+        <div class="resumen-section">
+          <h5>Resumen General</h5>
+          <div class="resumen-grid">
+            <div class="resumen-item">
+              <div class="resumen-valor">{{ reporteActual.totalPuestos }}</div>
+              <div class="resumen-label">Total Puestos</div>
+            </div>
+            <div class="resumen-item">
+              <div class="resumen-valor text-success">{{ reporteActual.puestosOcupados }}</div>
+              <div class="resumen-label">Ocupados</div>
+            </div>
+            <div class="resumen-item">
+              <div class="resumen-valor text-info">{{ reporteActual.puestosDisponibles }}</div>
+              <div class="resumen-label">Disponibles</div>
+            </div>
+            <div class="resumen-item">
+              <div class="resumen-valor" [style.color]="getColorPorcentaje(reporteActual.porcentajeOcupacion)">
+                {{ reporteActual.porcentajeOcupacion }}%
+              </div>
+              <div class="resumen-label">Ocupación</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Ocupación por Tipo -->
+        <div class="distribucion-section">
+          <h5>Ocupación por Tipo de Puesto</h5>
+          <div class="distribucion-grid">
+            <div *ngFor="let tipo of objectKeys(reporteActual.ocupacionPorTipo)"
+                 class="tipo-item">
+              <span class="tipo-badge" [style.background]="getTipoColor(tipo)">
+                {{ tipo }}
+              </span>
+              <span class="tipo-cantidad">{{ reporteActual.ocupacionPorTipo[tipo] }}</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Detalle de Ocupación -->
+        <div *ngIf="reporteDetallado" class="detalle-section">
+          <h5>Detalle de Ocupación ({{ reporteDetallado.totalRegistros }} registros)</h5>
+          <div class="table-responsive">
+            <table class="detalle-table">
+              <thead>
+                <tr>
+                  <th>Puesto</th>
+                  <th>Tipo</th>
+                  <th>Ubicación</th>
+                  <th>Cliente</th>
+                  <th>Cédula</th>
+                  <th>Fecha Ocupación</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let detalle of reporteDetallado.detalleOcupacion">
+                  <td>{{ detalle.numeroPuesto }}</td>
+                  <td>
+                    <span class="badge" [style.background]="getTipoColor(detalle.tipoPuesto)">
+                      {{ detalle.tipoPuesto }}
+                    </span>
+                  </td>
+                  <td>{{ detalle.ubicacion }}</td>
+                  <td>
+                    <span *ngIf="detalle.cliente; else sinCliente">
+                      {{ detalle.cliente.nombre }} {{ detalle.cliente.apellido }}
+                    </span>
+                    <ng-template #sinCliente>
+                      <span class="text-muted">No disponible</span>
+                    </ng-template>
+                  </td>
+                  <td>
+                    <span *ngIf="detalle.cliente">{{ detalle.cliente.cedula }}</span>
+                  </td>
+                  <td>{{ detalle.fechaOcupacion | date:'short' }}</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Loading State -->
+    <div *ngIf="cargando" class="card loading-state">
+      <div class="loading-content">
+        <i class="fas fa-spinner fa-spin"></i>
+        <p>Generando reporte...</p>
+      </div>
+    </div>
+
+    <!-- Tendencia -->
+    <div *ngIf="tendencia.length > 0" class="card tendencia-card">
+      <div class="card-content">
+        <h4 class="tendencia-title">
+          <i class="fas fa-chart-line"></i> Tendencia de Ocupación (Últimos 7 días)
+        </h4>
+        <div class="tendencia-grid">
+          <div *ngFor="let dia of tendencia" class="tendencia-item">
+            <div class="tendencia-fecha">{{ dia.fecha | date:'shortDate' }}</div>
+            <div class="tendencia-porcentaje" [style.color]="getColorPorcentaje(dia.porcentajeOcupacion)">
+              {{ dia.porcentajeOcupacion }}%
+            </div>
+            <div class="tendencia-detalle">
+              {{ dia.puestosOcupados }}/{{ dia.totalPuestos }}
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <footer class="footer">
+    © 2025 UCAB Montalbán - Sistema de Estacionamiento
+  </footer>
+</div>

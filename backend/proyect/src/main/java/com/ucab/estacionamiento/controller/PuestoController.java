@@ -1,7 +1,9 @@
 package com.ucab.estacionamiento.controller;
 
 import com.ucab.estacionamiento.model.*;
-import com.ucab.estacionamiento.service.PuestoService;
+import com.ucab.estacionamiento.model.enums.EstadoPuesto;
+import com.ucab.estacionamiento.model.enums.TipoPuesto;
+import com.ucab.estacionamiento.model.interfaces.PuestoService;
 import com.ucab.estacionamiento.service.JsonManager;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;

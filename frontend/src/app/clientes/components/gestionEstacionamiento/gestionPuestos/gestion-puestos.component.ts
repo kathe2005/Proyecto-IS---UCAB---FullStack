@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { CommonModule } from '@angular/common'; // AÑADIDO: Importar CommonModule
 import { Router } from '@angular/router';
 
 interface OpcionMenu {
@@ -14,7 +14,7 @@ interface OpcionMenu {
 @Component({
   selector: 'app-gestion-puestos',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule], // AÑADIDO: Importar CommonModule para *ngFor
   templateUrl: './gestion-puestos.component.html',
   styleUrls: ['./gestion-puestos.component.css']
 })
@@ -32,7 +32,7 @@ export class GestionPuestosComponent {
     {
       id: 'card2',
       titulo: 'Desocupar Puesto',
-      ruta: '/puestos',
+      ruta: '/puestos/desocupar',
       color: 'yellow',
       icono: 'fas fa-sign-out-alt',
       descripcion: 'Liberar puestos ocupados'
@@ -48,26 +48,26 @@ export class GestionPuestosComponent {
     {
       id: 'card4',
       titulo: 'Generar Reporte de Ocupación',
-      ruta: '/puestos/estadisticas',
+      ruta: '/reportes',
       color: 'orange',
       icono: 'fas fa-chart-bar',
-      descripcion: 'Ver reportes y estadísticas'
+      descripcion: 'Ver reportes y estadísticas de ocupación'
     },
     {
       id: 'card5',
-      titulo: 'Modificar Puesto',
+      titulo: 'Consultar Puestos',
       ruta: '/puestos',
-      color: 'magenta',
-      icono: 'fas fa-edit',
-      descripcion: 'Editar información de puestos'
+      color: 'purple',
+      icono: 'fas fa-list',
+      descripcion: 'Ver lista de todos los puestos'
     },
     {
       id: 'card6',
-      titulo: 'Eliminar Puesto',
-      ruta: '/puestos',
-      color: 'red',
-      icono: 'fas fa-trash',
-      descripcion: 'Eliminar puestos del sistema'
+      titulo: 'Estadísticas',
+      ruta: '/puestos/estadisticas',
+      color: 'teal',
+      icono: 'fas fa-chart-pie',
+      descripcion: 'Ver estadísticas generales del sistema'
     }
   ];
 

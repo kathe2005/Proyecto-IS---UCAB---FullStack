@@ -1,4 +1,4 @@
-package com.ucab.estacionamiento.model;
+package com.ucab.estacionamiento.model.enums;
 
 public enum TipoPuesto {
     REGULAR("Regular", "blue"),

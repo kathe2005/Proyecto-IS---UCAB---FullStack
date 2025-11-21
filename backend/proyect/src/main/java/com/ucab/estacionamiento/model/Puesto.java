@@ -4,6 +4,9 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.ucab.estacionamiento.model.enums.EstadoPuesto;
+import com.ucab.estacionamiento.model.enums.TipoPuesto;
+
 public class Puesto {
     private String id;
     private String numero;
@@ -74,5 +77,16 @@ public class Puesto {
 
     public void agregarRegistroHistorial(String entrada) {
         getHistorialOcupacion().add(entrada);
+    }
+    
+    @Override
+    public String toString() {
+        return "Puesto{" +
+                "id='" + id + '\'' +
+                ", numero='" + numero + '\'' +
+                ", ubicacion='" + ubicacion + '\'' +
+                ", tipoPuesto=" + tipoPuesto +
+                ", estadoPuesto=" + estadoPuesto +
+                '}';
     }
 }

@@ -27,6 +27,12 @@ export const routes: Routes = [
         loadComponent: () => import('./clientes/components/gestionEstacionamiento/gestionPerfiles/gestion-perfiles.component').then(m => m.GestionPerfilesComponent)
     },
 
+    // NUEVA RUTA: Gestión de reservas - Menú principal de reservas
+    {
+        path: 'gestion-reservas',
+        loadComponent: () => import('./clientes/components/gestionEstacionamiento/gestionReservas/gestion-reserva.component').then(m => m.GestionReservaComponent)
+    },
+
     // Registro de cliente (ruta existente)
     {
         path: 'registrar-cliente',
@@ -45,19 +51,33 @@ export const routes: Routes = [
         loadComponent: () => import('./clientes/components/consultarPerfiles/consultar-perfiles.component').then(m => m.ConsultarPerfilesComponent)
     },
 
+    // NUEVAS RUTAS: Gestión de reservas
     {
-        path: 'perfiles/modificar',
-        loadComponent: () => import('./clientes/components/modificarPerfiles/modificar-perfil.component').then(m => m.ModificarPerfilesComponent)
+        path: 'reservas/consultar-disponibilidad',
+        loadComponent: () => import('./clientes/components/consultarPuestosDisponibles/consultar-disponibilidad.component').then(m => m.ConsultarDisponibilidadComponent)
     },
 
+    {
+        path: 'reservas/crear',
+        loadComponent: () => import('./clientes/components/reservaPuesto/reservar-puesto.component').then(m => m.ReservarPuestoComponent)
+    },
+
+    {
+      path: 'reservas/pagos',
+      loadComponent: () => import('./clientes/components/registroPago/registrar-pago.component').then(m => m.RegistrarPagoComponent)
+    },
     /*
     {
-        path: 'perfiles/historial',
-        loadComponent: () => import('./clientes/components/gestionPerfiles/historial-reservas/historial-reservas.component').then(m => m.HistorialReservasComponent)
+        path: 'reservas/modificar',
+        loadComponent: () => import('./clientes/components/modificarReserva/modificar-reserva.component').then(m => m.ModificarReservaComponent)
     },
     {
-        path: 'perfiles/eliminar',
-        loadComponent: () => import('./clientes/components/gestionPerfiles/eliminar-perfil/eliminar-perfil.component').then(m => m.EliminarPerfilComponent)
+        path: 'reservas/cancelar',
+        loadComponent: () => import('./clientes/components/cancelarReserva/cancelar-reserva.component').then(m => m.CancelarReservaComponent)
+    },
+    {
+        path: 'reservas/activas',
+        loadComponent: () => import('./clientes/components/listaReservas/lista-reservas.component').then(m => m.ListaReservasComponent)
     },
     */
 
@@ -65,6 +85,18 @@ export const routes: Routes = [
     {
         path: 'ocupar',
         loadComponent: () => import('./clientes/components/ocuparPuesto/ocupar/ocupar-puestos.component').then(m => m.OcuparPuestoComponent)
+    },
+
+    // NUEVA RUTA: Desocupar puestos
+    {
+        path: 'desocupar',
+        loadComponent: () => import('./clientes/components/desocuparPuestos/desocupar-puesto.component').then(m => m.DesocuparPuestosComponent)
+    },
+
+    // NUEVA RUTA: Reportes de ocupación
+    {
+        path: 'reportes',
+        loadComponent: () => import('./clientes/components/reporteOcupacion/reportes.component').then(m => m.ReportesComponent)
     },
 
     // Resto de rutas del sistema de estacionamiento
@@ -84,6 +116,11 @@ export const routes: Routes = [
         path: 'puestos/ocupar',
         loadComponent: () => import('./clientes/components/ocuparPuesto/ocupar/ocupar-puestos.component').then(m => m.OcuparPuestoComponent)
     },
+    // NUEVA RUTA: Desocupar puesto desde gestión de puestos
+    {
+        path: 'puestos/desocupar',
+        loadComponent: () => import('./clientes/components/desocuparPuestos/desocupar-puesto.component').then(m => m.DesocuparPuestosComponent)
+    },
     {
         path: 'puestos/estadisticas',
         loadComponent: () => import('./clientes/components/ocuparPuesto/estadisticas/estadisticas.component').then(m => m.EstadisticasComponent)
@@ -96,10 +133,10 @@ export const routes: Routes = [
         path: 'puestos/historial/:id',
         loadComponent: () => import('./clientes/components/ocuparPuesto/historial/historial.component').then(m => m.HistorialComponent)
     },
+    // RUTA CORREGIDA: Crear puesto
     {
         path: 'puestos/crear',
-        loadComponent: () => import('./clientes/components/ocuparPuesto/listaPuestos/lista-puestos.component').then(m => m.ListaPuestosComponent)
-        // Nota: Deberías crear un componente específico para crear puestos
+        loadComponent: () => import('./clientes/components/crearPuesto/crear-puesto.component').then(m => m.CrearPuestoComponent)
     },
 
     // Dashboard del sistema (home anterior)
@@ -120,6 +157,11 @@ export const routes: Routes = [
         pathMatch: 'full'
     },
     {
+        path: 'reservas',
+        redirectTo: 'gestion-reservas',
+        pathMatch: 'full'
+    },
+    {
         path: 'home',
         redirectTo: 'inicio',
         pathMatch: 'full'
@@ -137,6 +179,34 @@ export const routes: Routes = [
     {
         path: 'gestion',
         redirectTo: 'gestion-puestos',
+        pathMatch: 'full'
+    },
+    // NUEVA REDIRECCIÓN: Para liberar puestos
+    {
+        path: 'liberar',
+        redirectTo: 'desocupar',
+        pathMatch: 'full'
+    },
+    {
+        path: 'puestos/liberar',
+        redirectTo: 'puestos/desocupar',
+        pathMatch: 'full'
+    },
+    // NUEVA REDIRECCIÓN: Para reportes desde gestión de puestos
+    {
+        path: 'puestos/reportes',
+        redirectTo: 'reportes',
+        pathMatch: 'full'
+    },
+    {
+        path: 'gestion-puestos/reportes',
+        redirectTo: 'reportes',
+        pathMatch: 'full'
+    },
+    // NUEVA REDIRECCIÓN: Para consultar disponibilidad
+    {
+        path: 'disponibilidad',
+        redirectTo: 'reservas/consultar-disponibilidad',
         pathMatch: 'full'
     },
 

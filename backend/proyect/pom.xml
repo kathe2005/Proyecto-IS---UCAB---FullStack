@@ -59,6 +59,12 @@
             <artifactId>jackson-databind</artifactId>
         </dependency>
         
+        <!-- JACKSON PARA JAVA TIME -->
+        <dependency>
+            <groupId>com.fasterxml.jackson.datatype</groupId>
+            <artifactId>jackson-datatype-jsr310</artifactId>
+        </dependency>
+        
         <!-- DEPENDENCIA PARA VALIDACIÓN -->
         <dependency>
             <groupId>org.springframework.boot</groupId>

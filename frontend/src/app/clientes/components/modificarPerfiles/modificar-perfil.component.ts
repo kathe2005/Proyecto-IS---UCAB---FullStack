@@ -1,155 +1,187 @@
+
+/*
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
-import { ClienteService } from '../../service/cliente.service';
-import { Cliente } from '../../models/cliente';
+import { ClienteService, Cliente } from '../../service/cliente.service';
 
 @Component({
   selector: 'app-modificar-perfiles',
-  templateUrl: './modificar-perfil.component.html',
-  styleUrls: ['./modificar-perfil.component.css'],
   standalone: true,
-  imports: [CommonModule, FormsModule]
+  imports: [CommonModule, FormsModule],
+  templateUrl: './modificar-perfil.component.html',
+  styleUrls: ['./modificar-perfil.component.css']
 })
 export class ModificarPerfilesComponent implements OnInit {
-
   clientes: Cliente[] = [];
   clientesFiltrados: Cliente[] = [];
   clienteSeleccionado: Cliente | null = null;
+  clienteEditado: Cliente | null = null;
 
-  // Filtros de búsqueda
+  // Propiedades para filtros
   filtroTexto: string = '';
-  filtroTipo: string = 'todos';
+  filtroTipo: string = '';
 
-  // Estados de carga
+  // Estados de la UI
+  mostrarFormulario: boolean = false;
   cargando: boolean = false;
   guardando: boolean = false;
-  mostrarFormulario: boolean = false;
 
   // Mensajes
-  errorMensaje: string | null = null;
-  mensajeExito: string | null = null;
+  mensaje: string = '';
+  mensajeTipo: 'success' | 'danger' | 'warning' | 'info' = 'info';
+  errorMensaje: string = '';
+  mensajeExito: string = '';
 
   // Opciones para filtros
   tiposPersona = [
-    { value: 'todos', label: 'Todos los tipos' },
+    { value: '', label: 'Todos los tipos' },
     { value: 'UCAB', label: 'UCAB' },
-    { value: 'VISITANTE', label: 'VISITANTE' }
+    { value: 'VISITANTE', label: 'Visitante' }
   ];
 
   constructor(
-    private router: Router,
-    private clienteService: ClienteService
+    private clienteService: ClienteService,
+    private router: Router
   ) {}
 
-  ngOnInit(): void {
+  ngOnInit() {
     this.cargarClientes();
   }
 
-  // Cargar clientes desde el backend
-  private cargarClientes(): void {
+  cargarClientes() {
     this.cargando = true;
-    this.errorMensaje = null;
-
     this.clienteService.consultarClientes().subscribe({
-      next: (clientes) => {
+      next: (clientes: Cliente[]) => {
         this.clientes = clientes;
-        this.clientesFiltrados = [...this.clientes];
+        this.clientesFiltrados = clientes;
         this.cargando = false;
-        console.log('Clientes cargados:', this.clientes.length);
       },
-      error: (error) => {
-        console.error('Error al cargar clientes:', error);
-        this.errorMensaje = 'Error al cargar los datos de clientes. Por favor, intente más tarde.';
+      error: (error: any) => {
+        console.error('Error cargando clientes:', error);
+        this.errorMensaje = 'Error al cargar los clientes';
         this.cargando = false;
       }
     });
   }
 
-  // Aplicar filtros de búsqueda
-  aplicarFiltros(): void {
-    this.clientesFiltrados = this.clientes.filter(cliente => {
-      const coincideTexto = !this.filtroTexto ||
-        cliente.nombre.toLowerCase().includes(this.filtroTexto.toLowerCase()) ||
-        cliente.apellido.toLowerCase().includes(this.filtroTexto.toLowerCase()) ||
-        cliente.cedula.includes(this.filtroTexto) ||
-        cliente.email.toLowerCase().includes(this.filtroTexto.toLowerCase()) ||
-        cliente.usuario.toLowerCase().includes(this.filtroTexto.toLowerCase());
+  aplicarFiltros() {
+    let filtrados = this.clientes;
 
-      const coincideTipo = this.filtroTipo === 'todos' || cliente.tipoPersona === this.filtroTipo;
+    // Filtrar por texto (búsqueda en cédula, nombre, apellido)
+    if (this.filtroTexto) {
+      const texto = this.filtroTexto.toLowerCase();
+      filtrados = filtrados.filter(cliente =>
+        cliente.cedula.toLowerCase().includes(texto) ||
+        cliente.nombre.toLowerCase().includes(texto) ||
+        cliente.apellido.toLowerCase().includes(texto)
+      );
+    }
 
-      return coincideTexto && coincideTipo;
-    });
+    // Filtrar por tipo
+    if (this.filtroTipo) {
+      filtrados = filtrados.filter(cliente =>
+        cliente.tipoCliente === this.filtroTipo
+      );
+    }
+
+    this.clientesFiltrados = filtrados;
   }
 
-  // Limpiar todos los filtros
-  limpiarFiltros(): void {
+  limpiarFiltros() {
     this.filtroTexto = '';
-    this.filtroTipo = 'todos';
-    this.clientesFiltrados = [...this.clientes];
+    this.filtroTipo = '';
+    this.clientesFiltrados = this.clientes;
   }
 
-  // Modificar un cliente
-  modificarCliente(cliente: Cliente): void {
-    this.clienteSeleccionado = { ...cliente };
+  seleccionarCliente(cliente: Cliente) {
+    this.clienteSeleccionado = cliente;
+    this.clienteEditado = { ...cliente };
     this.mostrarFormulario = true;
-    this.errorMensaje = null;
-    this.mensajeExito = null;
+    this.mensaje = '';
+    this.errorMensaje = '';
+    this.mensajeExito = '';
   }
 
-  // Cerrar panel de formulario
-  cerrarFormulario(): void {
+  modificarCliente(cliente: Cliente) {
+    this.seleccionarCliente(cliente);
+  }
+
+  cerrarFormulario() {
     this.mostrarFormulario = false;
     this.clienteSeleccionado = null;
-    this.errorMensaje = null;
-    this.mensajeExito = null;
+    this.clienteEditado = null;
+    this.errorMensaje = '';
+    this.mensajeExito = '';
   }
 
-  // Guardar cambios del cliente
-  guardarCambios(): void {
-    if (!this.clienteSeleccionado || !this.clienteSeleccionado.id) {
-      this.errorMensaje = 'Error: Cliente no válido';
+  cancelarSeleccion() {
+    this.cerrarFormulario();
+  }
+
+  guardarCambios() {
+    if (!this.clienteEditado) {
+      this.errorMensaje = 'No hay cliente seleccionado para modificar';
+      return;
+    }
+
+    // Validaciones básicas
+    if (!this.clienteEditado.cedula || !this.clienteEditado.nombre || !this.clienteEditado.apellido) {
+      this.errorMensaje = 'Por favor complete todos los campos obligatorios';
       return;
     }
 
     this.guardando = true;
-    this.errorMensaje = null;
-    this.mensajeExito = null;
 
-    this.clienteService.modificarCliente(this.clienteSeleccionado.id, this.clienteSeleccionado)
-      .subscribe({
-        next: (clienteActualizado) => {
-          this.guardando = false;
-          this.mensajeExito = 'Cliente modificado exitosamente';
+    this.clienteService.modificarCliente(this.clienteEditado).subscribe({
+      next: (clienteActualizado: Cliente) => {
+        this.guardando = false;
+        this.mensajeExito = '✅ Cliente modificado exitosamente';
 
-          // Actualizar la lista local
-          const index = this.clientes.findIndex(c => c.id === clienteActualizado.id);
-          if (index !== -1) {
-            this.clientes[index] = clienteActualizado;
-            this.clientesFiltrados = [...this.clientes];
-          }
-
-          // Cerrar el formulario después de 2 segundos
-          setTimeout(() => {
-            this.cerrarFormulario();
-          }, 2000);
-        },
-        error: (error) => {
-          this.guardando = false;
-          console.error('Error al modificar cliente:', error);
-
-          if (error.error && error.error.mensaje) {
-            this.errorMensaje = error.error.mensaje;
-          } else {
-            this.errorMensaje = 'Error al modificar el cliente. Por favor, intente nuevamente.';
-          }
+        // Actualizar la lista local
+        const index = this.clientes.findIndex(c => c.id === clienteActualizado.id);
+        if (index !== -1) {
+          this.clientes[index] = clienteActualizado;
         }
-      });
+
+        // Actualizar lista filtrada
+        this.aplicarFiltros();
+
+        setTimeout(() => {
+          this.cerrarFormulario();
+          this.mensajeExito = '';
+        }, 2000);
+      },
+      error: (error: any) => {
+        this.guardando = false;
+        console.error('Error modificando cliente:', error);
+
+        let mensajeError = 'Error al modificar el cliente';
+        if (error.error?.message) {
+          mensajeError = error.error.message;
+        }
+
+        this.errorMensaje = '❌ ' + mensajeError;
+      }
+    });
   }
 
-  // Volver a gestión de perfiles
-  volverAGestion(): void {
+  confirmarModificacion() {
+    this.guardarCambios();
+  }
+
+  volverAGestion() {
     this.router.navigate(['/gestion-perfiles']);
   }
+
+  volverAGestionPerfiles() {
+    this.volverAGestion();
+  }
+
+  private mostrarMensaje(mensaje: string, tipo: 'success' | 'danger' | 'warning' | 'info') {
+    this.mensaje = mensaje;
+    this.mensajeTipo = tipo;
+  }
 }
+*/

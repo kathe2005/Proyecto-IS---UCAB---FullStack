@@ -9,6 +9,10 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.util.FileCopyUtils;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
+import java.util.Objects; // IMPORT AÑADIDO
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -16,21 +20,26 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @SpringBootTest 
 @AutoConfigureMockMvc 
-// 💡 Spring levanta todo el contexto (Controller, Service, DB simulada)
 public class ClienteControllerTest {
 
-    @Autowired // 💡 Inyecta el objeto que simula el entorno HTTP
+    @Autowired
     private MockMvc mockMvc; 
+    
+    private final ObjectMapper objectMapper = new ObjectMapper(); // AÑADIDO
     
     // Función para CARGAR el JSON de forma reutilizable
     private String cargarJsonValido() throws Exception {
-    // Usamos el ClassLoader de esta CLASE (ClienteControllerTest) para buscar el archivo.
-    // Esto es más seguro.
-    return new String(FileCopyUtils.copyToByteArray(
-        // Cambiamos el .getInputStream() a una sintaxis más corta.
-        new ClassPathResource("cliente_valido.json").getInputStream()
-    ));
-}
+        return new String(FileCopyUtils.copyToByteArray(
+            new ClassPathResource("cliente_valido.json").getInputStream()
+        ));
+    }
+    
+    // MÉTODO HELPER AÑADIDO para obtener cédula de forma segura
+    private String obtenerCedulaSegura(String jsonContent) throws Exception {
+        JsonNode jsonNode = objectMapper.readTree(jsonContent);
+        return Objects.requireNonNull(jsonNode.get("cedula"), "cedula no puede ser null").asText();
+    }
+    
     // ====================================================================
     // CASO 1: REGISTRO EXITOSO (201 Created)
     // ====================================================================
@@ -38,13 +47,16 @@ public class ClienteControllerTest {
     void registrarCliente_datosValidos_retorna201() throws Exception {
         String jsonRequest = cargarJsonValido();
         
+        // VERIFICACIÓN SEGURA AÑADIDA
+        String cedula = obtenerCedulaSegura(jsonRequest);
+        Objects.requireNonNull(cedula, "La cédula no puede ser null después de la conversión");
+        
         mockMvc.perform(post("/api/clientes") 
-                // Usamos MediaType.APPLICATION_JSON_VALUE para evitar problemas de Null Safety en versiones recientes de Spring.
                 .contentType(MediaType.APPLICATION_JSON_VALUE) 
                 .content(jsonRequest))
                 
-                .andExpect(status().isCreated()) // Espera código 201
-                .andExpect(jsonPath("$.nombre").value("Estudiante")); // Verifica un campo de la respuesta
+                .andExpect(status().isCreated())
+                .andExpect(jsonPath("$.nombre").value("Estudiante"));
     }
 
     // ====================================================================
@@ -54,7 +66,11 @@ public class ClienteControllerTest {
     void registrarCliente_emailDuplicado_retorna409Conflict() throws Exception {
         String jsonRequest = cargarJsonValido();
 
-        // 1. PRE-CONDICIÓN: Primer Registro Exitoso (simula la inserción)
+        // VERIFICACIÓN SEGURA AÑADIDA
+        String cedula = obtenerCedulaSegura(jsonRequest);
+        Objects.requireNonNull(cedula, "La cédula no puede ser null después de la conversión");
+
+        // 1. PRE-CONDICIÓN: Primer Registro Exitoso
         mockMvc.perform(post("/api/clientes")
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .content(jsonRequest))
@@ -65,7 +81,7 @@ public class ClienteControllerTest {
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .content(jsonRequest))
                 
-                .andExpect(status().isConflict()) // Espera 409 Conflict
+                .andExpect(status().isConflict())
                 .andExpect(jsonPath("$.mensaje").value("Su correo se encuentra registrado debe ingresar otro para continuar"));
     }
     
@@ -76,14 +92,18 @@ public class ClienteControllerTest {
     void registrarCliente_cedulaInvalida_retorna400BadRequest() throws Exception {
         String jsonBase = cargarJsonValido();
         
-        // REUTILIZACIÓN: Modifica el JSON en la memoria (String.replace)
+        // REUTILIZACIÓN: Modifica el JSON en la memoria
         String jsonInvalido = jsonBase.replace("V-12345678", "12345"); 
+        
+        // VERIFICACIÓN SEGURA AÑADIDA
+        String cedula = obtenerCedulaSegura(jsonInvalido);
+        Objects.requireNonNull(cedula, "La cédula no puede ser null después de la conversión");
         
         mockMvc.perform(post("/api/clientes")
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .content(jsonInvalido))
                 
-                .andExpect(status().isBadRequest()) // Espera 400 Bad Request
+                .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$.mensaje").value("El formato de la cédula debe ser V - 12345678"));
     }
 }

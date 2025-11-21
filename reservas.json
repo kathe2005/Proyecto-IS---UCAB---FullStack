@@ -1,0 +1,23 @@
+[ {
+  "id" : "R1",
+  "puestoId" : "P1",
+  "clienteId" : "b416a348-0d39-455a-9e06-3c5f460352b0",
+  "usuario" : "juan",
+  "fecha" : "2025-11-21",
+  "horaInicio" : "06:00:00",
+  "horaFin" : "14:00:00",
+  "turno" : "MAÑANA",
+  "estado" : "PENDIENTE",
+  "fechaCreacion" : "2025-11-21"
+}, {
+  "id" : "R2",
+  "puestoId" : "P2",
+  "clienteId" : "b416a348-0d39-455a-9e06-3c5f460352b0",
+  "usuario" : "juan",
+  "fecha" : "2025-11-22",
+  "horaInicio" : "06:00:00",
+  "horaFin" : "14:00:00",
+  "turno" : "MAÑANA",
+  "estado" : "PENDIENTE",
+  "fechaCreacion" : "2025-11-21"
+} ]

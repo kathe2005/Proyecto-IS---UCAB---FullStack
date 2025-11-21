@@ -1,141 +1,132 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { RouterModule, ActivatedRoute, Router } from '@angular/router';
-import { FormsModule } from '@angular/forms';
+import { Router, RouterModule } from '@angular/router'; // Agregar RouterModule
 import { PuestoService } from '../../../service/puesto.service';
-
-// Interfaces temporales
-interface Puesto {
-  id: string;
-  numero: string;
-  tipoPuesto: string;
-  estadoPuesto: string;
-  ubicacion: string;
-  usuarioOcupante?: string;
-}
+import { Puesto } from '../../../models/puestos.model';
 
 @Component({
   selector: 'app-lista-puestos',
   standalone: true,
-  imports: [
-    CommonModule,
-    RouterModule,
-    FormsModule
-  ],
+  imports: [CommonModule, RouterModule], // Agregar RouterModule aquí
   templateUrl: './lista-puestos.component.html',
   styleUrls: ['./lista-puestos.component.css']
 })
 export class ListaPuestosComponent implements OnInit {
   puestos: Puesto[] = [];
   puestosFiltrados: Puesto[] = [];
-  titulo = 'Todos los Puestos';
-  criterioBusqueda = '';
-  filtroNumero: string = '';
-
-  // Datos de ejemplo
-  private datosEjemplo: Puesto[] = [
-    { id: '1', numero: 'A-01', tipoPuesto: 'REGULAR', estadoPuesto: 'DISPONIBLE', ubicacion: 'Zona A' },
-    { id: '2', numero: 'A-02', tipoPuesto: 'DISCAPACITADO', estadoPuesto: 'OCUPADO', ubicacion: 'Zona A', usuarioOcupante: 'Juan Pérez' },
-    { id: '3', numero: 'B-01', tipoPuesto: 'DOCENTE', estadoPuesto: 'BLOQUEADO', ubicacion: 'Zona B' },
-    { id: '4', numero: 'M-01', tipoPuesto: 'MOTOCICLETA', estadoPuesto: 'DISPONIBLE', ubicacion: 'Zona Motos' },
-    { id: '5', numero: 'V-01', tipoPuesto: 'VISITANTE', estadoPuesto: 'OCUPADO', ubicacion: 'Zona Visitantes', usuarioOcupante: 'María García' }
-  ];
+  filtro: string = '';
+  cargando: boolean = true;
+  criterioBusqueda: string = ''; // Agregar esta propiedad
 
   constructor(
     private puestoService: PuestoService,
-    private route: ActivatedRoute,
     private router: Router
   ) {}
 
   ngOnInit() {
     this.cargarPuestos();
-
-    this.route.queryParams.subscribe(params => {
-      if (params['estado']) {
-        this.buscarPorEstado(params['estado']);
-      } else if (params['tipo']) {
-        this.buscarPorTipo(params['tipo']);
-      } else if (params['ubicacion']) {
-        this.buscarPorUbicacion(params['ubicacion']);
-      }
-    });
   }
 
   cargarPuestos() {
-    // Simulación
-    this.puestos = [...this.datosEjemplo];
-    this.puestosFiltrados = [...this.puestos];
-    this.titulo = 'Todos los Puestos';
-    this.criterioBusqueda = '';
-
-    // Descomenta para usar el servicio real:
-    /*
+    this.cargando = true;
     this.puestoService.obtenerTodosLosPuestos().subscribe({
-      next: (data) => {
+      next: (data: Puesto[]) => {
         this.puestos = data;
         this.puestosFiltrados = data;
-        this.titulo = 'Todos los Puestos';
-        this.criterioBusqueda = '';
+        this.cargando = false;
       },
       error: (error) => {
         console.error('Error cargando puestos:', error);
-        this.mostrarError('Error al cargar los puestos');
+        this.cargando = false;
       }
     });
-    */
   }
 
-  cargarPuestosDisponibles() {
-    this.puestosFiltrados = this.puestos.filter(p => p.estadoPuesto === 'DISPONIBLE');
-    this.titulo = 'Puestos Disponibles';
-    this.criterioBusqueda = '';
-  }
-
-  cargarPuestosOcupados() {
-    this.puestosFiltrados = this.puestos.filter(p => p.estadoPuesto === 'OCUPADO');
-    this.titulo = 'Puestos Ocupados';
-    this.criterioBusqueda = '';
-  }
-
-  buscarPorEstado(estado: string) {
-    this.puestosFiltrados = this.puestos.filter(p => p.estadoPuesto === estado);
-    this.titulo = `Puestos - Estado: ${this.getEstadoDescripcion(estado)}`;
-    this.criterioBusqueda = `Estado: ${this.getEstadoDescripcion(estado)}`;
-  }
-
-  buscarPorTipo(tipo: string) {
-    this.puestosFiltrados = this.puestos.filter(p => p.tipoPuesto === tipo);
-    this.titulo = `Puestos - Tipo: ${this.getTipoDescripcion(tipo)}`;
-    this.criterioBusqueda = `Tipo: ${this.getTipoDescripcion(tipo)}`;
-  }
-
-  buscarPorUbicacion(ubicacion: string) {
-    this.puestosFiltrados = this.puestos.filter(p =>
-      p.ubicacion.toLowerCase().includes(ubicacion.toLowerCase())
-    );
-    this.titulo = `Puestos - Ubicación: ${ubicacion}`;
-    this.criterioBusqueda = `Ubicación: ${ubicacion}`;
-  }
-
-  buscarPorNumero() {
-    if (!this.filtroNumero.trim()) {
-      this.puestosFiltrados = [...this.puestos];
+  aplicarFiltro() {
+    if (!this.filtro) {
+      this.puestosFiltrados = this.puestos;
+      this.criterioBusqueda = ''; // Limpiar criterio cuando no hay filtro
       return;
     }
 
-    this.puestosFiltrados = this.puestos.filter(p =>
-      p.numero.toLowerCase().includes(this.filtroNumero.toLowerCase())
+    const filtroLower = this.filtro.toLowerCase();
+    this.puestosFiltrados = this.puestos.filter(puesto =>
+      puesto.numero.toLowerCase().includes(filtroLower) ||
+      puesto.ubicacion.toLowerCase().includes(filtroLower) ||
+      this.getTipoDescripcion(puesto.tipoPuesto).toLowerCase().includes(filtroLower) ||
+      this.getEstadoDescripcion(puesto.estadoPuesto).toLowerCase().includes(filtroLower)
     );
-    this.titulo = `Puestos - Número: ${this.filtroNumero}`;
-    this.criterioBusqueda = `Número: ${this.filtroNumero}`;
+
+    this.criterioBusqueda = `Búsqueda: "${this.filtro}"`; // Establecer criterio de búsqueda
   }
 
-  limpiarFiltros() {
-    this.filtroNumero = '';
-    this.cargarPuestos();
+  // Método para contar puestos por estado
+  getCountByEstado(estado: string): number {
+    return this.puestos.filter(p => p.estadoPuesto === estado).length;
   }
 
-  // Métodos de utilidad
+  // Métodos para las acciones de los puestos
+  ocuparPuesto(id: string) {
+    this.router.navigate(['/ocupar-puestos']);
+  }
+
+  liberarPuesto(id: string) {
+    this.puestoService.liberarPuesto(id).subscribe({
+      next: (response: any) => {
+        console.log('Puesto liberado:', response);
+        this.cargarPuestos(); // Recargar la lista
+      },
+      error: (error) => {
+        console.error('Error liberando puesto:', error);
+        alert('Error al liberar el puesto');
+      }
+    });
+  }
+
+  bloquearPuesto(id: string) {
+    this.puestoService.bloquearPuesto(id).subscribe({
+      next: (response: any) => {
+        console.log('Puesto bloqueado:', response);
+        this.cargarPuestos(); // Recargar la lista
+      },
+      error: (error) => {
+        console.error('Error bloqueando puesto:', error);
+        alert('Error al bloquear el puesto');
+      }
+    });
+  }
+
+  desbloquearPuesto(id: string) {
+    this.puestoService.desbloquearPuesto(id).subscribe({
+      next: (response: any) => {
+        console.log('Puesto desbloqueado:', response);
+        this.cargarPuestos(); // Recargar la lista
+      },
+      error: (error) => {
+        console.error('Error desbloqueando puesto:', error);
+        alert('Error al desbloquear el puesto');
+      }
+    });
+  }
+
+  ponerEnMantenimiento(id: string) {
+    this.puestoService.ponerEnMantenimiento(id).subscribe({
+      next: (response: any) => {
+        console.log('Puesto en mantenimiento:', response);
+        this.cargarPuestos(); // Recargar la lista
+      },
+      error: (error) => {
+        console.error('Error poniendo en mantenimiento:', error);
+        alert('Error al poner en mantenimiento');
+      }
+    });
+  }
+
+  volverAInicio() {
+    this.router.navigate(['/']);
+  }
+
+  // Métodos de utilidad para mostrar información
   getTipoDescripcion(tipo: string): string {
     const tipos: {[key: string]: string} = {
       'REGULAR': 'Regular',
@@ -162,6 +153,7 @@ export class ListaPuestosComponent implements OnInit {
     const estados: {[key: string]: string} = {
       'DISPONIBLE': 'Disponible',
       'OCUPADO': 'Ocupado',
+      'RESERVADO': 'Reservado',
       'BLOQUEADO': 'Bloqueado',
       'MANTENIMIENTO': 'Mantenimiento'
     };
@@ -171,7 +163,8 @@ export class ListaPuestosComponent implements OnInit {
   getEstadoColor(estado: string): string {
     const colores: {[key: string]: string} = {
       'DISPONIBLE': '#28a745',
-      'OCUPADO': '#ffc107',
+      'OCUPADO': '#dc3545',
+      'RESERVADO': '#17a2b8',
       'BLOQUEADO': '#6c757d',
       'MANTENIMIENTO': '#fd7e14'
     };
@@ -179,80 +172,69 @@ export class ListaPuestosComponent implements OnInit {
   }
 
   getEstadoIcon(estado: string): string {
-    const icons: {[key: string]: string} = {
+    const iconos: {[key: string]: string} = {
       'DISPONIBLE': 'fas fa-check-circle',
-      'OCUPADO': 'fas fa-car',
-      'BLOQUEADO': 'fas fa-lock',
+      'OCUPADO': 'fas fa-times-circle',
+      'RESERVADO': 'fas fa-clock',
+      'BLOQUEADO': 'fas fa-ban',
       'MANTENIMIENTO': 'fas fa-tools'
     };
-    return icons[estado] || 'fas fa-question-circle';
+    return iconos[estado] || 'fas fa-question-circle';
   }
 
-  getTextColor(backgroundColor: string): string {
-    return '#FFFFFF'; // Texto siempre blanco para mejor contraste
+  getTextColor(colorFondo: string): string {
+    // Convertir color hexadecimal a RGB
+    const hex = colorFondo.replace('#', '');
+    const r = parseInt(hex.substr(0, 2), 16);
+    const g = parseInt(hex.substr(2, 2), 16);
+    const b = parseInt(hex.substr(4, 2), 16);
+
+    // Calcular luminosidad
+    const luminosidad = (0.299 * r + 0.587 * g + 0.114 * b) / 255;
+
+    return luminosidad > 0.5 ? '#000000' : '#ffffff';
   }
 
-  // Métodos de acción
-  ocuparPuesto(id: string) {
-    this.router.navigate(['/puestos/ocupar'], { queryParams: { puestoId: id } });
+  navegarAOcupar() {
+    this.router.navigate(['/ocupar-puestos']);
   }
 
-  liberarPuesto(id: string) {
-    if (confirm('¿Está seguro de que desea liberar este puesto?')) {
-      // Lógica para liberar puesto
-      this.mostrarMensajeExito('Puesto liberado exitosamente');
-      this.cargarPuestos();
+  navegarADesocupar() {
+    this.router.navigate(['/desocupar-puestos']);
+  }
+
+  formatearFecha(fecha: any): string {
+    if (!fecha) return 'No disponible';
+
+    try {
+      let fechaObj: Date;
+
+      if (typeof fecha === 'string') {
+        fechaObj = new Date(fecha);
+      } else if (typeof fecha === 'object' && fecha.year && fecha.monthValue && fecha.dayOfMonth) {
+        const fechaStr = `${fecha.year}-${fecha.monthValue.toString().padStart(2, '0')}-${fecha.dayOfMonth.toString().padStart(2, '0')}T${fecha.hour || '00'}:${fecha.minute || '00'}:${fecha.second || '00'}`;
+        fechaObj = new Date(fechaStr);
+      } else if (fecha.toString) {
+        fechaObj = new Date(fecha.toString());
+      } else {
+        fechaObj = new Date(fecha);
+      }
+
+      if (isNaN(fechaObj.getTime())) {
+        return 'Fecha no válida';
+      }
+
+      return fechaObj.toLocaleString('es-ES', {
+        year: 'numeric',
+        month: '2-digit',
+        day: '2-digit',
+        hour: '2-digit',
+        minute: '2-digit'
+      });
+
+    } catch (error) {
+      console.error('Error formateando fecha:', error, fecha);
+      return 'Error en fecha';
     }
-  }
-
-  bloquearPuesto(id: string) {
-    if (confirm('¿Está seguro de que desea bloquear este puesto?')) {
-      // Lógica para bloquear puesto
-      this.mostrarMensajeExito('Puesto bloqueado exitosamente');
-      this.cargarPuestos();
-    }
-  }
-
-  desbloquearPuesto(id: string) {
-    if (confirm('¿Está seguro de que desea desbloquear este puesto?')) {
-      // Lógica para desbloquear puesto
-      this.mostrarMensajeExito('Puesto desbloqueado exitosamente');
-      this.cargarPuestos();
-    }
-  }
-
-  ponerEnMantenimiento(id: string) {
-    if (confirm('¿Está seguro de que desea poner este puesto en mantenimiento?')) {
-      // Lógica para mantenimiento
-      this.mostrarMensajeExito('Puesto puesto en mantenimiento exitosamente');
-      this.cargarPuestos();
-    }
-  }
-
-  // Navegación
-  volverAInicio() {
-    this.router.navigate(['/']);
-  }
-
-  irABuscarPuestos() {
-    this.router.navigate(['/puestos/buscar']);
-  }
-
-  irAEstadisticas() {
-    this.router.navigate(['/puestos/estadisticas']);
-  }
-
-  // Utilidades
-  private mostrarMensajeExito(mensaje: string) {
-    alert(`✅ ${mensaje}`);
-  }
-
-  private mostrarError(mensaje: string) {
-    alert(`❌ ${mensaje}`);
-  }
-
-  // Estadísticas
-  getCountByEstado(estado: string): number {
-    return this.puestosFiltrados.filter(puesto => puesto.estadoPuesto === estado).length;
   }
 }

@@ -3,13 +3,14 @@ export interface Puesto {
   numero: string;
   ubicacion: string;
   usuarioOcupante: string | null;
-  tipoPuesto: TipoPuesto;
-  estadoPuesto: EstadoPuesto;
+  tipoPuesto: string; // Cambiado de TipoPuesto a string
+  estadoPuesto: string; // Cambiado de EstadoPuesto a string
   fechaOcupacion: string | null;
   fechaCreacion: string;
   historialOcupacion: string[];
 }
 
+// Mantener los enums para uso interno si es necesario
 export enum TipoPuesto {
   REGULAR = 'REGULAR',
   DISCAPACITADO = 'DISCAPACITADO',
@@ -26,18 +27,6 @@ export enum EstadoPuesto {
   MANTENIMIENTO = 'MANTENIMIENTO'
 }
 
-export const TipoPuestoInfo = {
-  [TipoPuesto.REGULAR]: { descripcion: 'Regular', color: 'blue' },
-  [TipoPuesto.DISCAPACITADO]: { descripcion: 'Discapacitado', color: 'purple' },
-  [TipoPuesto.DOCENTE]: { descripcion: 'Docente', color: 'green' },
-  [TipoPuesto.VISITANTE]: { descripcion: 'Visitante', color: 'yellow' },
-  [TipoPuesto.MOTOCICLETA]: { descripcion: 'Motocicleta', color: 'orange' }
-};
-
-export const EstadoPuestoInfo = {
-  [EstadoPuesto.DISPONIBLE]: { descripcion: 'Disponible', color: 'green' },
-  [EstadoPuesto.OCUPADO]: { descripcion: 'Ocupado', color: 'red' },
-  [EstadoPuesto.RESERVADO]: { descripcion: 'Reservado', color: 'yellow' },
-  [EstadoPuesto.BLOQUEADO]: { descripcion: 'Bloqueado', color: 'gray' },
-  [EstadoPuesto.MANTENIMIENTO]: { descripcion: 'En Mantenimiento', color: 'orange' }
-};
+// Eliminar o comentar estas constantes si no existen
+// export const TipoPuestoInfo = { ... };
+// export const EstadoPuestoInfo = { ... };

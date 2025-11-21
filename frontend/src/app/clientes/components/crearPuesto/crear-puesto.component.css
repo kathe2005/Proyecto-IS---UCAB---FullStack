@@ -1,0 +1,503 @@
+/* crear-puesto.component.css */
+:host {
+  display: block;
+  min-height: 100vh;
+  background-color: #f8f9fa;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.container-fluid {
+  background-color: #f8f9fa;
+  min-height: 100vh;
+}
+
+.container-custom {
+  margin: 0 50px;
+  padding: 20px 0;
+}
+
+/* Header Section */
+.header-section {
+  text-align: center;
+  border-bottom: 2px solid #e9ecef;
+  padding-bottom: 20px;
+  margin-bottom: 30px;
+}
+
+.titulo-principal {
+  color: #1c55ff;
+  font-size: 2rem;
+  margin-bottom: 5px;
+  font-weight: 600;
+}
+
+.subtitulo {
+  color: #666;
+  font-size: 1.1rem;
+  margin: 0;
+}
+
+/* Section Titles */
+.section-title {
+  text-align: center;
+  margin-bottom: 30px;
+}
+
+.section-title h2 {
+  color: #333;
+  font-size: 1.8rem;
+  margin-bottom: 8px;
+  font-weight: 600;
+}
+
+.section-title p {
+  color: #666;
+  font-size: 1rem;
+  margin: 0;
+}
+
+/* Cards */
+.card {
+  background-color: white;
+  border-radius: 15px;
+  border: none;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+  transition: all 0.3s ease;
+  margin-bottom: 20px;
+}
+
+.card:hover {
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+}
+
+.form-card {
+  padding: 30px;
+}
+
+.card-content {
+  width: 100%;
+}
+
+.form-title {
+  color: #333;
+  font-size: 1.4rem;
+  margin-bottom: 25px;
+  border-bottom: 2px solid #e9ecef;
+  padding-bottom: 15px;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.form-title i {
+  color: #1c55ff;
+}
+
+/* Form Styles */
+.crear-puesto-form {
+  display: flex;
+  flex-direction: column;
+  gap: 25px;
+}
+
+.form-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 25px;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.form-label {
+  font-weight: 600;
+  color: #495057;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 5px;
+  font-size: 0.95rem;
+}
+
+.form-label i {
+  color: #1c55ff;
+  width: 16px;
+}
+
+.form-control, .form-select {
+  border-radius: 8px;
+  border: 1px solid #ced4da;
+  padding: 12px 15px;
+  font-size: 1rem;
+  transition: all 0.3s ease;
+  background-color: #fff;
+}
+
+.form-control:focus, .form-select:focus {
+  border-color: #1c55ff;
+  box-shadow: 0 0 0 0.2rem rgba(28, 85, 255, 0.25);
+  outline: none;
+}
+
+.form-text {
+  font-size: 0.85rem;
+  color: #6c757d;
+  margin-top: 4px;
+}
+
+/* Info Card */
+.info-card {
+  padding: 20px;
+  background-color: #f8f9fa;
+  border: 1px solid #e9ecef;
+  border-radius: 10px;
+}
+
+.info-title {
+  color: #333;
+  font-size: 1.1rem;
+  margin-bottom: 15px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-weight: 600;
+}
+
+.info-title i {
+  color: #1c55ff;
+}
+
+.info-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 15px;
+}
+
+.info-item {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.info-item label {
+  font-weight: 600;
+  color: #555;
+  font-size: 0.9rem;
+  margin-bottom: 2px;
+}
+
+.info-value {
+  color: #333;
+  font-size: 1rem;
+  font-weight: 500;
+}
+
+/* Badges */
+.badge {
+  color: white !important;
+  padding: 6px 12px;
+  border-radius: 6px;
+  font-size: 0.8em;
+  font-weight: 500;
+  display: inline-block;
+  text-align: center;
+  min-width: 100px;
+  border: none;
+}
+
+/* Badge colors for types */
+.badge[style*="REGULAR"] {
+  background-color: #007bff !important;
+}
+
+.badge[style*="DISCAPACITADO"] {
+  background-color: #6f42c1 !important;
+}
+
+.badge[style*="DOCENTE"] {
+  background-color: #28a745 !important;
+}
+
+.badge[style*="VISITANTE"] {
+  background-color: #ffc107 !important;
+  color: #212529 !important;
+}
+
+.badge[style*="MOTOCICLETA"] {
+  background-color: #fd7e14 !important;
+}
+
+/* Badge colors for states */
+.badge[style*="DISPONIBLE"] {
+  background-color: #28a745 !important;
+}
+
+.badge[style*="OCUPADO"] {
+  background-color: #ffc107 !important;
+  color: #212529 !important;
+}
+
+.badge[style*="BLOQUEADO"] {
+  background-color: #6c757d !important;
+}
+
+.badge[style*="MANTENIMIENTO"] {
+  background-color: #fd7e14 !important;
+}
+
+.badge[style*="RESERVADO"] {
+  background-color: #17a2b8 !important;
+}
+
+/* Form Actions */
+.form-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 15px;
+  margin-top: 30px;
+  padding-top: 25px;
+  border-top: 2px solid #e9ecef;
+}
+
+.btn {
+  border-radius: 10px;
+  transition: all 0.3s ease;
+  font-weight: 500;
+  padding: 12px 24px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  border: none;
+  cursor: pointer;
+  font-size: 0.95rem;
+  text-decoration: none;
+  justify-content: center;
+}
+
+.btn:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none !important;
+}
+
+.btn-primary {
+  background: linear-gradient(135deg, #1c55ff 0%, #0d3fd4 100%);
+  color: white;
+}
+
+.btn-primary:hover:not(:disabled) {
+  background: linear-gradient(135deg, #0d3fd4 0%, #1c55ff 100%);
+  box-shadow: 0 4px 15px rgba(28, 85, 255, 0.4);
+}
+
+.btn-secondary {
+  background: linear-gradient(135deg, #6c757d 0%, #545b62 100%);
+  color: white;
+}
+
+.btn-secondary:hover:not(:disabled) {
+  background: linear-gradient(135deg, #545b62 0%, #6c757d 100%);
+  box-shadow: 0 4px 12px rgba(108, 117, 125, 0.4);
+}
+
+.btn-outline-warning {
+  background-color: transparent;
+  color: #ffc107;
+  border: 2px solid #ffc107;
+}
+
+.btn-outline-warning:hover:not(:disabled) {
+  background-color: #ffc107;
+  color: #212529;
+  box-shadow: 0 4px 12px rgba(255, 193, 7, 0.4);
+}
+
+/* Alertas */
+.alert {
+  border-radius: 10px;
+  margin-bottom: 20px;
+  border: none;
+  padding: 15px 20px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-weight: 500;
+}
+
+.alert-success {
+  background-color: #d4edda;
+  color: #155724;
+  border-left: 4px solid #28a745;
+}
+
+.alert-danger {
+  background-color: #f8d7da;
+  color: #721c24;
+  border-left: 4px solid #dc3545;
+}
+
+.alert-warning {
+  background-color: #fff3cd;
+  color: #856404;
+  border-left: 4px solid #ffc107;
+}
+
+.alert-info {
+  background-color: #d1ecf1;
+  color: #0c5460;
+  border-left: 4px solid #17a2b8;
+}
+
+.alert ul {
+  margin: 8px 0 0 0;
+  padding-left: 20px;
+}
+
+.alert li {
+  margin-bottom: 4px;
+}
+
+/* Footer */
+.footer {
+  background: linear-gradient(135deg, #1c55ff 0%, #0d3fd4 100%);
+  color: white;
+  text-align: center;
+  padding: 20px;
+  margin-top: 50px;
+  width: 100%;
+  font-size: 14px;
+  font-weight: 500;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .container-custom {
+    margin: 0 20px;
+    padding: 15px 0;
+  }
+
+  .form-row {
+    grid-template-columns: 1fr;
+    gap: 20px;
+  }
+
+  .form-actions {
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .btn {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .info-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .titulo-principal {
+    font-size: 1.6rem;
+  }
+
+  .section-title h2 {
+    font-size: 1.5rem;
+  }
+
+  .form-card {
+    padding: 20px;
+  }
+}
+
+@media (max-width: 480px) {
+  .container-custom {
+    margin: 0 15px;
+    padding: 10px 0;
+  }
+
+  .form-card {
+    padding: 15px;
+  }
+
+  .titulo-principal {
+    font-size: 1.4rem;
+  }
+
+  .section-title h2 {
+    font-size: 1.3rem;
+  }
+
+  .section-title p {
+    font-size: 0.9rem;
+  }
+
+  .form-title {
+    font-size: 1.2rem;
+  }
+
+  .btn {
+    padding: 10px 20px;
+    font-size: 0.9rem;
+  }
+
+  .form-control, .form-select {
+    padding: 10px 12px;
+    font-size: 0.95rem;
+  }
+}
+
+/* Loading animation */
+.fa-spinner {
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+/* Utility classes */
+.text-muted {
+  color: #6c757d !important;
+}
+
+.mb-0 {
+  margin-bottom: 0 !important;
+}
+
+.mt-2 {
+  margin-top: 0.5rem !important;
+}
+
+.mt-4 {
+  margin-top: 1.5rem !important;
+}
+
+/* Focus states for accessibility */
+.form-control:focus-visible,
+.form-select:focus-visible,
+.btn:focus-visible {
+  outline: 2px solid #1c55ff;
+  outline-offset: 2px;
+}
+
+/* Print styles */
+@media print {
+  .form-actions,
+  .footer {
+    display: none;
+  }
+
+  .card {
+    box-shadow: none;
+    border: 1px solid #ddd;
+  }
+}

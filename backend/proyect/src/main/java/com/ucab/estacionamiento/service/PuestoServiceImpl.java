@@ -1,6 +1,10 @@
 package com.ucab.estacionamiento.service;
 
 import com.ucab.estacionamiento.model.*;
+import com.ucab.estacionamiento.model.enums.EstadoPuesto;
+import com.ucab.estacionamiento.model.enums.TipoPuesto;
+import com.ucab.estacionamiento.model.interfaces.PuestoService;
+
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -12,15 +16,24 @@ public class PuestoServiceImpl implements PuestoService {
     private List<Puesto> puestos;
 
     public PuestoServiceImpl() {
-        this.puestos = JsonManager.cargarPuestos();
-        if (this.puestos == null) {
-            System.err.println("❌ ERROR: Lista de puestos es null, inicializando lista vacía");
+        System.out.println("🚀 Inicializando PuestoServiceImpl...");
+        try {
+            this.puestos = JsonManager.cargarPuestos();
+            if (this.puestos == null) {
+                System.err.println("❌ ERROR: Lista de puestos es null, inicializando lista vacía");
+                this.puestos = new ArrayList<>();
+            }
+            System.out.println("✅ Servicio Spring inicializado con " + puestos.size() + " puestos");
+            
+        } catch (Exception e) {
+            System.err.println("❌ Error crítico en inicialización: " + e.getMessage());
+            e.printStackTrace();
             this.puestos = new ArrayList<>();
         }
-        System.out.println("🚀 Servicio Spring inicializado con " + puestos.size() + " puestos");
     }
 
     private void guardarCambios() {
+        System.out.println("💾 Ejecutando guardarCambios() - " + puestos.size() + " puestos");
         JsonManager.guardarPuestos(puestos);
     }
 
@@ -29,46 +42,86 @@ public class PuestoServiceImpl implements PuestoService {
         if (puestos == null) {
             puestos = new ArrayList<>();
         }
+        System.out.println("📋 Obteniendo " + puestos.size() + " puestos");
         return new ArrayList<>(puestos);
     }
 
     @Override
     public Optional<Puesto> obtenerPuestoPorId(String idPuesto) {
-        return puestos.stream()
+        System.out.println("🔍 Buscando puesto por ID: " + idPuesto);
+        Optional<Puesto> resultado = puestos.stream()
                 .filter(p -> p.getId().equals(idPuesto))
                 .findFirst();
+        System.out.println("🔍 Resultado búsqueda: " + (resultado.isPresent() ? "Encontrado" : "No encontrado"));
+        return resultado;
     }
 
     @Override
     public Puesto crearPuesto(Puesto puesto) {
+        System.out.println("🔧 Creando puesto: " + puesto.getNumero());
+        
+        // Validar número único
         boolean numeroExiste = puestos.stream()
                 .anyMatch(p -> p.getNumero().equals(puesto.getNumero()));
 
         if (numeroExiste) {
+            System.err.println("❌ Número de puesto ya existe: " + puesto.getNumero());
             throw new IllegalArgumentException("El número de puesto ya existe: " + puesto.getNumero());
         }
 
-        if (puesto.getId() == null) {
-            puesto.setId(generarNuevoId());
+        // Generar ID si no existe
+        if (puesto.getId() == null || puesto.getId().trim().isEmpty()) {
+            String nuevoId = generarNuevoId();
+            puesto.setId(nuevoId);
+            System.out.println("🆔 ID generado: " + nuevoId);
         }
 
-        puesto.setFechaCreacion(LocalDateTime.now());
+        // Configurar fechas
+        if (puesto.getFechaCreacion() == null) {
+            puesto.setFechaCreacion(LocalDateTime.now());
+        }
+
+        // Inicializar historial si es necesario
+        if (puesto.getHistorialOcupacion() == null) {
+            puesto.setHistorialOcupacion(new ArrayList<>());
+        }
+
+        // Agregar registro inicial al historial
+        puesto.agregarRegistroHistorial("Creado en " + LocalDateTime.now());
+
         puestos.add(puesto);
+        
+        System.out.println("💾 Guardando cambios...");
         guardarCambios();
+        
+        System.out.println("✅ Puesto creado exitosamente: " + puesto.getId());
         return puesto;
     }
 
     private String generarNuevoId() {
-        int maxId = puestos.stream()
-                .map(p -> p.getId().substring(1))
-                .mapToInt(Integer::parseInt)
-                .max()
-                .orElse(0);
-        return "P" + (maxId + 1);
+        // CORREGIDO: Usar Comparator.naturalOrder() para evitar problemas de type safety
+        Optional<Integer> maxId = puestos.stream()
+                .map(p -> {
+                    if (p.getId() != null && p.getId().startsWith("P")) {
+                        try {
+                            return Integer.parseInt(p.getId().substring(1));
+                        } catch (NumberFormatException e) {
+                            return 0;
+                        }
+                    }
+                    return 0;
+                })
+                .max(Comparator.naturalOrder()); // CORREGIDO AQUÍ
+        
+        return "P" + (maxId.orElse(0) + 1);
     }
+
+    // ... (el resto de los métodos se mantienen igual)
 
     @Override
     public Puesto actualizarPuesto(Puesto puesto) {
+        System.out.println("🔄 Actualizando puesto: " + puesto.getId());
+        
         Optional<Puesto> puestoExistente = obtenerPuestoPorId(puesto.getId());
         if (puestoExistente.isEmpty()) {
             throw new IllegalArgumentException("Puesto no encontrado: " + puesto.getId());
@@ -76,26 +129,39 @@ public class PuestoServiceImpl implements PuestoService {
 
         int index = puestos.indexOf(puestoExistente.get());
         puestos.set(index, puesto);
+        
+        // Agregar al historial
+        puesto.agregarRegistroHistorial("Actualizado en " + LocalDateTime.now());
+        
         guardarCambios();
+        System.out.println("✅ Puesto actualizado: " + puesto.getId());
         return puesto;
     }
 
     @Override
     public boolean eliminarPuesto(String id) {
+        System.out.println("🗑️ Eliminando puesto: " + id);
+        
         Optional<Puesto> puesto = obtenerPuestoPorId(id);
         if (puesto.isPresent()) {
             puestos.remove(puesto.get());
             guardarCambios();
+            System.out.println("✅ Puesto eliminado: " + id);
             return true;
         }
+        
+        System.out.println("❌ Puesto no encontrado para eliminar: " + id);
         return false;
     }
 
     @Override
     public ResultadoOcupacion ocuparPuesto(String puestoId, String usuario) {
+        System.out.println("🚗 Ocupando puesto: " + puestoId + " por usuario: " + usuario);
+        
         Optional<Puesto> puestoOpt = obtenerPuestoPorId(puestoId);
 
         if (puestoOpt.isEmpty()) {
+            System.err.println("❌ Puesto no encontrado: " + puestoId);
             return new ResultadoOcupacion(false, "Puesto no encontrado", null, "PUESTO_NO_ENCONTRADO");
         }
 
@@ -104,6 +170,7 @@ public class PuestoServiceImpl implements PuestoService {
         if (puesto.getEstadoPuesto() != EstadoPuesto.DISPONIBLE) {
             String mensaje = String.format("Puesto no disponible. Estado actual: %s",
                     puesto.getEstadoPuesto().getDescripcion());
+            System.err.println("❌ " + mensaje);
             return new ResultadoOcupacion(false, mensaje, puesto, "PUESTO_NO_DISPONIBLE");
         }
 
@@ -117,11 +184,14 @@ public class PuestoServiceImpl implements PuestoService {
         guardarCambios();
 
         String mensaje = String.format("Puesto %s ocupado por %s", puesto.getNumero(), usuario);
+        System.out.println("✅ " + mensaje);
         return new ResultadoOcupacion(true, mensaje, puesto);
     }
 
     @Override
     public boolean liberarPuesto(String puestoId) {
+        System.out.println("🔄 Liberando puesto: " + puestoId);
+        
         Optional<Puesto> puestoOpt = obtenerPuestoPorId(puestoId);
 
         if (puestoOpt.isPresent() && puestoOpt.get().getEstadoPuesto() == EstadoPuesto.OCUPADO) {
@@ -134,12 +204,15 @@ public class PuestoServiceImpl implements PuestoService {
             puesto.agregarRegistroHistorial(registroHistorial);
 
             guardarCambios();
+            System.out.println("✅ Puesto liberado: " + puestoId);
             return true;
         }
+        
+        System.out.println("❌ No se pudo liberar puesto: " + puestoId);
         return false;
     }
 
-    // Resto de métodos implementados (similar a tu versión original)
+    // Resto de métodos implementados...
     @Override
     public List<Puesto> obtenerPuestosPorEstado(EstadoPuesto estado) {
         return puestos.stream()
@@ -196,6 +269,8 @@ public class PuestoServiceImpl implements PuestoService {
 
     @Override
     public boolean bloquearPuesto(String puestoId) {
+        System.out.println("🔒 Bloqueando puesto: " + puestoId);
+        
         Optional<Puesto> puestoOpt = obtenerPuestoPorId(puestoId);
         if (puestoOpt.isPresent()) {
             Puesto puesto = puestoOpt.get();
@@ -206,13 +281,18 @@ public class PuestoServiceImpl implements PuestoService {
             puesto.agregarRegistroHistorial(registroHistorial);
             
             guardarCambios();
+            System.out.println("✅ Puesto bloqueado: " + puestoId);
             return true;
         }
+        
+        System.out.println("❌ No se pudo bloquear puesto: " + puestoId);
         return false;
     }
 
     @Override
     public boolean desbloquearPuesto(String puestoId) {
+        System.out.println("🔓 Desbloqueando puesto: " + puestoId);
+        
         Optional<Puesto> puestoOpt = obtenerPuestoPorId(puestoId);
         if (puestoOpt.isPresent()) {
             Puesto puesto = puestoOpt.get();
@@ -222,13 +302,18 @@ public class PuestoServiceImpl implements PuestoService {
             puesto.agregarRegistroHistorial(registroHistorial);
             
             guardarCambios();
+            System.out.println("✅ Puesto desbloqueado: " + puestoId);
             return true;
         }
+        
+        System.out.println("❌ No se pudo desbloquear puesto: " + puestoId);
         return false;
     }
 
     @Override
     public ResultadoOcupacion asignarPuestoManual(String puestoId, String usuario) {
+        System.out.println("👨‍💼 Asignando manualmente puesto: " + puestoId + " a: " + usuario);
+        
         Optional<Puesto> puestoOpt = obtenerPuestoPorId(puestoId);
         
         if (puestoOpt.isEmpty()) {
@@ -255,21 +340,26 @@ public class PuestoServiceImpl implements PuestoService {
         guardarCambios();
         
         String mensaje = String.format("Puesto %s asignado manualmente a %s", puesto.getNumero(), usuario);
+        System.out.println("✅ " + mensaje);
         return new ResultadoOcupacion(true, mensaje, puesto);
     }
 
     @Override
     public Puesto reasignarPuesto(String puestoId, String nuevaUbicacion) {
+        System.out.println("📍 Reasignando puesto: " + puestoId + " a: " + nuevaUbicacion);
+        
         Optional<Puesto> puestoOpt = obtenerPuestoPorId(puestoId);
         if (puestoOpt.isPresent()) {
             Puesto puesto = puestoOpt.get();
+            String ubicacionAnterior = puesto.getUbicacion();
             puesto.setUbicacion(nuevaUbicacion);
             
-            String registroHistorial = String.format("Reasignado a ubicación %s en %s", 
-                    nuevaUbicacion, LocalDateTime.now());
+            String registroHistorial = String.format("Reasignado de '%s' a '%s' en %s", 
+                    ubicacionAnterior, nuevaUbicacion, LocalDateTime.now());
             puesto.agregarRegistroHistorial(registroHistorial);
             
             guardarCambios();
+            System.out.println("✅ Puesto reasignado: " + puestoId);
             return puesto;
         }
         throw new IllegalArgumentException("Puesto no encontrado: " + puestoId);
@@ -277,6 +367,8 @@ public class PuestoServiceImpl implements PuestoService {
 
     @Override
     public boolean ponerPuestoEnMantenimiento(String puestoId) {
+        System.out.println("🔧 Poniendo en mantenimiento puesto: " + puestoId);
+        
         Optional<Puesto> puestoOpt = obtenerPuestoPorId(puestoId);
         
         if (puestoOpt.isPresent()) {
@@ -290,8 +382,11 @@ public class PuestoServiceImpl implements PuestoService {
             puesto.agregarRegistroHistorial(registroHistorial);
             
             guardarCambios();
+            System.out.println("✅ Puesto en mantenimiento: " + puestoId);
             return true;
         }
+        
+        System.out.println("❌ No se pudo poner en mantenimiento: " + puestoId);
         return false;
     }
 
@@ -308,9 +403,12 @@ public class PuestoServiceImpl implements PuestoService {
 
     @Override
     public ResultadoOcupacion ocuparPuesto(String puestoId, String usuario, String clienteId, String tipoCliente) {
+        System.out.println("🚗 Ocupando puesto: " + puestoId + " por usuario: " + usuario + " (Cliente: " + clienteId + ", Tipo: " + tipoCliente + ")");
+        
         Optional<Puesto> puestoOpt = obtenerPuestoPorId(puestoId);
 
         if (puestoOpt.isEmpty()) {
+            System.err.println("❌ Puesto no encontrado: " + puestoId);
             return new ResultadoOcupacion(false, "Puesto no encontrado", null, "PUESTO_NO_ENCONTRADO");
         }
 
@@ -320,12 +418,14 @@ public class PuestoServiceImpl implements PuestoService {
         if (!validarTipoClientePuesto(tipoCliente, puesto.getTipoPuesto())) {
             String mensaje = String.format("El tipo de cliente '%s' no puede ocupar un puesto de tipo '%s'", 
                     tipoCliente, puesto.getTipoPuesto().getDescripcion());
+            System.err.println("❌ " + mensaje);
             return new ResultadoOcupacion(false, mensaje, puesto, "TIPO_CLIENTE_NO_VALIDO");
         }
 
         if (puesto.getEstadoPuesto() != EstadoPuesto.DISPONIBLE) {
             String mensaje = String.format("Puesto no disponible. Estado actual: %s",
                     puesto.getEstadoPuesto().getDescripcion());
+            System.err.println("❌ " + mensaje);
             return new ResultadoOcupacion(false, mensaje, puesto, "PUESTO_NO_DISPONIBLE");
         }
 
@@ -336,6 +436,7 @@ public class PuestoServiceImpl implements PuestoService {
                             p.getEstadoPuesto() == EstadoPuesto.OCUPADO);
         
         if (clienteConPuesto) {
+            System.err.println("❌ Cliente ya tiene puesto activo: " + usuario);
             return new ResultadoOcupacion(false, "El cliente ya tiene un puesto activo", null, "CLIENTE_CON_PUESTO_ACTIVO");
         }
 
@@ -351,6 +452,7 @@ public class PuestoServiceImpl implements PuestoService {
         guardarCambios();
 
         String mensaje = String.format("Puesto %s ocupado por %s", puesto.getNumero(), usuario);
+        System.out.println("✅ " + mensaje);
         return new ResultadoOcupacion(true, mensaje, puesto);
     }
 
@@ -368,5 +470,4 @@ public class PuestoServiceImpl implements PuestoService {
         }
         return false;
     }
-
 }

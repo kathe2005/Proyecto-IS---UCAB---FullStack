@@ -1,0 +1,166 @@
+<div class="main-container">
+  <div class="registrar-pago-card">
+    <!-- Header -->
+    <div class="card-header">
+      <h1>Registrar Pago de Reserva</h1>
+      <p>Registre los pagos de las reservas confirmadas</p>
+    </div>
+
+    <!-- Estado de carga -->
+    <div *ngIf="cargando" class="loading-state">
+      <div class="spinner"></div>
+      <p>Cargando reservas pendientes de pago...</p>
+    </div>
+
+    <!-- Formulario de pago -->
+    <div *ngIf="!cargando" class="form-section">
+      <div class="form-grid">
+        <!-- Filtro por cliente -->
+        <div class="form-group">
+          <label for="cliente">Filtrar por Cliente</label>
+          <select
+            id="cliente"
+            [(ngModel)]="clienteId"
+            (change)="filtrarReservasPorCliente()"
+            class="form-control">
+            <option value="">Todos los clientes</option>
+            <option *ngFor="let cliente of clientes" [value]="cliente.id">
+              {{ cliente.nombre }} {{ cliente.apellido }} - {{ cliente.cedula }}
+            </option>
+          </select>
+        </div>
+
+        <!-- Selección de reserva -->
+        <div class="form-group">
+          <label for="reserva">Reserva *</label>
+          <select
+            id="reserva"
+            [(ngModel)]="reservaId"
+            (change)="onReservaSeleccionada()"
+            class="form-control"
+            required>
+            <option value="">Seleccione una reserva</option>
+            <option *ngFor="let reserva of reservasFiltradas" [value]="reserva.id">
+              {{ reserva.cliente.nombre }} {{ reserva.cliente.apellido }} -
+              Puesto {{ reserva.puesto.numero }} -
+              {{ reserva.fecha }} {{ reserva.turno }}
+            </option>
+          </select>
+          <div *ngIf="reservasFiltradas.length === 0" class="warning-text">
+            No hay reservas pendientes de pago para este cliente.
+          </div>
+        </div>
+
+        <!-- Monto -->
+        <div class="form-group">
+          <label for="monto">Monto ($) *</label>
+          <input
+            type="number"
+            id="monto"
+            [(ngModel)]="monto"
+            min="0"
+            step="0.01"
+            class="form-control"
+            required>
+        </div>
+
+        <!-- Método de pago -->
+        <div class="form-group">
+          <label for="metodoPago">Método de Pago *</label>
+          <select
+            id="metodoPago"
+            [(ngModel)]="metodoPago"
+            class="form-control"
+            required>
+            <option *ngFor="let metodo of metodosPago" [value]="metodo.value">
+              {{ metodo.label }}
+            </option>
+          </select>
+        </div>
+
+        <!-- Referencia -->
+        <div class="form-group">
+          <label for="referencia">Referencia *</label>
+          <input
+            type="text"
+            id="referencia"
+            [(ngModel)]="referencia"
+            class="form-control"
+            placeholder="Número de transacción, recibo, etc."
+            required>
+        </div>
+
+        <!-- Descripción -->
+        <div class="form-group full-width">
+          <label for="descripcion">Descripción</label>
+          <textarea
+            id="descripcion"
+            [(ngModel)]="descripcion"
+            class="form-control"
+            rows="3"
+            placeholder="Descripción adicional del pago..."></textarea>
+        </div>
+      </div>
+
+      <!-- Botón de registro -->
+      <div class="form-actions">
+        <button
+          class="btn btn-primary"
+          (click)="registrarPago()"
+          [disabled]="procesando || !reservaId || !monto || !metodoPago || !referencia">
+          {{ procesando ? 'Registrando Pago...' : 'Registrar Pago' }}
+        </button>
+      </div>
+    </div>
+
+    <!-- Información de la reserva seleccionada -->
+    <div *ngIf="getReservaSeleccionada()" class="reserva-info">
+      <h3>Información de la Reserva</h3>
+      <div class="info-grid">
+        <div class="info-item">
+          <strong>Cliente:</strong> {{ getReservaSeleccionada()!.cliente.nombre }} {{ getReservaSeleccionada()!.cliente.apellido }}
+        </div>
+        <div class="info-item">
+          <strong>Cédula:</strong> {{ getReservaSeleccionada()!.cliente.cedula }}
+        </div>
+        <div class="info-item">
+          <strong>Puesto:</strong> {{ getReservaSeleccionada()!.puesto.numero }}
+        </div>
+        <div class="info-item">
+          <strong>Ubicación:</strong> {{ getReservaSeleccionada()!.puesto.ubicacion }}
+        </div>
+        <div class="info-item">
+          <strong>Tipo:</strong> {{ getReservaSeleccionada()!.puesto.tipoPuesto }}
+        </div>
+        <div class="info-item">
+          <strong>Fecha:</strong> {{ getReservaSeleccionada()!.fecha }}
+        </div>
+        <div class="info-item">
+          <strong>Turno:</strong> {{ getReservaSeleccionada()!.turno }}
+        </div>
+        <div class="info-item">
+          <strong>Tarifa Calculada:</strong> {{ formatearMonto(monto) }}
+        </div>
+      </div>
+    </div>
+
+    <!-- Mensajes de error y éxito -->
+    <div *ngIf="error" class="error-message">
+      {{ error }}
+    </div>
+
+    <div *ngIf="exito" class="success-message">
+      <pre>{{ exito }}</pre>
+    </div>
+
+    <!-- Botones de acción -->
+    <div class="actions-footer">
+      <button class="btn btn-secondary" (click)="volverAGestion()">
+        Volver a Gestión de Reservas
+      </button>
+      <button class="btn btn-warning" (click)="limpiarFormulario()">
+        Limpiar Formulario
+      </button>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,230 @@
+<div id="ContenedorMain">
+  <div id="contenedor">
+    <!-- Header con botón de volver -->
+    <div class="header-section">
+      <div class="header-top">
+        <button class="btn-volver" (click)="volverAGestionPuestos()">
+          <i class="fas fa-arrow-left"></i>
+          Volver a Gestión de Puestos
+        </button>
+      </div>
+      <h1 class="titulo-principal">Sistema de Gestión de Estacionamiento</h1>
+      <p class="subtitulo">Universidad Católica Andrés Bello - UCAB Montalbán</p>
+    </div>
+
+    <!-- Título de la sección -->
+    <div class="section-title">
+      <h2>Liberar Puestos de Estacionamiento</h2>
+      <p>Seleccione un puesto ocupado para liberarlo</p>
+    </div>
+
+    <!-- Mensajes de resultado -->
+    <div *ngIf="mensaje" [class]="'alert alert-' + mensajeTipo" class="alert">
+      <i class="fas fa-info-circle"></i> {{ mensaje }}
+    </div>
+
+    <!-- Filtros -->
+    <div *ngIf="!puestoSeleccionado && puestosOcupados.length > 0" class="card filters-card">
+      <div class="card-content">
+        <h4 class="filters-title">
+          <i class="fas fa-filter"></i> Filtros de Búsqueda
+        </h4>
+        <div class="filters-row">
+          <div class="filter-group">
+            <label class="filter-label">
+              <i class="fas fa-map-marker-alt"></i> Filtrar por Ubicación
+            </label>
+            <input type="text"
+                   [(ngModel)]="filtroUbicacion"
+                   class="form-control"
+                   placeholder="Ej: Zona A, Zona Principal...">
+          </div>
+
+          <div class="filter-group">
+            <label class="filter-label">
+              <i class="fas fa-tag"></i> Filtrar por Tipo
+            </label>
+            <select [(ngModel)]="filtroTipo" class="form-control select-control">
+              <option value="">Todos los tipos</option>
+              <option value="REGULAR">Regular</option>
+              <option value="DISCAPACITADO">Discapacitado</option>
+              <option value="DOCENTE">Docente</option>
+              <option value="VISITANTE">Visitante</option>
+              <option value="MOTOCICLETA">Motocicleta</option>
+            </select>
+          </div>
+
+          <div class="filter-actions">
+            <button type="button"
+                    (click)="limpiarFiltros()"
+                    class="btn btn-outline-secondary">
+              <i class="fas fa-times"></i> Limpiar
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Selección de puestos ocupados -->
+    <div *ngIf="!puestoSeleccionado">
+      <div class="card section-card">
+        <div class="card-content">
+          <div class="icono">
+            <i class="fas fa-parking"></i>
+          </div>
+          <div class="texto">
+            <h3>Puestos Ocupados</h3>
+            <p>Seleccione un puesto de la lista para liberarlo</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Grid de puestos ocupados -->
+      <div class="puestos-grid">
+        <div *ngFor="let puesto of puestosFiltrados"
+             class="puesto-card ocupado-card"
+             (click)="seleccionarPuesto(puesto)">
+          <div class="puesto-header">
+            <h5>Puesto {{ puesto.numero }}</h5>
+            <div class="badges-container">
+              <span class="badge" [style.background-color]="getTipoColor(puesto.tipoPuesto)">
+                {{ getTipoDescripcion(puesto.tipoPuesto) }}
+              </span>
+              <span class="badge badge-ocupado" [style.background-color]="getEstadoColor(puesto.estadoPuesto)">
+                <i class="fas fa-clock"></i> Ocupado
+              </span>
+            </div>
+          </div>
+          <div class="puesto-info">
+            <p><i class="fas fa-map-marker-alt text-primary"></i> {{ puesto.ubicacion }}</p>
+            <p><i class="fas fa-user text-info"></i> {{ puesto.usuarioOcupante || 'Sin usuario asignado' }}</p>
+            <p><i class="fas fa-calendar text-warning"></i> Ocupado desde: {{ formatearFecha(puesto.fechaOcupacion) }}</p>
+            <small class="text-muted"><i class="fas fa-hashtag"></i> ID: {{ puesto.id }}</small>
+          </div>
+          <div class="puesto-actions">
+            <button class="btn btn-danger btn-sm"
+                    (click)="liberarPuestoRapido(puesto); $event.stopPropagation()">
+              <i class="fas fa-sign-out-alt"></i> Liberar Rápidamente
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Mensaje cuando no hay puestos ocupados -->
+      <div *ngIf="puestosOcupados.length === 0 && !procesando" class="card empty-state">
+        <div class="empty-content">
+          <i class="fas fa-check-circle text-success"></i>
+          <h3>No hay puestos ocupados</h3>
+          <p>Todos los puestos están disponibles en este momento.</p>
+        </div>
+      </div>
+
+      <!-- Mensaje cuando no hay resultados con los filtros -->
+      <div *ngIf="puestosOcupados.length > 0 && puestosFiltrados.length === 0" class="card empty-state">
+        <div class="empty-content">
+          <i class="fas fa-search text-warning"></i>
+          <h3>No se encontraron resultados</h3>
+          <p>No hay puestos que coincidan con los filtros aplicados.</p>
+          <button class="btn btn-primary" (click)="limpiarFiltros()">
+            <i class="fas fa-times"></i> Limpiar filtros
+          </button>
+        </div>
+      </div>
+
+      <!-- Loading state -->
+      <div *ngIf="procesando" class="card loading-state">
+        <div class="loading-content">
+          <i class="fas fa-spinner fa-spin"></i>
+          <p>Cargando puestos ocupados...</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Confirmación de liberación -->
+    <div *ngIf="puestoSeleccionado">
+      <!-- Sección de confirmación -->
+      <div class="card section-card confirmacion-card">
+        <div class="card-content">
+          <div class="icono">
+            <i class="fas fa-check-circle"></i>
+          </div>
+          <div class="texto">
+            <h3>Confirmar Liberación</h3>
+            <p>Está a punto de liberar el siguiente puesto</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Información del puesto seleccionado -->
+      <div class="card info-card">
+        <div class="card-content">
+          <h4 class="info-title">
+            <i class="fas fa-info-circle"></i>
+            Información del Puesto a Liberar
+          </h4>
+          <div class="info-grid">
+            <div class="info-item">
+              <label><i class="fas fa-hashtag"></i> Número:</label>
+              <span class="info-value">{{ puestoSeleccionado.numero }}</span>
+            </div>
+            <div class="info-item">
+              <label><i class="fas fa-map-marker-alt"></i> Ubicación:</label>
+              <span class="info-value">{{ puestoSeleccionado.ubicacion }}</span>
+            </div>
+            <div class="info-item">
+              <label><i class="fas fa-tag"></i> Tipo:</label>
+              <span class="badge" [style.background-color]="getTipoColor(puestoSeleccionado.tipoPuesto)">
+                {{ getTipoDescripcion(puestoSeleccionado.tipoPuesto) }}
+              </span>
+            </div>
+            <div class="info-item">
+              <label><i class="fas fa-clock"></i> Estado:</label>
+              <span class="badge" [style.background-color]="getEstadoColor(puestoSeleccionado.estadoPuesto)">
+                Ocupado
+              </span>
+            </div>
+            <div class="info-item">
+              <label><i class="fas fa-user"></i> Usuario Ocupante:</label>
+              <span class="info-value">{{ puestoSeleccionado.usuarioOcupante || 'No especificado' }}</span>
+            </div>
+            <div class="info-item">
+              <label><i class="fas fa-calendar"></i> Ocupado desde:</label>
+              <span class="info-value">{{ formatearFecha(puestoSeleccionado.fechaOcupacion) }}</span>
+            </div>
+            <div class="info-item">
+              <label><i class="fas fa-fingerprint"></i> ID:</label>
+              <span class="info-value">{{ puestoSeleccionado.id }}</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Acciones de confirmación -->
+      <div class="card form-card">
+        <div class="card-content">
+          <h4 class="form-title">
+            <i class="fas fa-check-double"></i>
+            Confirmar Acción
+          </h4>
+          <div class="confirmation-actions">
+            <p>¿Está seguro de que desea liberar este puesto?</p>
+            <div class="form-actions">
+              <button type="button" (click)="cancelarSeleccion()" class="btn btn-secondary">
+                <i class="fas fa-arrow-left"></i> Cancelar
+              </button>
+              <button type="button" (click)="confirmarLiberacion()" class="btn btn-success" [disabled]="procesando">
+                <i class="fas fa-check"></i>
+                {{ procesando ? 'Procesando...' : 'Confirmar Liberación' }}
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <footer class="footer">
+    © 2025 UCAB Montalbán - Sistema de Estacionamiento
+  </footer>
+</div>

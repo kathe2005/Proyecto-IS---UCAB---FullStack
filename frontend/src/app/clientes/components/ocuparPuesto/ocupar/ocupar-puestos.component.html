@@ -9,7 +9,7 @@
     <!-- Título de la sección -->
     <div class="section-title">
       <h2>Ocupar Puesto de Estacionamiento</h2>
-      <p>Seleccione un puesto disponible y complete la información</p>
+      <p>Seleccione un puesto disponible y busque el cliente por cédula</p>
     </div>
 
     <!-- Mensajes de resultado -->
@@ -37,8 +37,8 @@
              class="puesto-card"
              (click)="seleccionarPuesto(puesto)">
           <div class="puesto-header">
-            <h5>{{ puesto.numero }}</h5>
-            <span class="badge" [style.background-color]="getTipoColor(puesto.tipoPuesto)">
+            <h5>Puesto {{ puesto.numero }}</h5>
+            <span class="badge" [style.background]="getTipoColor(puesto.tipoPuesto)">
               {{ getTipoDescripcion(puesto.tipoPuesto) }}
             </span>
           </div>
@@ -50,9 +50,20 @@
       </div>
 
       <!-- Mensaje cuando no hay puestos -->
-      <div *ngIf="puestosDisponibles.length === 0" class="alert alert-warning">
-        <i class="fas fa-exclamation-triangle"></i>
-        No hay puestos disponibles en este momento.
+      <div *ngIf="puestosDisponibles.length === 0 && !procesando" class="card empty-state">
+        <div class="empty-content">
+          <i class="fas fa-parking text-warning"></i>
+          <h3>No hay puestos disponibles</h3>
+          <p>Todos los puestos están ocupados en este momento.</p>
+        </div>
+      </div>
+
+      <!-- Loading state -->
+      <div *ngIf="procesando" class="card loading-state">
+        <div class="loading-content">
+          <i class="fas fa-spinner fa-spin"></i>
+          <p>Cargando puestos disponibles...</p>
+        </div>
       </div>
     </div>
 
@@ -66,7 +77,7 @@
           </div>
           <div class="texto">
             <h3>Confirmar Ocupación</h3>
-            <p>Complete la información para ocupar el puesto seleccionado</p>
+            <p>Busque el cliente y confirme la ocupación del puesto</p>
           </div>
         </div>
       </div>
@@ -77,72 +88,104 @@
           <h4 class="info-title">Información del Puesto Seleccionado</h4>
           <div class="info-grid">
             <div class="info-item">
-              <label>Número:</label>
+              <label><i class="fas fa-hashtag"></i> Número:</label>
               <span class="info-value">{{ puestoSeleccionado.numero }}</span>
             </div>
             <div class="info-item">
-              <label>Ubicación:</label>
+              <label><i class="fas fa-map-marker-alt"></i> Ubicación:</label>
               <span class="info-value">{{ puestoSeleccionado.ubicacion }}</span>
             </div>
             <div class="info-item">
-              <label>Tipo:</label>
-              <span class="badge" [style.background-color]="getTipoColor(puestoSeleccionado.tipoPuesto)">
+              <label><i class="fas fa-tag"></i> Tipo:</label>
+              <span class="badge" [style.background]="getTipoColor(puestoSeleccionado.tipoPuesto)">
                 {{ getTipoDescripcion(puestoSeleccionado.tipoPuesto) }}
               </span>
             </div>
             <div class="info-item">
-              <label>ID:</label>
+              <label><i class="fas fa-fingerprint"></i> ID:</label>
               <span class="info-value">{{ puestoSeleccionado.id }}</span>
             </div>
           </div>
         </div>
       </div>
 
-      <!-- Formulario de información del cliente -->
+      <!-- Búsqueda de cliente -->
       <div class="card form-card">
         <div class="card-content">
-          <h4 class="form-title">Información del Cliente</h4>
-          <form (ngSubmit)="confirmarOcupacion()" class="ocupacion-form">
-
-            <div class="form-row">
-              <div class="form-group">
-                <label class="form-label">
-                  <i class="fas fa-user"></i> Usuario (ID del Cliente)
-                </label>
-                <input type="text" [(ngModel)]="ocuparRequest.usuario" name="usuario"
-                       class="form-control" placeholder="Ingrese su usuario" required>
-              </div>
-
-              <div class="form-group">
-                <label class="form-label">
-                  <i class="fas fa-id-card"></i> ID del Cliente
-                </label>
-                <input type="text" [(ngModel)]="ocuparRequest.clienteId" name="clienteId"
-                       class="form-control" placeholder="Ingrese ID del cliente" required>
-              </div>
-            </div>
-
+          <h4 class="form-title">Búsqueda del Cliente</h4>
+          <form (ngSubmit)="buscarCliente()" class="ocupacion-form">
             <div class="form-group">
               <label class="form-label">
-                <i class="fas fa-users"></i> Tipo de Cliente
+                <i class="fas fa-id-card"></i> Cédula del Cliente
               </label>
-              <select [(ngModel)]="ocuparRequest.tipoCliente" name="tipoCliente" class="form-select" required>
-                <option value="">-- Seleccione tipo --</option>
-                <option value="UCAB">UCAB</option>
-                <option value="VISITANTE">Visitante</option>
-              </select>
-            </div>
-
-            <div class="form-actions">
-              <button type="button" (click)="cancelarSeleccion()" class="btn btn-secondary">
-                <i class="fas fa-arrow-left"></i> Volver
-              </button>
-              <button type="submit" class="btn btn-primary" [disabled]="procesando">
-                <i class="fas fa-car"></i>
-                {{ procesando ? 'Procesando...' : 'Confirmar Ocupación' }}
-              </button>
+              <div class="input-group">
+                <input type="text"
+                       [(ngModel)]="ocuparRequest.cedula"
+                       name="cedula"
+                       class="form-control"
+                       placeholder="Ingrese la cédula del cliente"
+                       required
+                       maxlength="20"
+                       pattern="[0-9]+"
+                       title="Solo se permiten números"
+                       [disabled]="buscandoCliente">
+                <button type="submit"
+                        class="btn btn-primary btn-buscar"
+                        [disabled]="buscandoCliente || !ocuparRequest.cedula">
+                  <i class="fas fa-search"></i>
+                  {{ buscandoCliente ? 'Buscando...' : 'Buscar' }}
+                </button>
+              </div>
+              <small class="form-text">Ingrese solo números (sin puntos ni guiones)</small>
             </div>
           </form>
+
+          <!-- Información del cliente encontrado -->
+          <div *ngIf="clienteEncontrado" class="cliente-info-card">
+            <h5 class="cliente-title">
+              <i class="fas fa-user-check text-success"></i>
+              Cliente Encontrado
+            </h5>
+            <div class="cliente-details">
+              <div class="cliente-item">
+                <strong>Nombre:</strong> {{ clienteEncontrado.nombre }} {{ clienteEncontrado.apellido }}
+              </div>
+              <div class="cliente-item">
+                <strong>Cédula:</strong> {{ clienteEncontrado.cedula }}
+              </div>
+              <div class="cliente-item">
+                <strong>Email:</strong> {{ clienteEncontrado.email }}
+              </div>
+              <div class="cliente-item">
+                <strong>Teléfono:</strong> {{ clienteEncontrado.telefono }}
+              </div>
+              <div class="cliente-item">
+                <strong>Tipo:</strong>
+                <span class="badge" [ngClass]="clienteEncontrado.tipoPersona === 'UCAB' ? 'badge-success' : 'badge-warning'">
+                  {{ clienteEncontrado.tipoPersona }}
+                </span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Acciones de confirmación -->
+      <div class="card form-card" *ngIf="clienteEncontrado">
+        <div class="card-content">
+          <h4 class="form-title">Confirmar Ocupación</h4>
+          <div class="confirmation-section">
+            <p>¿Está seguro de que desea asignar este puesto al cliente <strong>{{ clienteEncontrado.nombre }} {{ clienteEncontrado.apellido }}</strong>?</p>
+            <div class="form-actions">
+              <button type="button" (click)="cancelarSeleccion()" class="btn btn-secondary">
+                <i class="fas fa-arrow-left"></i> Cancelar
+              </button>
+              <button type="button" (click)="confirmarOcupacion()" class="btn btn-primary" [disabled]="procesando">
+                <i class="fas fa-car"></i>
+                {{ procesando ? 'Procesando...' : 'Confirmar Ocupación' }}
+            </button>
+            </div>
+          </div>
         </div>
       </div>
     </div>

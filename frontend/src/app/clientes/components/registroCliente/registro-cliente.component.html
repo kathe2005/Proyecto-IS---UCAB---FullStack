@@ -1,202 +1,291 @@
-<div class="main-container">
+<div id="ContenedorMain">
+  <div id="contenedor">
+    <!-- Header -->
+    <div class="header-section">
+      <h1 class="titulo-principal">Sistema de Gestión de Estacionamiento</h1>
+      <p class="subtitulo">Universidad Católica Andrés Bello - UCAB Montalbán</p>
+    </div>
 
-<h1 style="margin: 0;padding: 0;"> Registro de Estacionamiento </h1>
-    @if (paso === 'credenciales')
-    {
-        <div class="registro-cliente">
-            <h2> Paso 1 de 3: Credenciales de Acceso  </h2>
+    <!-- Título de la sección -->
+    <div class="section-title">
+      <h2>Registro de Nuevo Cliente</h2>
+      <p>Complete la información del nuevo cliente</p>
+    </div>
 
-            <form (ngSubmit)="siguientePaso()">
+    <!-- Mensajes de resultado -->
+    <div *ngIf="mensaje" [class]="'alert alert-' + mensajeTipo" class="alert">
+      <i class="fas fa-info-circle"></i> {{ mensaje }}
+    </div>
 
-                <fieldset>
+    <!-- Formulario de registro -->
+    <div class="card form-card">
+      <div class="card-content">
+        <div class="icono">
+          <i class="fas fa-user-plus"></i>
+        </div>
+        <div class="texto">
+          <h3>Información del Cliente</h3>
+          <p>Ingrese los datos requeridos para registrar un nuevo cliente</p>
+        </div>
+      </div>
+    </div>
 
-                    <legend> Credenciales de Acceso </legend>
+    <!-- Formulario -->
+    <div class="card form-card">
+      <div class="card-content">
+        <form (ngSubmit)="registrarCliente()" #clienteForm="ngForm" class="registro-form">
 
-                    <div class="form-group">
-                        <label for="usuario"> Usuario </label>
-                        <input type="text" id="usuario" name="usuario" [(ngModel)]="nuevoCliente.usuario" required>
-                    </div>
+          <!-- Datos Personales -->
+          <div class="form-section">
+            <h4 class="form-section-title">
+              <i class="fas fa-user"></i> Datos Personales
+            </h4>
 
-                    <div class="form-group">
-                        <label for="email"> Correo Electrónico </label>
-                        <input type="email" id="email" name="email" [(ngModel)]="nuevoCliente.email" required>
-                    </div>
-
-                    <div class="form-group">
-                        <label for="contrasena"> Contraseña </label>
-                        <input type="password" id="contrasena" name="contrasena" [(ngModel)]="nuevoCliente.contrasena" required>
-                    </div>
-
-                    <div class="form-group">
-                        <label for="confirmarContrasena"> Confirmar Contraseña: </label>
-                        <input type="password" id="confirmarContrasena" name="confirmarContrasena" [(ngModel)]="nuevoCliente.confirmarContrasena" required>
-                    </div>
-
-                </fieldset>
-
-            </form>
-
-            <!-- Mensaje de error -->
-            @if (errorMensaje) {
-                <div class="alert alert-danger">
-                    {{ errorMensaje }}
+            <div class="form-row">
+              <div class="form-group">
+                <label class="form-label">
+                  <i class="fas fa-id-card"></i> Cédula *
+                </label>
+                <input type="text"
+                       [(ngModel)]="nuevoCliente.cedula"
+                       name="cedula"
+                       class="form-control"
+                       [class.is-invalid]="errores.cedula"
+                       placeholder="Ingrese la cédula"
+                       required
+                       maxlength="20"
+                       (blur)="validarCampo('cedula', nuevoCliente.cedula)"
+                       (input)="validarCampo('cedula', nuevoCliente.cedula)">
+                <small class="form-text">Solo números (sin puntos ni guiones)</small>
+                <div *ngIf="errores.cedula" class="error-message">
+                  <i class="fas fa-exclamation-circle"></i> {{ errores.cedula }}
                 </div>
-            }
+              </div>
 
-            <div class="actions">
-                <button (click)="siguientePaso()" class="btn btn-primary">
-                    Continuar (Paso 2)
-                </button>
-            </div>
-
-        </div>
-    }
-
-    @if (paso === 'datos_personales')
-    {
-        <div class="registro-cliente">
-            <h2> Paso 2 de 3: Datos Personales  </h2>
-
-            <form (ngSubmit)="siguientePaso()">
-
-                <fieldset>
-
-                    <legend> Datos Personales </legend>
-
-                    <div class="form-group">
-                        <label for="cedula"> Cédula (formato: V-12345678 o E-12345678) </label>
-                        <input type="text" id="cedula" name="cedula" [(ngModel)]="nuevoCliente.cedula"
-                               placeholder="V-12345678" required>
-                    </div>
-
-                    <div class="form-group">
-                        <label for="nombre"> Nombre  </label>
-                        <input type="text" id="nombre" name="nombre" [(ngModel)]="nuevoCliente.nombre" required>
-                    </div>
-
-                    <div class="form-group">
-                        <label for="apellido"> Apellido </label>
-                        <input type="text" id="apellido" name="apellido" [(ngModel)]="nuevoCliente.apellido" required>
-                    </div>
-
-                    <div class="form-group">
-                        <label for="tipoPersona"> Tipo de Persona </label>
-                        <select id="tipoPersona" name="tipoPersona" [(ngModel)]="nuevoCliente.tipoPersona" class="form-control" required>
-                            <option value="">-- Seleccione --</option>
-                            <option value="UCAB">UCAB</option>
-                            <option value="VISITANTE">VISITANTE</option>
-                        </select>
-                    </div>
-
-                </fieldset>
-
-            </form>
-
-            <!-- Mensaje de error -->
-            @if (errorMensaje) {
-                <div class="alert alert-danger">
-                    {{ errorMensaje }}
+              <div class="form-group">
+                <label class="form-label">
+                  <i class="fas fa-tag"></i> Tipo de Persona *
+                </label>
+                <select [(ngModel)]="nuevoCliente.tipoPersona"
+                        name="tipoPersona"
+                        class="form-control"
+                        [class.is-invalid]="errores.tipoPersona"
+                        required
+                        (change)="validarCampo('tipoPersona', nuevoCliente.tipoPersona)">
+                  <option value="">-- Seleccione tipo --</option>
+                  <option value="UCAB">UCAB</option>
+                  <option value="VISITANTE">Visitante</option>
+                </select>
+                <div *ngIf="errores.tipoPersona" class="error-message">
+                  <i class="fas fa-exclamation-circle"></i> {{ errores.tipoPersona }}
                 </div>
-            }
-
-            <div class="actions">
-                <button (click)="siguientePaso()" class="btn btn-primary">
-                    Continuar (Paso 3)
-                </button>
-                <button (click)="pasoAnterior()" class="btn btn-secondary">
-                    Regresar
-                </button>
+              </div>
             </div>
 
-        </div>
-    }
-
-    @if (paso === 'contacto_ubicacion')
-    {
-        <div class="registro-cliente">
-            <h2> Paso 3 de 3: Contacto y Ubicación  </h2>
-
-            <form (ngSubmit)="onSubmit()">
-
-                <fieldset>
-
-                    <legend> Contacto y Ubicación  </legend>
-
-                    <div class="form-group">
-                        <label for="direccion"> Dirección </label>
-                        <input type="text" id="direccion" name="direccion" [(ngModel)]="nuevoCliente.direccion" required>
-                    </div>
-
-                    <div class="form-group">
-                        <label for="telefono"> Teléfono (formato: 0412-6112225) </label>
-                        <input type="text" id="telefono" name="telefono" [(ngModel)]="nuevoCliente.telefono"
-                               placeholder="0412-6112225" required>
-                    </div>
-
-                </fieldset>
-
-            </form>
-
-            <!-- Mensaje de error -->
-            @if (errorMensaje) {
-                <div class="alert alert-danger">
-                    {{ errorMensaje }}
+            <div class="form-row">
+              <div class="form-group">
+                <label class="form-label">
+                  <i class="fas fa-user"></i> Nombre *
+                </label>
+                <input type="text"
+                       [(ngModel)]="nuevoCliente.nombre"
+                       name="nombre"
+                       class="form-control"
+                       [class.is-invalid]="errores.nombre"
+                       placeholder="Ingrese el nombre"
+                       required
+                       maxlength="50"
+                       (blur)="validarCampo('nombre', nuevoCliente.nombre)"
+                       (input)="validarCampo('nombre', nuevoCliente.nombre)">
+                <div *ngIf="errores.nombre" class="error-message">
+                  <i class="fas fa-exclamation-circle"></i> {{ errores.nombre }}
                 </div>
-            }
+              </div>
 
-            <div class="actions">
-                <button (click)="onSubmit()" class="btn btn-primary">
-                    Registrar
-                </button>
-                <button (click)="pasoAnterior()" class="btn btn-secondary">
-                    Regresar
-                </button>
+              <div class="form-group">
+                <label class="form-label">
+                  <i class="fas fa-user"></i> Apellido *
+                </label>
+                <input type="text"
+                       [(ngModel)]="nuevoCliente.apellido"
+                       name="apellido"
+                       class="form-control"
+                       [class.is-invalid]="errores.apellido"
+                       placeholder="Ingrese el apellido"
+                       required
+                       maxlength="50"
+                       (blur)="validarCampo('apellido', nuevoCliente.apellido)"
+                       (input)="validarCampo('apellido', nuevoCliente.apellido)">
+                <div *ngIf="errores.apellido" class="error-message">
+                  <i class="fas fa-exclamation-circle"></i> {{ errores.apellido }}
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Información de Contacto -->
+          <div class="form-section">
+            <h4 class="form-section-title">
+              <i class="fas fa-address-book"></i> Información de Contacto
+            </h4>
+            <div class="form-row">
+              <div class="form-group">
+                <label class="form-label">
+                  <i class="fas fa-envelope"></i> Email *
+                </label>
+                <input type="email"
+                       [(ngModel)]="nuevoCliente.email"
+                       name="email"
+                       class="form-control"
+                       [class.is-invalid]="errores.email"
+                       placeholder="ejemplo@correo.com"
+                       required
+                       (blur)="validarCampo('email', nuevoCliente.email)"
+                       (input)="validarCampo('email', nuevoCliente.email)">
+                <div *ngIf="errores.email" class="error-message">
+                  <i class="fas fa-exclamation-circle"></i> {{ errores.email }}
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label class="form-label">
+                  <i class="fas fa-phone"></i> Teléfono *
+                </label>
+                <input type="text"
+                       [(ngModel)]="nuevoCliente.telefono"
+                       name="telefono"
+                       class="form-control"
+                       [class.is-invalid]="errores.telefono"
+                       placeholder="Ingrese el teléfono"
+                       required
+                       maxlength="20"
+                       (blur)="validarCampo('telefono', nuevoCliente.telefono)"
+                       (input)="validarCampo('telefono', nuevoCliente.telefono)">
+                <div *ngIf="errores.telefono" class="error-message">
+                  <i class="fas fa-exclamation-circle"></i> {{ errores.telefono }}
+                </div>
+              </div>
             </div>
 
-        </div>
-    }
+            <div class="form-group">
+              <label class="form-label">
+                <i class="fas fa-home"></i> Dirección *
+              </label>
+              <input type="text"
+                     [(ngModel)]="nuevoCliente.direccion"
+                     name="direccion"
+                     class="form-control"
+                     [class.is-invalid]="errores.direccion"
+                     placeholder="Ingrese la dirección completa"
+                     required
+                     (blur)="validarCampo('direccion', nuevoCliente.direccion)"
+                     (input)="validarCampo('direccion', nuevoCliente.direccion)">
+              <div *ngIf="errores.direccion" class="error-message">
+                <i class="fas fa-exclamation-circle"></i> {{ errores.direccion }}
+              </div>
+            </div>
+          </div>
 
-    @if (paso === 'cargando')
-    {
-        <div class="loading-screen">
-            <h2> Procesando su Registro </h2>
-            <div class="spinner"></div>
-            <p>Aplicando validaciones de unicidad y formato. Espere la confirmación del servidor</p>
-        </div>
-    }
+          <!-- Datos de Autenticación -->
+          <div class="form-section">
+            <h4 class="form-section-title">
+              <i class="fas fa-user-shield"></i> Datos de Autenticación
+            </h4>
 
-    @if (paso === 'confirmacion' && clienteConfirmado)
-    {
-        <div class="confirmation-card">
-            <h2>✅ Datos Registrados Correctamente</h2>
-
-            <p class="success-message">¡El sistema ha registrado su información! Por favor, confirme los siguientes detalles:</p>
-
-            <div class="data-summary">
-                <div class="data-row"><strong>ID de Cliente:</strong> <span>{{ clienteConfirmado.id }}</span></div>
-                <div class="data-row"><strong>Tipo de Persona:</strong> <span>{{ clienteConfirmado.tipoPersona }}</span></div>
-                <div class="data-row"><strong>Cédula:</strong> <span>{{ clienteConfirmado.cedula }}</span></div>
-                <div class="data-row"><strong>Nombre:</strong> <span>{{ clienteConfirmado.nombre }} {{ clienteConfirmado.apellido }}</span></div>
-                <div class="data-row"><strong>Email:</strong> <span>{{ clienteConfirmado.email }}</span></div>
-                <div class="data-row"><strong>Usuario:</strong> <span>{{ clienteConfirmado.usuario }}</span></div>
-                <div class="data-row"><strong>Dirección:</strong> <span>{{ clienteConfirmado.direccion }}</span></div>
-                <div class="data-row"><strong>Teléfono:</strong> <span>{{ clienteConfirmado.telefono }}</span></div>
-                <!-- No mostrar contraseñas por seguridad -->
+            <div class="form-row">
+              <div class="form-group">
+                <label class="form-label">
+                  <i class="fas fa-user-circle"></i> Usuario *
+                </label>
+                <input type="text"
+                       [(ngModel)]="nuevoCliente.usuario"
+                       name="usuario"
+                       class="form-control"
+                       [class.is-invalid]="errores.usuario"
+                       placeholder="Ingrese el nombre de usuario"
+                       required
+                       (blur)="validarCampo('usuario', nuevoCliente.usuario)"
+                       (input)="validarCampo('usuario', nuevoCliente.usuario)">
+                <div *ngIf="errores.usuario" class="error-message">
+                  <i class="fas fa-exclamation-circle"></i> {{ errores.usuario }}
+                </div>
+              </div>
             </div>
 
-            <div class="actions">
-                <button (click)="modificarDatos()" class="btn btn-secondary">
-                    Modificar
-                </button>
-                <button (click)="finalizarRegistro()" class="btn btn-primary">
-                    Finalizar y Continuar
-                </button>
-            </div>
-        </div>
-    }
+            <div class="form-row">
+              <div class="form-group">
+                <label class="form-label">
+                  <i class="fas fa-lock"></i> Contraseña *
+                </label>
+                <input type="password"
+                       [(ngModel)]="nuevoCliente.contrasena"
+                       name="contrasena"
+                       class="form-control"
+                       [class.is-invalid]="errores.contrasena"
+                       placeholder="Ingrese la contraseña"
+                       required
+                       (blur)="validarCampo('contrasena', nuevoCliente.contrasena)"
+                       (input)="validarCampo('contrasena', nuevoCliente.contrasena)">
+                <small class="form-text">Mínimo 8 caracteres, con mayúsculas, minúsculas y números</small>
+                <div *ngIf="errores.contrasena" class="error-message">
+                  <i class="fas fa-exclamation-circle"></i> {{ errores.contrasena }}
+                </div>
+              </div>
 
-    <footer class="footer">
+              <div class="form-group">
+                <label class="form-label">
+                  <i class="fas fa-lock"></i> Confirmar Contraseña *
+                </label>
+                <input type="password"
+                       [(ngModel)]="nuevoCliente.confirmarContrasena"
+                       name="confirmarContrasena"
+                       class="form-control"
+                       [class.is-invalid]="errores.confirmarContrasena"
+                       placeholder="Confirme la contraseña"
+                       required
+                       (blur)="validarCampo('confirmarContrasena', nuevoCliente.confirmarContrasena)"
+                       (input)="validarCampo('confirmarContrasena', nuevoCliente.confirmarContrasena)">
+                <div *ngIf="errores.confirmarContrasena" class="error-message">
+                  <i class="fas fa-exclamation-circle"></i> {{ errores.confirmarContrasena }}
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Resumen de errores -->
+          <div *ngIf="tieneErrores()" class="alert alert-warning">
+            <h5><i class="fas fa-exclamation-triangle"></i> Errores en el formulario</h5>
+            <ul class="error-list">
+              <li *ngIf="errores.cedula">{{ errores.cedula }}</li>
+              <li *ngIf="errores.nombre">{{ errores.nombre }}</li>
+              <li *ngIf="errores.apellido">{{ errores.apellido }}</li>
+              <li *ngIf="errores.email">{{ errores.email }}</li>
+              <li *ngIf="errores.telefono">{{ errores.telefono }}</li>
+              <li *ngIf="errores.tipoPersona">{{ errores.tipoPersona }}</li>
+              <li *ngIf="errores.usuario">{{ errores.usuario }}</li>
+              <li *ngIf="errores.contrasena">{{ errores.contrasena }}</li>
+              <li *ngIf="errores.confirmarContrasena">{{ errores.confirmarContrasena }}</li>
+              <li *ngIf="errores.direccion">{{ errores.direccion }}</li>
+            </ul>
+          </div>
+
+          <!-- Acciones del formulario -->
+          <div class="form-actions">
+            <button type="button" (click)="volverAGestionPerfiles()" class="btn btn-secondary">
+              <i class="fas fa-arrow-left"></i> Cancelar
+            </button>
+            <button type="submit" class="btn btn-primary" [disabled]="procesando || tieneErrores()">
+              <i class="fas fa-save"></i>
+              {{ procesando ? 'Registrando...' : 'Registrar Cliente' }}
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <footer class="footer">
     © 2025 UCAB Montalbán - Sistema de Estacionamiento
   </footer>
-
 </div>

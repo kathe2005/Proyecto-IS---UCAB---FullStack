@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { Puesto, TipoPuesto, EstadoPuesto } from '../models/puestos.model';
+import { Puesto, TipoPuesto, EstadoPuesto } from '../models/puestos.model'; // Importar desde models
 import { OcuparPuestoRequest } from '../models/ocupar-puesto-request.model';
 import { ResultadoOcupacion } from '../models/resultado-ocupacion.model';
 
@@ -21,8 +21,8 @@ export class PuestoService {
     return this.http.get<Puesto>(`${this.apiUrl}/${id}`);
   }
 
-  ocuparPuesto(request: OcuparPuestoRequest): Observable<ResultadoOcupacion> {
-    return this.http.post<ResultadoOcupacion>(`${this.apiUrl}/ocupar`, request);
+  ocuparPuesto(datosOcupacion: any): Observable<any> {
+    return this.http.post<any>(`${this.apiUrl}/ocupar`, datosOcupacion);
   }
 
   liberarPuesto(id: string): Observable<any> {
@@ -41,13 +41,13 @@ export class PuestoService {
     return this.http.post(`${this.apiUrl}/mantenimiento/${id}`, {});
   }
 
-  obtenerPuestosPorEstado(estado: EstadoPuesto): Observable<Puesto[]> {
+  obtenerPuestosPorEstado(estado: string): Observable<Puesto[]> {
     return this.http.get<Puesto[]>(`${this.apiUrl}/estado`, {
       params: new HttpParams().set('estado', estado)
     });
   }
 
-  obtenerPuestosPorTipo(tipo: TipoPuesto): Observable<Puesto[]> {
+  obtenerPuestosPorTipo(tipo: string): Observable<Puesto[]> {
     return this.http.get<Puesto[]>(`${this.apiUrl}/tipo`, {
       params: new HttpParams().set('tipo', tipo)
     });
@@ -65,5 +65,9 @@ export class PuestoService {
 
   obtenerHistorial(id: string): Observable<string[]> {
     return this.http.get<string[]>(`${this.apiUrl}/historial/${id}`);
+  }
+
+  crearPuesto(puesto: any): Observable<any> {
+    return this.http.post(`${this.apiUrl}`, puesto);
   }
 }

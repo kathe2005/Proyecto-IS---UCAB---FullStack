@@ -1,0 +1,103 @@
+<div class="main-container">
+  <div class="consultar-disponibilidad-card">
+    <!-- Header -->
+    <div class="card-header">
+      <h1>Consultar Puestos Disponibles</h1>
+      <p>Busque puestos disponibles por fecha y turno</p>
+    </div>
+
+    <!-- Filtros de búsqueda -->
+    <div class="filtros-section">
+      <div class="filtro-group">
+        <label for="fecha">Fecha:</label>
+        <input
+          type="date"
+          id="fecha"
+          [(ngModel)]="fecha"
+          [min]="getFechaActual()">
+      </div>
+
+      <div class="filtro-group">
+        <label for="turno">Turno:</label>
+        <select id="turno" [(ngModel)]="turno">
+          <option *ngFor="let turno of turnos" [value]="turno.value">
+            {{ turno.label }}
+          </option>
+        </select>
+      </div>
+
+      <div class="filtro-actions">
+        <button class="btn btn-secondary" (click)="limpiarFiltros()">
+          Limpiar
+        </button>
+        <button class="btn btn-primary" (click)="consultarDisponibilidad()" [disabled]="cargando">
+          {{ cargando ? 'Buscando...' : 'Consultar Disponibilidad' }}
+        </button>
+      </div>
+    </div>
+
+    <!-- Mensaje de error -->
+    <div *ngIf="error" class="error-message">
+      {{ error }}
+    </div>
+
+    <!-- Resultados -->
+    <div *ngIf="mostrarResultados && disponibilidadResult" class="resultados-section">
+      <div class="resultados-header">
+        <h3>Resultados de Disponibilidad</h3>
+        <div class="resumen-estadisticas">
+          <span class="estadistica-item">
+            <strong>Total:</strong> {{ disponibilidadResult.totalPuestos }}
+          </span>
+          <span class="estadistica-item disponible">
+            <strong>Disponibles:</strong> {{ disponibilidadResult.puestosDisponibles }}
+          </span>
+          <span class="estadistica-item porcentaje">
+            <strong>Disponibilidad:</strong>
+            {{ (disponibilidadResult.puestosDisponibles / disponibilidadResult.totalPuestos * 100).toFixed(1) }}%
+          </span>
+        </div>
+      </div>
+
+      <!-- Lista de puestos disponibles -->
+      <div class="puestos-list">
+        <div *ngFor="let puesto of puestosDisponibles" class="puesto-card">
+          <div class="puesto-info">
+            <div class="puesto-header">
+              <h4>Puesto {{ puesto.numero }}</h4>
+              <div class="puesto-badges">
+                <span class="estado-badge" [class]="getEstadoClass(puesto.estadoPuesto)">
+                  {{ puesto.estadoPuesto }}
+                </span>
+                <span class="tipo-badge" [class]="getTipoClass(puesto.tipoPuesto)">
+                  {{ puesto.tipoPuesto }}
+                </span>
+              </div>
+            </div>
+            <div class="puesto-details">
+              <p><strong>Ubicación:</strong> {{ puesto.ubicacion }}</p>
+              <p><strong>ID:</strong> {{ puesto.id }}</p>
+              <p><strong>Tipo:</strong> {{ puesto.tipoPuesto }}</p>
+            </div>
+          </div>
+          <!-- BOTÓN DE RESERVAR ELIMINADO -->
+        </div>
+
+        <!-- Mensaje cuando no hay puestos disponibles -->
+        <div *ngIf="puestosDisponibles.length === 0" class="no-results">
+          <p>No hay puestos disponibles para la fecha y turno seleccionados.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Botones de acción -->
+    <div class="actions-footer">
+      <button class="btn btn-secondary" (click)="volverAGestion()">
+        Volver a Gestión de Reservas
+      </button>
+      <button class="btn btn-success" (click)="irAReservar()">
+        Ir a Reservar Puesto
+      </button>
+    </div>
+  </div>
+</div>

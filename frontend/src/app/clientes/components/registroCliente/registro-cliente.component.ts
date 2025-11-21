@@ -1,264 +1,297 @@
-import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
-import { Router } from '@angular/router';
-import { ClienteService } from '../../service/cliente.service';
+import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { Cliente } from '../../models/cliente';
+import { Router } from '@angular/router';
+import { ClienteService, Cliente } from '../../service/cliente.service';
+
+interface ErroresFormulario {
+  cedula: string;
+  nombre: string;
+  apellido: string;
+  email: string;
+  telefono: string;
+  tipoPersona: string;
+  usuario: string;
+  contrasena: string;
+  confirmarContrasena: string;
+  direccion: string;
+}
 
 @Component({
   selector: 'app-registro-cliente',
-  templateUrl: './registro-cliente.component.html',
-  styleUrls: ['./registro-cliente.component.css'],
   standalone: true,
-  imports: [FormsModule, CommonModule],
+  imports: [CommonModule, FormsModule],
+  templateUrl: './registro-cliente.component.html',
+  styleUrls: ['./registro-cliente.component.css']
 })
 export class RegistroClienteComponent {
   nuevoCliente: Cliente = {
     usuario: '',
     contrasena: '',
     confirmarContrasena: '',
+    cedula: '',
     nombre: '',
     apellido: '',
-    cedula: '',
     email: '',
-    tipoPersona: '',
-    direccion: '',
     telefono: '',
+    tipoPersona: 'UCAB',
+    direccion: ''
   };
 
-  errorMensaje: string | null = null;
-  isProcessing: boolean = false;
-  clienteConfirmado: Cliente | null = null;
-  paso: 'credenciales' | 'datos_personales' | 'contacto_ubicacion' | 'cargando' | 'confirmacion' = 'credenciales';
+  // Mensajes
+  mensaje: string = '';
+  mensajeTipo: 'success' | 'danger' | 'warning' | 'info' = 'info';
+  procesando: boolean = false;
 
-  // Opciones para el select de tipo de persona
-  tiposPersona = [
-    { value: 'UCAB', label: 'UCAB' },
-    { value: 'VISITANTE', label: 'VISITANTE' }
-  ];
+  // Errores específicos por campo
+  errores: ErroresFormulario = {
+    cedula: '',
+    nombre: '',
+    apellido: '',
+    email: '',
+    telefono: '',
+    tipoPersona: '',
+    usuario: '',
+    contrasena: '',
+    confirmarContrasena: '',
+    direccion: ''
+  };
 
   constructor(
     private clienteService: ClienteService,
     private router: Router
   ) {}
 
-  ngOnInit(): void {
-    this.nuevoCliente.tipoPersona = '';
-  }
+  registrarCliente() {
+    // Limpiar errores anteriores
+    this.limpiarErrores();
 
-  siguientePaso() {
-    this.errorMensaje = null;
-
-    if (this.paso === 'credenciales') {
-      // Validaciones del paso 1
-      if (!this.nuevoCliente.usuario || !this.nuevoCliente.email) {
-        this.errorMensaje = 'Usuario y email son obligatorios';
-        return;
-      }
-
-      if (this.nuevoCliente.usuario.length < 4) {
-        this.errorMensaje = 'El usuario debe tener al menos 4 caracteres';
-        return;
-      }
-
-      if (!this.validarEmail(this.nuevoCliente.email)) {
-        this.errorMensaje = 'El formato del email no es válido';
-        return;
-      }
-
-      if (this.nuevoCliente.contrasena.length < 6) {
-        this.errorMensaje = 'La contraseña debe tener al menos 6 caracteres';
-        return;
-      }
-
-      if (this.nuevoCliente.contrasena !== this.nuevoCliente.confirmarContrasena) {
-        this.errorMensaje = 'Las contraseñas no coinciden. Por favor revíselas';
-        return;
-      }
-
-      this.paso = 'datos_personales';
-    }
-    else if (this.paso === 'datos_personales') {
-      // Validaciones del paso 2
-      if (!this.nuevoCliente.tipoPersona) {
-        this.errorMensaje = 'Debe seleccionar si es UCAB o VISITANTE';
-        return;
-      }
-
-      if (!this.nuevoCliente.cedula || !this.nuevoCliente.nombre || !this.nuevoCliente.apellido) {
-        this.errorMensaje = 'Debe completar la cédula, el nombre y el apellido para continuar';
-        return;
-      }
-
-      // Validación de cédula CORREGIDA - formato V-/E-
-      if (!this.validarCedula(this.nuevoCliente.cedula)) {
-        this.errorMensaje = 'La cédula debe tener formato V-12345678 o E-12345678 (V o E seguido de guion y 6-8 dígitos)';
-        return;
-      }
-
-      if (this.nuevoCliente.nombre.length < 2 || this.nuevoCliente.apellido.length < 2) {
-        this.errorMensaje = 'Nombre y apellido deben tener al menos 2 caracteres';
-        return;
-      }
-
-      // Validar email según tipo de persona
-      const errorEmail = this.validarEmailPorTipoPersona(this.nuevoCliente.tipoPersona, this.nuevoCliente.email);
-      if (errorEmail) {
-        this.errorMensaje = errorEmail;
-        return;
-      }
-
-      this.paso = 'contacto_ubicacion';
-    }
-    else if (this.paso === 'contacto_ubicacion') {
-      this.onSubmit();
-    }
-  }
-
-  pasoAnterior() {
-    this.errorMensaje = null;
-
-    if (this.paso === 'datos_personales') {
-      this.paso = 'credenciales';
-    }
-    else if (this.paso === 'contacto_ubicacion') {
-      this.paso = 'datos_personales';
-    }
-    else if (this.paso === 'confirmacion') {
-      this.paso = 'contacto_ubicacion';
-    }
-  }
-
-  onSubmit() {
-    this.errorMensaje = null;
-
-    // Validación final del paso 3
-    if (!this.nuevoCliente.direccion || !this.nuevoCliente.telefono) {
-      this.errorMensaje = 'Dirección y teléfono son obligatorios';
+    // Validar todos los campos
+    if (!this.validarFormulario()) {
+      this.mostrarMensaje('Por favor corrija los errores en el formulario', 'warning');
       return;
     }
 
-    if (!this.validarTelefono(this.nuevoCliente.telefono)) {
-      this.errorMensaje = 'El formato del teléfono no es válido. Debe ser: 0412-6112225';
-      return;
-    }
+    this.procesando = true;
 
-    this.isProcessing = true;
-    this.paso = 'cargando';
+    this.clienteService.registrarCliente(this.nuevoCliente).subscribe({
+      next: (clienteRespuesta: Cliente) => {
+        this.procesando = false;
+        this.mostrarMensaje('✅ Cliente registrado exitosamente', 'success');
 
-    // USAR EL SERVICIO REAL
-    this.clienteService.registrarCliente(this.nuevoCliente)
-      .subscribe({
-        next: (clienteRespuesta) => {
-          this.clienteConfirmado = clienteRespuesta;
-          this.paso = 'confirmacion';
-          this.isProcessing = false;
-          console.log('Cliente registrado exitosamente:', clienteRespuesta);
-        },
-        error: (err) => {
-          console.error('Error de registro: ', err);
-          this.errorMensaje = err.error?.mensaje || "Hubo un error desconocido al registrar";
-          this.paso = 'contacto_ubicacion';
-          this.isProcessing = false;
+        // Limpiar el formulario
+        this.limpiarFormulario();
+
+        setTimeout(() => {
+          this.router.navigate(['/gestion-perfiles']);
+        }, 2000);
+      },
+      error: (err: any) => {
+        this.procesando = false;
+        console.error('Error registrando cliente:', err);
+
+        let mensajeError = 'Error al registrar el cliente';
+        if (err.error) {
+          mensajeError = err.error;
         }
-      });
+
+        this.mostrarMensaje('❌ ' + mensajeError, 'danger');
+      }
+    });
   }
 
-  modificarDatos() {
-    this.paso = 'contacto_ubicacion';
-    this.errorMensaje = null;
+  validarFormulario(): boolean {
+    let esValido = true;
+
+    // Validar cédula
+    if (!this.nuevoCliente.cedula) {
+      this.errores.cedula = 'La cédula es obligatoria';
+      esValido = false;
+    } else if (!/^\d+$/.test(this.nuevoCliente.cedula)) {
+      this.errores.cedula = 'La cédula debe contener solo números';
+      esValido = false;
+    } else if (this.nuevoCliente.cedula.length < 6) {
+      this.errores.cedula = 'La cédula debe tener al menos 6 dígitos';
+      esValido = false;
+    }
+
+    // Validar nombre
+    if (!this.nuevoCliente.nombre) {
+      this.errores.nombre = 'El nombre es obligatorio';
+      esValido = false;
+    } else if (this.nuevoCliente.nombre.length < 2) {
+      this.errores.nombre = 'El nombre debe tener al menos 2 caracteres';
+      esValido = false;
+    }
+
+    // Validar apellido
+    if (!this.nuevoCliente.apellido) {
+      this.errores.apellido = 'El apellido es obligatorio';
+      esValido = false;
+    } else if (this.nuevoCliente.apellido.length < 2) {
+      this.errores.apellido = 'El apellido debe tener al menos 2 caracteres';
+      esValido = false;
+    }
+
+    // Validar email
+    if (!this.nuevoCliente.email) {
+      this.errores.email = 'El email es obligatorio';
+      esValido = false;
+    } else if (!this.validarEmail(this.nuevoCliente.email)) {
+      this.errores.email = 'El formato del email no es válido';
+      esValido = false;
+    }
+
+    // Validar usuario
+    if (!this.nuevoCliente.usuario) {
+      this.errores.usuario = 'El usuario es obligatorio';
+      esValido = false;
+    }
+
+    // Validar contraseña
+    if (!this.nuevoCliente.contrasena) {
+      this.errores.contrasena = 'La contraseña es obligatoria';
+      esValido = false;
+    } else if (this.nuevoCliente.contrasena.length < 8) {
+      this.errores.contrasena = 'La contraseña debe tener al menos 8 caracteres';
+      esValido = false;
+    }
+
+    // Validar confirmación de contraseña
+    if (!this.nuevoCliente.confirmarContrasena) {
+      this.errores.confirmarContrasena = 'Debe confirmar la contraseña';
+      esValido = false;
+    } else if (this.nuevoCliente.contrasena !== this.nuevoCliente.confirmarContrasena) {
+      this.errores.confirmarContrasena = 'Las contraseñas no coinciden';
+      esValido = false;
+    }
+
+    // Validar dirección
+    if (!this.nuevoCliente.direccion) {
+      this.errores.direccion = 'La dirección es obligatoria';
+      esValido = false;
+    }
+
+    return esValido;
   }
 
-  finalizarRegistro() {
-    console.log("Registro de cliente confirmado y finalizado");
+  validarCampo(campo: keyof ErroresFormulario, valor: string) {
+    this.errores[campo] = '';
 
-    // Mostrar mensaje de éxito
-    alert('✅ Registro exitoso! Serás redirigido al sistema de estacionamiento.');
+    switch (campo) {
+      case 'cedula':
+        if (!valor) {
+          this.errores.cedula = 'La cédula es obligatoria';
+        } else if (!/^\d+$/.test(valor)) {
+          this.errores.cedula = 'La cédula debe contener solo números';
+        } else if (valor.length < 6) {
+          this.errores.cedula = 'La cédula debe tener al menos 6 dígitos';
+        }
+        break;
 
-    // Redirigir al dashboard del sistema
-    setTimeout(() => {
-      this.router.navigate(['/inicio']);
-    }, 1500);
+      case 'nombre':
+        if (!valor) {
+          this.errores.nombre = 'El nombre es obligatorio';
+        } else if (valor.length < 2) {
+          this.errores.nombre = 'El nombre debe tener al menos 2 caracteres';
+        }
+        break;
+
+      case 'apellido':
+        if (!valor) {
+          this.errores.apellido = 'El apellido es obligatorio';
+        } else if (valor.length < 2) {
+          this.errores.apellido = 'El apellido debe tener al menos 2 caracteres';
+        }
+        break;
+
+      case 'email':
+        if (!valor) {
+          this.errores.email = 'El email es obligatorio';
+        } else if (!this.validarEmail(valor)) {
+          this.errores.email = 'El formato del email no es válido';
+        }
+        break;
+
+      case 'usuario':
+        if (!valor) {
+          this.errores.usuario = 'El usuario es obligatorio';
+        }
+        break;
+
+      case 'contrasena':
+        if (!valor) {
+          this.errores.contrasena = 'La contraseña es obligatoria';
+        } else if (valor.length < 8) {
+          this.errores.contrasena = 'La contraseña debe tener al menos 8 caracteres';
+        }
+        break;
+
+      case 'confirmarContrasena':
+        if (!valor) {
+          this.errores.confirmarContrasena = 'Debe confirmar la contraseña';
+        } else if (this.nuevoCliente.contrasena !== valor) {
+          this.errores.confirmarContrasena = 'Las contraseñas no coinciden';
+        }
+        break;
+
+      case 'direccion':
+        if (!valor) {
+          this.errores.direccion = 'La dirección es obligatoria';
+        }
+        break;
+    }
   }
 
-  // Métodos de validación CORREGIDOS para formato V-/E-
+  tieneErrores(): boolean {
+    return Object.values(this.errores).some(error => error !== '');
+  }
+
+  limpiarErrores() {
+    this.errores = {
+      cedula: '',
+      nombre: '',
+      apellido: '',
+      email: '',
+      telefono: '',
+      tipoPersona: '',
+      usuario: '',
+      contrasena: '',
+      confirmarContrasena: '',
+      direccion: ''
+    };
+  }
+
+  limpiarFormulario() {
+    this.nuevoCliente = {
+      usuario: '',
+      contrasena: '',
+      confirmarContrasena: '',
+      cedula: '',
+      nombre: '',
+      apellido: '',
+      email: '',
+      telefono: '',
+      tipoPersona: 'UCAB',
+      direccion: ''
+    };
+    this.limpiarErrores();
+  }
+
   private validarEmail(email: string): boolean {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     return emailRegex.test(email);
   }
 
-  private validarCedula(cedula: string): boolean {
-    // Validar formato V-12345678 o E-12345678 (6-8 dígitos)
-    const cedulaRegex = /^[VEve]-\d{6,8}$/;
-    return cedulaRegex.test(cedula);
+  private mostrarMensaje(mensaje: string, tipo: 'success' | 'danger' | 'warning' | 'info') {
+    this.mensaje = mensaje;
+    this.mensajeTipo = tipo;
+    setTimeout(() => {
+      this.mensaje = '';
+    }, 5000);
   }
 
-  private validarTelefono(telefono: string): boolean {
-    // Validar formato de teléfono: 0412-6112225
-    const telefonoRegex = /^(0212|0424|0416|0426|0414|0412)-\d{7}$/;
-    return telefonoRegex.test(telefono);
-  }
-
-  private validarEmailPorTipoPersona(tipoPersona: string, email: string): string | null {
-    if (!tipoPersona || !email) return null;
-
-    const dominio = email.substring(email.lastIndexOf("@") + 1).toLowerCase();
-
-    if (tipoPersona === 'UCAB') {
-      if (dominio !== 'ucab.edu.ve' && dominio !== 'est.ucab.edu.ve') {
-        return 'Para el tipo UCAB, el email debe ser @ucab.edu.ve o @est.ucab.edu.ve';
-      }
-    } else if (tipoPersona === 'VISITANTE') {
-      const dominiosPermitidos = ['gmail.com', 'outlook.com', 'yahoo.com', 'hotmail.com'];
-      if (!dominiosPermitidos.includes(dominio)) {
-        return 'Para el tipo VISITANTE, el email debe ser @gmail.com, @outlook.com, @yahoo.com o @hotmail.com';
-      }
-    }
-
-    return null;
-  }
-
-  // Método para reiniciar el formulario
-  registrarNuevoCliente() {
-    this.nuevoCliente = {
-      usuario: '',
-      contrasena: '',
-      confirmarContrasena: '',
-      nombre: '',
-      apellido: '',
-      cedula: '',
-      email: '',
-      tipoPersona: '',
-      direccion: '',
-      telefono: '',
-    };
-    this.clienteConfirmado = null;
-    this.paso = 'credenciales';
-    this.errorMensaje = null;
-  }
-
-  // Método para obtener el progreso del formulario
-  getProgreso(): number {
-    const pasos = ['credenciales', 'datos_personales', 'contacto_ubicacion', 'confirmacion'];
-    const pasoActual = pasos.indexOf(this.paso);
-    return ((pasoActual + 1) / pasos.length) * 100;
-  }
-
-  // Método para obtener el texto del paso actual
-  getTextoPasoActual(): string {
-    switch (this.paso) {
-      case 'credenciales':
-        return 'Paso 1 de 3: Credenciales de Acceso';
-      case 'datos_personales':
-        return 'Paso 2 de 3: Datos Personales';
-      case 'contacto_ubicacion':
-        return 'Paso 3 de 3: Contacto y Ubicación';
-      case 'cargando':
-        return 'Procesando Registro';
-      case 'confirmacion':
-        return 'Confirmación de Registro';
-      default:
-        return 'Registro de Cliente';
-    }
+  volverAGestionPerfiles() {
+    this.router.navigate(['/gestion-perfiles']);
   }
 }

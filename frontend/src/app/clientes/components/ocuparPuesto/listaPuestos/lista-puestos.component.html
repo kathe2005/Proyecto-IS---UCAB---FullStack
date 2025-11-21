@@ -1,23 +1,9 @@
-<div class="container-fluid p-0">
-
+<div class="main-container">
   <div class="container-custom">
-    <!-- Header con título y botones -->
-    <div class="d-flex justify-content-between align-items-center mb-4">
-      <h1 class="page-title">{{ titulo }}</h1>
-      <div class="btn-group">
-        <a routerLink="/puestos" class="btn btn-outline-primary btn-sm" [class.active]="!criterioBusqueda">
-          <i class="fas fa-list"></i> Todos
-        </a>
-        <a routerLink="/puestos/disponibles" class="btn btn-success btn-sm">
-          <i class="fas fa-check"></i> Disponibles
-        </a>
-        <a routerLink="/puestos/ocupados" class="btn btn-warning btn-sm">
-          <i class="fas fa-car"></i> Ocupados
-        </a>
-        <a routerLink="/puestos/ocupar" class="btn btn-primary btn-sm">
-          <i class="fas fa-parking"></i> Ocupar Puesto
-        </a>
-      </div>
+    <!-- Header -->
+    <div class="page-header">
+      <h1 class="page-title">Gestión de Puestos de Estacionamiento</h1>
+      <p class="page-subtitle">Administre y consulte el estado de los puestos de estacionamiento</p>
     </div>
 
     <!-- Alerta de criterio de búsqueda -->
@@ -30,61 +16,52 @@
     </div>
 
     <!-- Estadísticas rápidas -->
-    <div class="row mb-4">
-      <div class="col-md-3">
-        <div class="stat-card-small bg-primary text-white">
-          <i class="fas fa-parking"></i>
-          <div>
-            <h4>{{ puestos.length }}</h4>
-            <small>Total mostrados</small>
-          </div>
+    <div class="stats-section">
+      <div class="stat-card-small">
+        <i class="fas fa-parking"></i>
+        <div>
+          <h4>{{ puestosFiltrados.length }}</h4>
+          <small>Total mostrados</small>
         </div>
       </div>
-      <div class="col-md-3">
-        <div class="stat-card-small bg-success text-white">
-          <i class="fas fa-check-circle"></i>
-          <div>
-            <h4>{{ getCountByEstado('DISPONIBLE') }}</h4>
-            <small>Disponibles</small>
-          </div>
+      <div class="stat-card-small">
+        <i class="fas fa-check-circle"></i>
+        <div>
+          <h4>{{ getCountByEstado('DISPONIBLE') }}</h4>
+          <small>Disponibles</small>
         </div>
       </div>
-      <div class="col-md-3">
-        <div class="stat-card-small bg-warning text-white">
-          <i class="fas fa-car"></i>
-          <div>
-            <h4>{{ getCountByEstado('OCUPADO') }}</h4>
-            <small>Ocupados</small>
-          </div>
+      <div class="stat-card-small">
+        <i class="fas fa-car"></i>
+        <div>
+          <h4>{{ getCountByEstado('OCUPADO') }}</h4>
+          <small>Ocupados</small>
         </div>
       </div>
-      <div class="col-md-3">
-        <div class="stat-card-small bg-secondary text-white">
-          <i class="fas fa-lock"></i>
-          <div>
-            <h4>{{ getCountByEstado('BLOQUEADO') }}</h4>
-            <small>Bloqueados</small>
-          </div>
+      <div class="stat-card-small">
+        <i class="fas fa-lock"></i>
+        <div>
+          <h4>{{ getCountByEstado('BLOQUEADO') }}</h4>
+          <small>Bloqueados</small>
         </div>
       </div>
     </div>
 
     <!-- Tabla de puestos -->
-    <div class="card table-card">
-      <div class="card-header">
-        <div class="d-flex justify-content-between align-items-center">
-          <h5 class="mb-0"><i class="fas fa-list"></i> Lista de Puestos</h5>
-          <div class="header-actions">
-            <button class="btn btn-sm btn-outline-light" (click)="cargarPuestos()" title="Actualizar">
-              <i class="fas fa-sync-alt"></i>
-            </button>
-          </div>
+    <div class="table-section">
+      <div class="section-header">
+        <h3>Lista de Puestos ({{ puestosFiltrados.length }})</h3>
+        <div>
+          <button class="btn btn-secondary btn-sm" (click)="cargarPuestos()" title="Actualizar">
+            <i class="fas fa-sync-alt"></i> Actualizar
+          </button>
         </div>
       </div>
-      <div class="card-body">
+
+      <div class="table-card">
         <div class="table-responsive">
-          <table class="table table-hover table-striped">
-            <thead class="table-dark">
+          <table class="table table-hover">
+            <thead>
               <tr>
                 <th width="80px">ID</th>
                 <th width="100px">Número</th>
@@ -96,10 +73,10 @@
               </tr>
             </thead>
             <tbody>
-              <tr *ngFor="let puesto of puestos" class="puesto-row">
+              <tr *ngFor="let puesto of puestosFiltrados" class="puesto-row">
                 <td class="fw-bold text-primary">{{ puesto.id }}</td>
                 <td>
-                  <span class="badge bg-dark puesto-numero">{{ puesto.numero }}</span>
+                  <span class="badge puesto-numero">{{ puesto.numero }}</span>
                 </td>
                 <td>
                   <span class="badge tipo-badge"
@@ -120,76 +97,89 @@
                   <span class="ubicacion-text">{{ puesto.ubicacion }}</span>
                 </td>
                 <td>
-                  <span *ngIf="puesto.usuarioOcupante" class="fw-bold text-primary usuario-ocupante">
+                  <span *ngIf="puesto.usuarioOcupante" class="fw-bold usuario-ocupante">
                     <i class="fas fa-user"></i> {{ puesto.usuarioOcupante }}
                   </span>
                   <span *ngIf="!puesto.usuarioOcupante" class="text-muted">
                     <i class="fas fa-user-slash"></i> Libre
                   </span>
                 </td>
-                <td class="action-buttons text-center">
+                <td class="action-buttons">
                   <!-- Puestos Disponibles -->
-                  <div *ngIf="puesto.estadoPuesto === 'DISPONIBLE'" class="btn-group btn-group-sm">
+                  <div *ngIf="puesto.estadoPuesto === 'DISPONIBLE'" class="action-buttons">
                     <button (click)="ocuparPuesto(puesto.id)"
-                            class="btn btn-success"
+                            class="btn btn-success btn-sm"
                             title="Ocupar puesto">
                       <i class="fas fa-parking"></i>
                     </button>
                     <button (click)="bloquearPuesto(puesto.id)"
-                            class="btn btn-secondary"
+                            class="btn btn-secondary btn-sm"
                             title="Bloquear puesto">
                       <i class="fas fa-lock"></i>
                     </button>
                     <button (click)="ponerEnMantenimiento(puesto.id)"
-                            class="btn btn-warning"
+                            class="btn btn-warning btn-sm"
                             title="Poner en mantenimiento">
                       <i class="fas fa-tools"></i>
+                    </button>
+                    <button [routerLink]="['/puestos/historial', puesto.id]"
+                            class="btn btn-info btn-sm"
+                            title="Ver historial">
+                      <i class="fas fa-history"></i>
                     </button>
                   </div>
 
                   <!-- Puestos Ocupados -->
-                  <div *ngIf="puesto.estadoPuesto === 'OCUPADO'" class="btn-group btn-group-sm">
+                  <div *ngIf="puesto.estadoPuesto === 'OCUPADO'" class="action-buttons">
                     <button (click)="liberarPuesto(puesto.id)"
-                            class="btn btn-warning"
+                            class="btn btn-warning btn-sm"
                             title="Liberar puesto">
                       <i class="fas fa-sign-out-alt"></i>
                     </button>
                     <button (click)="ponerEnMantenimiento(puesto.id)"
-                            class="btn btn-warning"
+                            class="btn btn-warning btn-sm"
                             title="Poner en mantenimiento">
                       <i class="fas fa-tools"></i>
+                    </button>
+                    <button [routerLink]="['/puestos/historial', puesto.id]"
+                            class="btn btn-info btn-sm"
+                            title="Ver historial">
+                      <i class="fas fa-history"></i>
                     </button>
                   </div>
 
                   <!-- Puestos Bloqueados -->
-                  <div *ngIf="puesto.estadoPuesto === 'BLOQUEADO'" class="btn-group btn-group-sm">
+                  <div *ngIf="puesto.estadoPuesto === 'BLOQUEADO'" class="action-buttons">
                     <button (click)="desbloquearPuesto(puesto.id)"
-                            class="btn btn-info"
+                            class="btn btn-info btn-sm"
                             title="Desbloquear puesto">
                       <i class="fas fa-unlock"></i>
                     </button>
                     <button (click)="ponerEnMantenimiento(puesto.id)"
-                            class="btn btn-warning"
+                            class="btn btn-warning btn-sm"
                             title="Poner en mantenimiento">
                       <i class="fas fa-tools"></i>
+                    </button>
+                    <button [routerLink]="['/puestos/historial', puesto.id]"
+                            class="btn btn-info btn-sm"
+                            title="Ver historial">
+                      <i class="fas fa-history"></i>
                     </button>
                   </div>
 
                   <!-- Puestos en Mantenimiento -->
-                  <div *ngIf="puesto.estadoPuesto === 'MANTENIMIENTO'" class="btn-group btn-group-sm">
-                    <button (click)="liberarPuesto(puesto.id)"
-                            class="btn btn-success"
+                  <div *ngIf="puesto.estadoPuesto === 'MANTENIMIENTO'" class="action-buttons">
+                    <button (click)="desbloquearPuesto(puesto.id)"
+                            class="btn btn-success btn-sm"
                             title="Liberar de mantenimiento">
                       <i class="fas fa-check"></i>
                     </button>
+                    <button [routerLink]="['/puestos/historial', puesto.id]"
+                            class="btn btn-info btn-sm"
+                            title="Ver historial">
+                      <i class="fas fa-history"></i>
+                    </button>
                   </div>
-
-                  <!-- Botón Historial (siempre visible) -->
-                  <button [routerLink]="['/puestos/historial', puesto.id]"
-                          class="btn btn-primary btn-sm ms-1"
-                          title="Ver historial">
-                    <i class="fas fa-history"></i>
-                  </button>
                 </td>
               </tr>
             </tbody>
@@ -197,32 +187,39 @@
         </div>
 
         <!-- Mensaje cuando no hay puestos -->
-        <div *ngIf="puestos.length === 0" class="text-center py-5 empty-state">
-          <i class="fas fa-inbox fa-4x text-muted mb-3"></i>
-          <h4 class="text-muted">No hay puestos para mostrar</h4>
-          <p class="text-muted">No se encontraron puestos con los criterios actuales</p>
+        <div *ngIf="puestosFiltrados.length === 0 && !cargando" class="empty-state">
+          <i class="fas fa-inbox"></i>
+          <h4>No hay puestos para mostrar</h4>
+          <p>No se encontraron puestos con los criterios actuales</p>
           <button (click)="cargarPuestos()" class="btn btn-primary">
             <i class="fas fa-refresh"></i> Recargar todos los puestos
           </button>
+        </div>
+
+        <!-- Indicador de carga -->
+        <div *ngIf="cargando" class="loading-state">
+          <div class="spinner-border text-primary" role="status">
+            <span class="visually-hidden">Cargando...</span>
+          </div>
+          <p>Cargando puestos...</p>
         </div>
       </div>
     </div>
 
     <!-- Botones de navegación -->
-    <div class="navigation-buttons mt-4">
-      <button (click)="volverAInicio()" class="btn btn-outline-primary">
+    <div class="navigation-buttons">
+      <button (click)="volverAInicio()" class="btn btn-secondary">
         <i class="fas fa-arrow-left"></i> Volver al Inicio
       </button>
-      <button routerLink="/puestos/buscar" class="btn btn-outline-info ms-2">
+      <button routerLink="/puestos/buscar" class="btn btn-info">
         <i class="fas fa-search"></i> Búsqueda Avanzada
       </button>
-      <button routerLink="/puestos/estadisticas" class="btn btn-outline-success ms-2">
+      <button routerLink="/puestos/estadisticas" class="btn btn-primary">
         <i class="fas fa-chart-bar"></i> Ver Estadísticas
       </button>
     </div>
   </div>
 
-  <!-- Footer -->
   <footer class="footer">
     © 2025 UCAB Montalbán - Sistema de Estacionamiento
   </footer>

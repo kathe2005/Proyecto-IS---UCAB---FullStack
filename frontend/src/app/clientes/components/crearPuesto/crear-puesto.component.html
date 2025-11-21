@@ -1,0 +1,167 @@
+<!-- crear-puesto.component.html - CORREGIDO -->
+<div class="container-fluid p-0">
+  <div class="container-custom">
+    <!-- Header -->
+    <div class="header-section">
+      <h1 class="titulo-principal">Sistema de Gestión de Estacionamiento</h1>
+      <p class="subtitulo">Universidad Católica Andrés Bello - UCAB Montalbán</p>
+    </div>
+
+    <!-- Título de la sección -->
+    <div class="section-title">
+      <h2>Crear Nuevo Puesto</h2>
+      <p>Complete la información para registrar un nuevo puesto de estacionamiento</p>
+    </div>
+
+    <!-- Mensajes -->
+    <div *ngIf="mensaje" [class]="'alert alert-' + mensajeTipo" class="alert">
+      <i class="fas" [class]="{
+        'fa-check-circle': mensajeTipo === 'success',
+        'fa-exclamation-triangle': mensajeTipo === 'warning',
+        'fa-times-circle': mensajeTipo === 'danger',
+        'fa-info-circle': mensajeTipo === 'info'
+      }"></i>
+      {{ mensaje }}
+    </div>
+
+    <!-- Errores de validación -->
+    <div *ngIf="errores.length > 0" class="alert alert-danger">
+      <i class="fas fa-exclamation-triangle"></i>
+      <strong>Errores encontrados:</strong>
+      <ul class="mb-0 mt-2">
+        <li *ngFor="let error of errores">{{ error }}</li>
+      </ul>
+    </div>
+
+    <!-- Formulario -->
+    <div class="card form-card">
+      <div class="card-content">
+        <h4 class="form-title">Información del Puesto</h4>
+
+        <form (ngSubmit)="crearPuesto()" #puestoForm="ngForm" class="crear-puesto-form">
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label">
+                <i class="fas fa-hashtag"></i> Número del Puesto *
+              </label>
+              <input type="text"
+                     [(ngModel)]="puestoRequest.numero"
+                     name="numero"
+                     class="form-control"
+                     placeholder="Ej: A-01, M-01, V-01..."
+                     required
+                     maxlength="10">
+              <small class="form-text text-muted">Identificador único del puesto</small>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">
+                <i class="fas fa-map-marker-alt"></i> Ubicación *
+              </label>
+              <input type="text"
+                     [(ngModel)]="puestoRequest.ubicacion"
+                     name="ubicacion"
+                     class="form-control"
+                     placeholder="Ej: Zona A, Zona Motos, Zona Visitantes..."
+                     required
+                     maxlength="50">
+              <small class="form-text text-muted">Área o zona donde se encuentra el puesto</small>
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label">
+                <i class="fas fa-tag"></i> Tipo de Puesto *
+              </label>
+              <select [(ngModel)]="puestoRequest.tipoPuesto"
+                      name="tipoPuesto"
+                      class="form-select"
+                      required>
+                <option *ngFor="let tipo of tiposPuesto" [value]="tipo.value">
+                  {{ tipo.label }}
+                </option>
+              </select>
+              <small class="form-text text-muted">Tipo de vehículo para el puesto</small>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">
+                <i class="fas fa-circle"></i> Estado Inicial *
+              </label>
+              <select [(ngModel)]="puestoRequest.estadoPuesto"
+                      name="estadoPuesto"
+                      class="form-select"
+                      required>
+                <option *ngFor="let estado of estadosPuesto" [value]="estado.value">
+                  {{ estado.label }}
+                </option>
+              </select>
+              <small class="form-text text-muted">Estado inicial del puesto</small>
+            </div>
+          </div>
+
+          <!-- Resumen del puesto -->
+          <div *ngIf="puestoRequest.numero || puestoRequest.ubicacion" class="card info-card mt-4">
+            <div class="card-content">
+              <h5 class="info-title">
+                <i class="fas fa-eye"></i> Vista Previa
+              </h5>
+              <div class="info-grid">
+                <div class="info-item">
+                  <label>Número:</label>
+                  <span class="info-value">{{ puestoRequest.numero || 'Sin definir' }}</span>
+                </div>
+                <div class="info-item">
+                  <label>Ubicación:</label>
+                  <span class="info-value">{{ puestoRequest.ubicacion || 'Sin definir' }}</span>
+                </div>
+                <div class="info-item">
+                  <label>Tipo:</label>
+                  <span class="badge" [style.background-color]="getTipoColor(puestoRequest.tipoPuesto)">
+                    {{ getTipoDescripcion(puestoRequest.tipoPuesto) }}
+                  </span>
+                </div>
+                <div class="info-item">
+                  <label>Estado:</label>
+                  <span class="badge" [style.background-color]="getEstadoColor(puestoRequest.estadoPuesto)">
+                    {{ getEstadoDescripcion(puestoRequest.estadoPuesto) }}
+                  </span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Acciones -->
+          <div class="form-actions">
+            <button type="button"
+                    (click)="volverALista()"
+                    class="btn btn-secondary"
+                    [disabled]="procesando">
+              <i class="fas fa-arrow-left"></i> Volver a Lista
+            </button>
+
+            <button type="button"
+                    (click)="limpiarFormulario()"
+                    class="btn btn-outline-warning"
+                    [disabled]="procesando">
+              <i class="fas fa-broom"></i> Limpiar
+            </button>
+
+            <button type="submit"
+                    class="btn btn-primary"
+                    [disabled]="procesando">
+              <i class="fas" [class]="procesando ? 'fa-spinner fa-spin' : 'fa-plus-circle'"></i>
+              {{ procesando ? 'Creando...' : 'Crear Puesto' }}
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <footer class="footer">
+    © 2025 UCAB Montalbán - Sistema de Estacionamiento
+  </footer>
+</div>

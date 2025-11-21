@@ -15,27 +15,12 @@ public class Cliente {
     private String telefono;
     private String email;
     private String tipoPersona;
+    private String fechaRegistro;
+    private String estado;
 
     // Constructor vacío
     public Cliente() {
         this.id = UUID.randomUUID();
-    }
-
-    // Constructor con parámetros
-    public Cliente(String usuario, String contrasena, String confirmarContrasena, 
-                   String nombre, String apellido, String cedula, String email, 
-                   String tipoPersona, String direccion, String telefono) {
-        this();
-        this.usuario = usuario;
-        this.contrasena = contrasena;
-        this.confirmarContrasena = confirmarContrasena;
-        this.nombre = nombre;
-        this.apellido = apellido;
-        this.cedula = cedula;
-        this.email = email;
-        this.tipoPersona = tipoPersona;
-        this.direccion = direccion;
-        this.telefono = telefono;
     }
 
     // Getters y Setters
@@ -71,4 +56,10 @@ public class Cliente {
 
     public String getDireccion() { return direccion; }
     public void setDireccion(String direccion) { this.direccion = direccion; }
+
+    public String getFechaRegistro() { return fechaRegistro; }
+    public void setFechaRegistro(String fechaRegistro) { this.fechaRegistro = fechaRegistro; }
+
+    public String getEstado() { return estado; }
+    public void setEstado(String estado) { this.estado = estado; }
 }

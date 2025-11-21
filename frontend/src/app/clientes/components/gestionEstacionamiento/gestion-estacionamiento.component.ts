@@ -26,8 +26,8 @@ export class GestionEstacionamientoComponent {
     },
     {
       id: 'card3',
-      titulo: 'Gestión de reserva',
-      ruta: '/puestos/ocupar',
+      titulo: 'Gestión de Reservas', // CAMBIADO DE "Gestión de reserva"
+      ruta: '/gestion-reservas', // RUTA CORREGIDA
       color: 'warning'
     },
     {

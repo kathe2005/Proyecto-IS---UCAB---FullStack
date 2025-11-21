@@ -1,11 +1,15 @@
 package com.ucab.estacionamiento.controller;
 
 import com.ucab.estacionamiento.model.*;
-import com.ucab.estacionamiento.service.PuestoService;
+import com.ucab.estacionamiento.model.enums.EstadoPuesto;
+import com.ucab.estacionamiento.model.enums.TipoPuesto;
+import com.ucab.estacionamiento.model.interfaces.PuestoService;
 import com.ucab.estacionamiento.service.JsonManager;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import java.io.File;
 
 import java.util.List;
 
@@ -118,6 +122,56 @@ public class ApiController {
     @GetMapping("/historial/{id}")
     public List<String> obtenerHistorial(@PathVariable String id) {
         return puestoService.obtenerHistorial(id);
+    }
+
+    // En ApiController.java - AGREGAR ESTE MÉTODO
+    @PostMapping
+    public ResponseEntity<?> crearPuesto(@RequestBody Puesto puesto) {
+        try {
+            Puesto puestoCreado = puestoService.crearPuesto(puesto);
+            return ResponseEntity.ok(puestoCreado);
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().body("{\"error\": \"" + e.getMessage() + "\"}");
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("{\"error\": \"Error interno del servidor\"}");
+        }
+    }
+
+    @PostMapping("/test-crear")
+    public ResponseEntity<?> testCrearPuesto() {
+        try {
+            System.out.println("🧪 Probando creación de puesto...");
+            
+            Puesto testPuesto = new Puesto();
+            testPuesto.setNumero("TEST-001");
+            testPuesto.setTipoPuesto(TipoPuesto.REGULAR);
+            testPuesto.setEstadoPuesto(EstadoPuesto.DISPONIBLE);
+            testPuesto.setUbicacion("Zona Test");
+            
+            Puesto creado = puestoService.crearPuesto(testPuesto);
+            
+            return ResponseEntity.ok().body("{\"mensaje\": \"Puesto de prueba creado\", \"puesto\": " + 
+                "{\"id\": \"" + creado.getId() + "\", \"numero\": \"" + creado.getNumero() + "\"}}");
+            
+        } catch (Exception e) {
+            System.err.println("❌ Error en test: " + e.getMessage());
+            e.printStackTrace();
+            return ResponseEntity.badRequest().body("{\"error\": \"" + e.getMessage() + "\"}");
+        }
+    }
+
+    @GetMapping("/debug/info")
+    public ResponseEntity<?> getDebugInfo() {
+        String filePath = JsonManager.getFilePath();
+        File file = new File(filePath);
+        
+        String info = String.format(
+            "{\"rutaArchivo\": \"%s\", \"existe\": %b, \"tamaño\": %d, \"puestosEnMemoria\": %d}",
+            filePath, file.exists(), file.length(), puestoService.obtenerPuestos().size()
+        );
+        
+        return ResponseEntity.ok(info);
     }
 }
 

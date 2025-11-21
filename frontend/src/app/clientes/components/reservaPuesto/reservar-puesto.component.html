@@ -1,0 +1,130 @@
+<div class="main-container">
+  <div class="reservar-puesto-card">
+    <!-- Header -->
+    <div class="card-header">
+      <h1>Reservar Puesto</h1>
+      <p>Complete el formulario para crear una nueva reserva</p>
+    </div>
+
+    <!-- Formulario de reserva -->
+    <div class="form-section">
+      <div class="form-grid">
+        <!-- Selección de cliente -->
+        <div class="form-group">
+          <label for="cliente">Cliente *</label>
+          <select
+            id="cliente"
+            [(ngModel)]="clienteId"
+            class="form-control"
+            required>
+            <option value="">Seleccione un cliente</option>
+            <option *ngFor="let cliente of clientes" [value]="cliente.id">
+              {{ cliente.nombre }} {{ cliente.apellido }} - {{ cliente.cedula }}
+            </option>
+          </select>
+        </div>
+
+        <!-- Fecha de reserva -->
+        <div class="form-group">
+          <label for="fecha">Fecha *</label>
+          <input
+            type="date"
+            id="fecha"
+            [(ngModel)]="fecha"
+            [min]="getFechaActual()"
+            (change)="cargarPuestosDisponibles()"
+            class="form-control"
+            required>
+        </div>
+
+        <!-- Turno de reserva -->
+        <div class="form-group">
+          <label for="turno">Turno *</label>
+          <select
+            id="turno"
+            [(ngModel)]="turno"
+            (change)="cargarPuestosDisponibles()"
+            class="form-control"
+            required>
+            <option *ngFor="let turno of turnos" [value]="turno.value">
+              {{ turno.label }}
+            </option>
+          </select>
+        </div>
+
+        <!-- Selección de puesto -->
+        <div class="form-group">
+          <label for="puesto">Puesto *</label>
+          <select
+            id="puesto"
+            [(ngModel)]="puestoId"
+            class="form-control"
+            [disabled]="puestosDisponibles.length === 0"
+            required>
+            <option value="">Seleccione un puesto</option>
+            <option *ngFor="let puesto of puestosDisponibles" [value]="puesto.id">
+              Puesto {{ puesto.numero }} - {{ puesto.ubicacion }} ({{ puesto.tipoPuesto }})
+            </option>
+          </select>
+          <div *ngIf="puestosCargando" class="loading-text">
+            Cargando puestos disponibles...
+          </div>
+          <div *ngIf="!puestosCargando && puestosDisponibles.length === 0 && fecha && turno" class="warning-text">
+            No hay puestos disponibles para la fecha y turno seleccionados.
+          </div>
+        </div>
+      </div>
+
+      <!-- Botón de reserva -->
+      <div class="form-actions">
+        <button
+          class="btn btn-primary"
+          (click)="crearReserva()"
+          [disabled]="reservando || !clienteId || !puestoId || !fecha || !turno">
+          {{ reservando ? 'Creando Reserva...' : 'Crear Reserva' }}
+        </button>
+      </div>
+    </div>
+
+    <!-- Mensajes de error y éxito -->
+    <div *ngIf="error" class="error-message">
+      {{ error }}
+    </div>
+
+    <div *ngIf="exito" class="success-message">
+      <pre>{{ exito }}</pre>
+    </div>
+
+    <!-- Información de la reserva seleccionada -->
+    <div *ngIf="clienteId && puestoId" class="reserva-preview">
+      <h3>Resumen de la Reserva</h3>
+      <div class="reserva-details">
+        <div class="detalle-item">
+          <strong>Cliente:</strong> {{ getNombreCliente(clienteId) }}
+        </div>
+        <div class="detalle-item">
+          <strong>Puesto:</strong> {{ getNumeroPuesto() }}
+        </div>
+        <div class="detalle-item">
+          <strong>Fecha:</strong> {{ fecha }}
+        </div>
+        <div class="detalle-item">
+          <strong>Turno:</strong> {{ turno }}
+        </div>
+      </div>
+    </div>
+
+    <!-- Botones de acción -->
+    <div class="actions-footer">
+      <button class="btn btn-secondary" (click)="volverAGestion()">
+        Volver a Gestión de Reservas
+      </button>
+      <button class="btn btn-info" (click)="irAConsultarDisponibilidad()">
+        Consultar Disponibilidad
+      </button>
+      <button class="btn btn-warning" (click)="limpiarFormulario()">
+        Limpiar Formulario
+      </button>
+    </div>
+  </div>
+</div>

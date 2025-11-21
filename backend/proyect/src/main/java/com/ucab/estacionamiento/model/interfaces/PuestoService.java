@@ -1,6 +1,9 @@
-package com.ucab.estacionamiento.service;
+package com.ucab.estacionamiento.model.interfaces;
 
 import com.ucab.estacionamiento.model.*;
+import com.ucab.estacionamiento.model.enums.EstadoPuesto;
+import com.ucab.estacionamiento.model.enums.TipoPuesto;
+
 import java.util.List;
 import java.util.Optional;
 

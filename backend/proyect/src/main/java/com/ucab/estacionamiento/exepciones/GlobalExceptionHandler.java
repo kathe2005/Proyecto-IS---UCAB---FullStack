@@ -2,46 +2,43 @@ package com.ucab.estacionamiento.exepciones;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
-import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.RestControllerAdvice;
 
-import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
 
-// @ControllerAdvice indica que esta clase maneja excepciones de todos los controladores
-@ControllerAdvice
+@RestControllerAdvice
 public class GlobalExceptionHandler {
 
-    // @ExceptionHandler indica que este método maneja solo la excepción RegistroClienteException
-    @ExceptionHandler(RegistroClienteException.class)
-    public ResponseEntity<Object> handleRegistroClienteException(RegistroClienteException ex) {
-        
-        // Creamos la estructura JSON que Angular espera (la que tiene el campo 'mensaje')
-        Map<String, Object> body = new HashMap<>();
-        body.put("timestamp", LocalDateTime.now());
-        body.put("status", ex.getStatus());
-        body.put("error", HttpStatus.resolve(ex.getStatus()).getReasonPhrase());
-        body.put("mensaje", ex.getMessage()); // ¡Aquí inyectamos el mensaje del Service!
-        
-        // Devolvemos la respuesta con el status HTTP que definimos en la excepción (ej. 409)
-        return new ResponseEntity<>(body, HttpStatus.valueOf(ex.getStatus()));
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    public ResponseEntity<Map<String, String>> handleValidationExceptions(
+            MethodArgumentNotValidException ex) {
+        Map<String, String> errors = new HashMap<>();
+        ex.getBindingResult().getAllErrors().forEach((error) -> {
+            String fieldName = error instanceof FieldError ? ((FieldError) error).getField() : error.getObjectName();
+            String errorMessage = error.getDefaultMessage();
+            errors.put(fieldName, errorMessage);
+        });
+        return new ResponseEntity<>(errors, HttpStatus.BAD_REQUEST);
     }
 
-    @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ResponseEntity<Object> handleValidationExceptions(MethodArgumentNotValidException ex) {
-        
-        // Extraemos el primer error de la lista de errores
-        String mensajeDeError = ex.getBindingResult().getFieldError().getDefaultMessage();
-        
-        Map<String, Object> body = new HashMap<>();
-        body.put("timestamp", LocalDateTime.now());
-        body.put("status", HttpStatus.BAD_REQUEST.value()); // Usamos 400 Bad Request
-        body.put("error", HttpStatus.BAD_REQUEST.getReasonPhrase());
-        body.put("mensaje", mensajeDeError); 
-        
-        return new ResponseEntity<>(body, HttpStatus.BAD_REQUEST);
+    @ExceptionHandler(RegistroClienteException.class)
+    public ResponseEntity<Map<String, Object>> handleRegistroClienteException(
+            RegistroClienteException ex) {
+        Map<String, Object> errorResponse = new HashMap<>();
+        errorResponse.put("mensaje", ex.getMessage());
+        errorResponse.put("status", ex.getStatus());
+        errorResponse.put("error", HttpStatus.valueOf(ex.getStatus()).getReasonPhrase());
+        return new ResponseEntity<>(errorResponse, HttpStatus.valueOf(ex.getStatus()));
     }
-    
+
+    @ExceptionHandler(Exception.class)
+    public ResponseEntity<Map<String, String>> handleGeneralException(Exception ex) {
+        Map<String, String> errorResponse = new HashMap<>();
+        errorResponse.put("error", "Error interno del servidor: " + ex.getMessage());
+        return new ResponseEntity<>(errorResponse, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
 }
