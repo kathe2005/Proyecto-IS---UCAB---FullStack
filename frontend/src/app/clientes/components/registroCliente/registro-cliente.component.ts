@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { NgForm } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
@@ -62,7 +63,7 @@ export class RegistroClienteComponent {
     private router: Router
   ) {}
 
-  registrarCliente() {
+  registrarCliente(form?: NgForm) {
     // Limpiar errores anteriores
     this.limpiarErrores();
 
@@ -71,6 +72,13 @@ export class RegistroClienteComponent {
       this.mostrarMensaje('Por favor corrija los errores en el formulario', 'warning');
       return;
     }
+
+    // DEBUG: log del intento de envío
+    console.log('Intento de registrar cliente', {
+      nuevoCliente: this.nuevoCliente,
+      formValid: form?.valid,
+      tieneErrores: this.tieneErrores(),
+    });
 
     this.procesando = true;
 
@@ -90,12 +98,64 @@ export class RegistroClienteComponent {
         this.procesando = false;
         console.error('Error registrando cliente:', err);
 
-        let mensajeError = 'Error al registrar el cliente';
-        if (err.error) {
-          mensajeError = err.error;
+        // Reset field errors
+        this.limpiarErrores();
+
+        // Network error / CORS (ProgressEvent) -> status === 0 in HttpErrorResponse
+        if (err && err.status === 0) {
+          this.mostrarMensaje('❌ No se pudo conectar al servidor. Verifica que el backend esté corriendo y que no haya errores CORS.', 'danger');
+          return;
         }
 
-        this.mostrarMensaje('❌ ' + mensajeError, 'danger');
+        // If backend returned structured error
+        const backend = err?.error;
+
+        // If backend provided a 'mensaje' string, show it
+        if (backend && typeof backend === 'object' && typeof backend.mensaje === 'string') {
+          // Try to map field-specific messages if present
+          // Common patterns: { mensaje: '...', fieldErrors: [{field, message}] } or { errors: [{ field, message }] }
+          if (Array.isArray(backend.fieldErrors) && backend.fieldErrors.length) {
+            backend.fieldErrors.forEach((fe: any) => {
+              if (fe?.field && fe?.message && (fe.field in this.errores)) {
+                (this.errores as any)[fe.field] = fe.message;
+              }
+            });
+          }
+
+          if (Array.isArray(backend.errors) && backend.errors.length) {
+            backend.errors.forEach((e: any) => {
+              if (e?.field && e?.message && (e.field in this.errores)) {
+                (this.errores as any)[e.field] = e.message;
+              }
+            });
+          }
+
+          // If backend also provided direct field keys, map them
+          Object.keys(this.errores).forEach((k) => {
+            if (backend[k]) {
+              (this.errores as any)[k] = backend[k];
+            }
+          });
+
+          // Show top-level message as alert as well
+          this.mostrarMensaje('❌ ' + backend.mensaje, 'danger');
+          return;
+        }
+
+        // If backend returned a plain string
+        if (backend && typeof backend === 'string') {
+          this.mostrarMensaje('❌ ' + backend, 'danger');
+          return;
+        }
+
+        // If response has status and message
+        if (err?.message) {
+          this.mostrarMensaje('❌ ' + err.message, 'danger');
+          return;
+        }
+
+        // Fallback
+        this.mostrarMensaje('❌ Error desconocido al registrar el cliente', 'danger');
       }
     });
   }
@@ -103,16 +163,19 @@ export class RegistroClienteComponent {
   validarFormulario(): boolean {
     let esValido = true;
 
-    // Validar cédula
+    // Validar cédula (CORREGIDO)
     if (!this.nuevoCliente.cedula) {
       this.errores.cedula = 'La cédula es obligatoria';
       esValido = false;
-    } else if (!/^\d+$/.test(this.nuevoCliente.cedula)) {
-      this.errores.cedula = 'La cédula debe contener solo números';
-      esValido = false;
-    } else if (this.nuevoCliente.cedula.length < 6) {
-      this.errores.cedula = 'La cédula debe tener al menos 6 dígitos';
-      esValido = false;
+    } else {
+      const cedulaLimpia = this.nuevoCliente.cedula.replace(/[^0-9]/g, '');
+      if (cedulaLimpia.length < 6) {
+        this.errores.cedula = 'La cédula debe tener al menos 6 dígitos';
+        esValido = false;
+      } else if (cedulaLimpia.length > 20) {
+        this.errores.cedula = 'La cédula no puede tener más de 20 dígitos';
+        esValido = false;
+      }
     }
 
     // Validar nombre
@@ -175,68 +238,75 @@ export class RegistroClienteComponent {
     return esValido;
   }
 
-  validarCampo(campo: keyof ErroresFormulario, valor: string) {
+  validarCampo(campo: keyof ErroresFormulario, valor?: string | null) {
     this.errores[campo] = '';
+
+    // Normalizar valor a cadena para evitar errores cuando está undefined
+    const v = valor ?? '';
 
     switch (campo) {
       case 'cedula':
-        if (!valor) {
+        if (!v) {
           this.errores.cedula = 'La cédula es obligatoria';
-        } else if (!/^\d+$/.test(valor)) {
-          this.errores.cedula = 'La cédula debe contener solo números';
-        } else if (valor.length < 6) {
-          this.errores.cedula = 'La cédula debe tener al menos 6 dígitos';
+        } else {
+          // CORREGIDO: Permitir formatos como V-12345678, E12345678, etc.
+          const cedulaLimpia = v.replace(/[^0-9]/g, '');
+          if (cedulaLimpia.length < 6) {
+            this.errores.cedula = 'La cédula debe tener al menos 6 dígitos';
+          } else if (cedulaLimpia.length > 20) {
+            this.errores.cedula = 'La cédula no puede tener más de 20 dígitos';
+          }
         }
         break;
 
       case 'nombre':
-        if (!valor) {
+        if (!v) {
           this.errores.nombre = 'El nombre es obligatorio';
-        } else if (valor.length < 2) {
+        } else if (v.length < 2) {
           this.errores.nombre = 'El nombre debe tener al menos 2 caracteres';
         }
         break;
 
       case 'apellido':
-        if (!valor) {
+        if (!v) {
           this.errores.apellido = 'El apellido es obligatorio';
-        } else if (valor.length < 2) {
+        } else if (v.length < 2) {
           this.errores.apellido = 'El apellido debe tener al menos 2 caracteres';
         }
         break;
 
       case 'email':
-        if (!valor) {
+        if (!v) {
           this.errores.email = 'El email es obligatorio';
-        } else if (!this.validarEmail(valor)) {
+        } else if (!this.validarEmail(v)) {
           this.errores.email = 'El formato del email no es válido';
         }
         break;
 
       case 'usuario':
-        if (!valor) {
+        if (!v) {
           this.errores.usuario = 'El usuario es obligatorio';
         }
         break;
 
       case 'contrasena':
-        if (!valor) {
+        if (!v) {
           this.errores.contrasena = 'La contraseña es obligatoria';
-        } else if (valor.length < 8) {
+        } else if (v.length < 8) {
           this.errores.contrasena = 'La contraseña debe tener al menos 8 caracteres';
         }
         break;
 
       case 'confirmarContrasena':
-        if (!valor) {
+        if (!v) {
           this.errores.confirmarContrasena = 'Debe confirmar la contraseña';
-        } else if (this.nuevoCliente.contrasena !== valor) {
+        } else if (this.nuevoCliente.contrasena !== v) {
           this.errores.confirmarContrasena = 'Las contraseñas no coinciden';
         }
         break;
 
       case 'direccion':
-        if (!valor) {
+        if (!v) {
           this.errores.direccion = 'La dirección es obligatoria';
         }
         break;

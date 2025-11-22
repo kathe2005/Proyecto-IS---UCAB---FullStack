@@ -20,4 +20,15 @@
   "turno" : "MAÑANA",
   "estado" : "PENDIENTE",
   "fechaCreacion" : "2025-11-21"
+}, {
+  "id" : "R3",
+  "puestoId" : "P1",
+  "clienteId" : "1cf86427-948c-40c8-8c43-72b5bae19ac1",
+  "usuario" : "Cris",
+  "fecha" : "2025-11-22",
+  "horaInicio" : "06:00:00",
+  "horaFin" : "14:00:00",
+  "turno" : "MAÑANA",
+  "estado" : "PENDIENTE",
+  "fechaCreacion" : "2025-11-22"
 } ]

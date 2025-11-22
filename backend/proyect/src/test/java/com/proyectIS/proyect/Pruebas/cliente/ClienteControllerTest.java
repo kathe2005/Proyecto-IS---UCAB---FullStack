@@ -4,10 +4,17 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.context.ApplicationContextInitializer;
+import org.springframework.context.ConfigurableApplicationContext;
+import com.ucab.estacionamiento.ProyectApplication;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.util.FileCopyUtils;
+import org.junit.jupiter.api.BeforeEach;
+import java.nio.file.Files;
+import java.nio.file.Path;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -18,14 +25,50 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@SpringBootTest 
+@SpringBootTest(classes = ProyectApplication.class)
+@ContextConfiguration(initializers = ClienteControllerTest.Initializer.class)
 @AutoConfigureMockMvc 
 public class ClienteControllerTest {
 
     @Autowired
     private MockMvc mockMvc; 
     
+    @Autowired
+    private com.ucab.estacionamiento.repository.ClienteRepository clienteRepository;
+    
     private final ObjectMapper objectMapper = new ObjectMapper(); // AÑADIDO
+    
+    @BeforeEach
+    void limpiarRepositorio() throws Exception {
+        // Asegura que el archivo de persistencia esté vacío antes de cada test
+        Path path = Path.of("clientes.json");
+        if (Files.exists(path)) {
+            Files.writeString(path, "[]");
+        } else {
+            Files.createFile(path);
+            Files.writeString(path, "[]");
+        }
+        // Limpiar también el repositorio en memoria
+        clienteRepository.clearAll();
+    }
+
+    // ApplicationContextInitializer that runs BEFORE the Spring context is created.
+    public static class Initializer implements ApplicationContextInitializer<ConfigurableApplicationContext> {
+        @Override
+        public void initialize(ConfigurableApplicationContext applicationContext) {
+            try {
+                java.nio.file.Path p = java.nio.file.Path.of("clientes.json");
+                if (java.nio.file.Files.exists(p)) {
+                    java.nio.file.Files.writeString(p, "[]");
+                } else {
+                    java.nio.file.Files.createFile(p);
+                    java.nio.file.Files.writeString(p, "[]");
+                }
+            } catch (Exception e) {
+                throw new RuntimeException("No se pudo inicializar clientes.json para pruebas", e);
+            }
+        }
+    }
     
     // Función para CARGAR el JSON de forma reutilizable
     private String cargarJsonValido() throws Exception {
@@ -82,7 +125,7 @@ public class ClienteControllerTest {
                 .content(jsonRequest))
                 
                 .andExpect(status().isConflict())
-                .andExpect(jsonPath("$.mensaje").value("Su correo se encuentra registrado debe ingresar otro para continuar"));
+                .andExpect(jsonPath("$.mensaje").value("El correo ingresado se encuentra registrado debe ingresar otro para continuar"));
     }
     
     // ====================================================================
@@ -104,6 +147,6 @@ public class ClienteControllerTest {
                 .content(jsonInvalido))
                 
                 .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("$.mensaje").value("El formato de la cédula debe ser V - 12345678"));
+                .andExpect(jsonPath("$.mensaje").value("El formato de la cédula debe contener solo números (ej. 12345678)"));
     }
 }

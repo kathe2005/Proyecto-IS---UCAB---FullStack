@@ -16,6 +16,8 @@ public interface ReservaService {
     
     // Consulta de disponibilidad
     PuestosDisponiblesResponse consultarPuestosDisponibles(LocalDate fecha, String turno);
+    // Nueva sobrecarga que permite filtrar según cliente (usuario, cédula o email)
+    PuestosDisponiblesResponse consultarPuestosDisponibles(LocalDate fecha, String turno, String clienteId);
     List<Puesto> obtenerPuestosDisponiblesParaFecha(LocalDate fecha, String turno);
     boolean verificarDisponibilidadPuesto(String puestoId, LocalDate fecha, String turno);
     

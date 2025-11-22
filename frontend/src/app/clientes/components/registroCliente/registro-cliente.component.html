@@ -33,7 +33,7 @@
     <!-- Formulario -->
     <div class="card form-card">
       <div class="card-content">
-        <form (ngSubmit)="registrarCliente()" #clienteForm="ngForm" class="registro-form">
+        <form (ngSubmit)="registrarCliente(clienteForm)" #clienteForm="ngForm" class="registro-form">
 
           <!-- Datos Personales -->
           <div class="form-section">
@@ -56,7 +56,8 @@
                        maxlength="20"
                        (blur)="validarCampo('cedula', nuevoCliente.cedula)"
                        (input)="validarCampo('cedula', nuevoCliente.cedula)">
-                <small class="form-text">Solo números (sin puntos ni guiones)</small>
+                <!-- CORREGIDO: Texto de ayuda actualizado -->
+                <small class="form-text">Formatos aceptados: 12345678, V-12345678, E12345678</small>
                 <div *ngIf="errores.cedula" class="error-message">
                   <i class="fas fa-exclamation-circle"></i> {{ errores.cedula }}
                 </div>
@@ -274,12 +275,20 @@
             <button type="button" (click)="volverAGestionPerfiles()" class="btn btn-secondary">
               <i class="fas fa-arrow-left"></i> Cancelar
             </button>
-            <button type="submit" class="btn btn-primary" [disabled]="procesando || tieneErrores()">
+            <button type="submit" class="btn btn-primary" [disabled]="procesando || tieneErrores() || !clienteForm.form.valid">
               <i class="fas fa-save"></i>
               {{ procesando ? 'Registrando...' : 'Registrar Cliente' }}
             </button>
           </div>
         </form>
+        <!-- Debug: estado del formulario (temporal) -->
+        <div style="margin-top:12px;font-family:monospace;font-size:0.9rem;color:#333">
+          <strong>DEBUG:</strong>
+          <div>Formulario válido: <span>{{ clienteForm.form.valid }}</span></div>
+          <div>Hay errores (tieneErrores): <span>{{ tieneErrores() }}</span></div>
+          <div>Objeto a enviar (nuevoCliente):</div>
+          <pre style="background:#f7f7f7;padding:8px;border-radius:6px">{{ nuevoCliente | json }}</pre>
+        </div>
       </div>
     </div>
   </div>

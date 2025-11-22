@@ -1,0 +1,12 @@
+{
+  "usuario": "estudiante1",
+  "contrasena": "Password123",
+  "confirmarContrasena": "Password123",
+  "nombre": "Estudiante",
+  "apellido": "Prueba",
+  "cedula": "12345678",
+  "email": "estudiante1@est.ucab.edu.ve",
+  "tipoPersona": "UCAB",
+  "direccion": "Av. Universidad",
+  "telefono": "0414-0000000"
+}

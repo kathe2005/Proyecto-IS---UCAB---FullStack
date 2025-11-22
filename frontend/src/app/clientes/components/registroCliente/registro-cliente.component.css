@@ -151,8 +151,9 @@
 
 /* Form Layout */
 .form-row {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  /* Horizontal layout by default: two columns where space allows */
+  display: flex;
+  flex-wrap: wrap;
   gap: 20px;
   margin-bottom: 20px;
 }
@@ -161,6 +162,9 @@
   display: flex;
   flex-direction: column;
   gap: 8px;
+  /* allow groups to sit side-by-side */
+  flex: 1 1 45%;
+  min-width: 220px;
 }
 
 .form-label {

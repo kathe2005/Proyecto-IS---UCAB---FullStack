@@ -65,46 +65,59 @@ export class ConsultarPerfilesComponent implements OnInit {
     this.cargarClientes();
   }
 
-  // Cargar clientes desde el backend Spring Boot
+  // Cargar clientes desde el backend Spring Boot - CORREGIDO
   private cargarClientes(): void {
     this.cargando = true;
 
-    this.http.get<Cliente[]>('http://localhost:8080/api/clientes/consultar')
+    // CORREGIDO: Cambiar endpoint de '/consultar' a '/'
+    this.http.get<Cliente[]>('http://localhost:8080/api/clientes')
       .subscribe({
         next: (clientes) => {
+          console.log('Clientes recibidos del backend:', clientes);
           this.clientes = clientes.map(cliente => ({
             ...cliente,
-            fechaRegistro: new Date().toISOString().split('T')[0],
-            estado: 'ACTIVO' // Por defecto, puedes modificar según tu lógica
+            // Asegurar que todos los campos tengan valores por defecto si son undefined
+            fechaRegistro: cliente.fechaRegistro || new Date().toISOString().split('T')[0],
+            estado: cliente.estado || 'ACTIVO',
+            confirmarContrasena: cliente.confirmarContrasena || '',
+            direccion: cliente.direccion || 'No especificada',
+            telefono: cliente.telefono || 'No especificado'
           }));
           this.clientesFiltrados = [...this.clientes];
           this.cargando = false;
-          console.log('Clientes cargados:', this.clientes.length);
+          console.log('Clientes procesados:', this.clientes.length);
         },
         error: (error) => {
           console.error('Error al cargar clientes:', error);
           this.cargando = false;
-          alert('Error al cargar los datos de clientes. Por favor, intente más tarde.');
 
-          // Cargar datos de ejemplo si el backend falla
-          //this.cargarDatosEjemplo();
+          // Mostrar mensaje más específico
+          if (error.status === 0) {
+            alert('Error de conexión: No se pudo conectar al servidor. Verifica que el backend esté ejecutándose.');
+          } else if (error.status === 404) {
+            alert('Endpoint no encontrado. Verifica la URL del servicio.');
+          } else {
+            alert('Error al cargar los datos de clientes: ' + (error.message || 'Error desconocido'));
+          }
+
+          // Cargar datos de ejemplo si el backend falla (opcional)
+          this.cargarDatosEjemplo();
         }
       });
   }
 
-
-  /*
-  // Datos de ejemplo para pruebas
+  // Datos de ejemplo para pruebas cuando el backend no está disponible
   private cargarDatosEjemplo(): void {
+    console.log('Cargando datos de ejemplo...');
     this.clientes = [
       {
         id: '1',
         usuario: 'juan.perez',
-        contrasena: 'password123',
-        confirmarContrasena: 'password123',
+        contrasena: 'Password123',
+        confirmarContrasena: 'Password123',
         nombre: 'Juan',
         apellido: 'Pérez',
-        cedula: 'V-12345678',
+        cedula: '12345678',
         email: 'juan.perez@ucab.edu.ve',
         tipoPersona: 'UCAB',
         direccion: 'Av. Principal, Caracas',
@@ -115,22 +128,37 @@ export class ConsultarPerfilesComponent implements OnInit {
       {
         id: '2',
         usuario: 'maria.gonzalez',
-        contrasena: 'password123',
-        confirmarContrasena: 'password123',
+        contrasena: 'Password123',
+        confirmarContrasena: 'Password123',
         nombre: 'María',
         apellido: 'González',
-        cedula: 'E-87654321',
+        cedula: '87654321',
         email: 'maria.gonzalez@gmail.com',
         tipoPersona: 'VISITANTE',
         direccion: 'Calle Secundaria, Valencia',
         telefono: '0414-7654321',
         fechaRegistro: '2024-01-10',
         estado: 'ACTIVO'
+      },
+      {
+        id: '3',
+        usuario: 'carlos.lopez',
+        contrasena: 'SecurePass123',
+        confirmarContrasena: 'SecurePass123',
+        nombre: 'Carlos',
+        apellido: 'López',
+        cedula: '11223344',
+        email: 'carlos.lopez@est.ucab.edu.ve',
+        tipoPersona: 'UCAB',
+        direccion: 'Urbanización Los Chaguaramos',
+        telefono: '0416-4455667',
+        fechaRegistro: '2024-01-20',
+        estado: 'ACTIVO'
       }
     ];
     this.clientesFiltrados = [...this.clientes];
+    console.log('Datos de ejemplo cargados:', this.clientes.length, 'clientes');
   }
-  */
 
   // Aplicar filtros de búsqueda
   aplicarFiltros(): void {

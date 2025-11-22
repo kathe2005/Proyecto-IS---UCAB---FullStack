@@ -9,11 +9,17 @@ import java.time.LocalDate;
 import java.util.*;
 import java.util.stream.Collectors;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import com.ucab.estacionamiento.repository.ClienteRepository;
+
 @Service
 public class ReservaServiceImpl implements ReservaService {
     
     private List<Reserva> reservas;
     private final JsonManagerReserva jsonManagerReserva;
+
+    @Autowired
+    private ClienteRepository clienteRepository;
 
     public ReservaServiceImpl() {
         this.jsonManagerReserva = new JsonManagerReserva();
@@ -59,16 +65,68 @@ public class ReservaServiceImpl implements ReservaService {
     @Override
     public PuestosDisponiblesResponse consultarPuestosDisponibles(LocalDate fecha, String turno) {
         System.out.println("🔍 Consultando puestos disponibles para: " + fecha + ", turno: " + turno);
-        
+        return consultarPuestosDisponibles(fecha, turno, null);
+    }
+
+    @Override
+    public PuestosDisponiblesResponse consultarPuestosDisponibles(LocalDate fecha, String turno, String clienteId) {
+        System.out.println("🔍 Consultando puestos disponibles para: " + fecha + ", turno: " + turno + ", cliente: " + clienteId);
+
         List<Puesto> todosLosPuestos = JsonManager.cargarPuestos();
         List<Puesto> puestosDisponibles = obtenerPuestosDisponiblesParaFecha(fecha, turno);
-        
+
+        // Si se proporcionó clienteId (puede ser usuario, cédula o email), filtrar por tipo de cliente
+        if (clienteId != null && !clienteId.trim().isEmpty()) {
+            String tipoCliente = resolveTipoCliente(clienteId);
+            if (tipoCliente != null) {
+                final String tipo = tipoCliente;
+                puestosDisponibles = puestosDisponibles.stream()
+                        .filter(p -> validarTipoClientePuesto(tipo, p.getTipoPuesto()))
+                        .collect(Collectors.toList());
+            }
+        }
+
         PuestosDisponiblesResponse response = new PuestosDisponiblesResponse(
-            fecha, turno, todosLosPuestos.size(), puestosDisponibles.size(), puestosDisponibles
+                fecha, turno, todosLosPuestos.size(), puestosDisponibles.size(), puestosDisponibles
         );
-        
+
         System.out.println("✅ Consulta completada: " + puestosDisponibles.size() + " puestos disponibles");
         return response;
+    }
+
+    // Intentar resolver el tipo de cliente consultando el repositorio de clientes
+    private String resolveTipoCliente(String clienteId) {
+        try {
+            // Buscar por usuario
+            var opt = clienteRepository.findByUsuario(clienteId);
+            if (opt.isPresent()) return opt.get().getTipoPersona();
+
+            // Buscar por cedula
+            opt = clienteRepository.findByCedula(clienteId);
+            if (opt.isPresent()) return opt.get().getTipoPersona();
+
+            // Buscar por email
+            opt = clienteRepository.findByEmail(clienteId);
+            if (opt.isPresent()) return opt.get().getTipoPersona();
+
+        } catch (Exception e) {
+            System.err.println("❌ Error resolviendo tipo de cliente: " + e.getMessage());
+        }
+        return null;
+    }
+
+    // Validación de compatibilidad similar a la del PuestoServiceImpl
+    private boolean validarTipoClientePuesto(String tipoCliente, TipoPuesto tipoPuesto) {
+        if (tipoCliente == null) return true;
+        if ("UCAB".equalsIgnoreCase(tipoCliente)) {
+            return tipoPuesto == TipoPuesto.REGULAR ||
+                    tipoPuesto == TipoPuesto.DOCENTE ||
+                    tipoPuesto == TipoPuesto.DISCAPACITADO;
+        } else if ("VISITANTE".equalsIgnoreCase(tipoCliente)) {
+            return tipoPuesto == TipoPuesto.REGULAR ||
+                    tipoPuesto == TipoPuesto.VISITANTE;
+        }
+        return true;
     }
 
     @Override

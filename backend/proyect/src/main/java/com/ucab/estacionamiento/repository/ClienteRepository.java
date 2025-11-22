@@ -14,8 +14,7 @@ import java.util.UUID;
 
 @Repository
 public class ClienteRepository {
-
-    private static final String JSON_FILE_PATH = "clientes.json";
+    private static final String JSON_FILE_PATH = "../clientes.json";
     private final ObjectMapper objectMapper;
     private List<Cliente> BD_clientes;
 
@@ -32,7 +31,7 @@ public class ClienteRepository {
         System.out.println("🔧 ===== FIN INICIALIZACIÓN =====");
     }
 
-    public Cliente guardar(Cliente cliente) {
+    public Cliente save(Cliente cliente) {
         System.out.println("💾 === INICIANDO GUARDADO ===");
         System.out.println("👤 Cliente a guardar: " + cliente.getUsuario());
         
@@ -43,10 +42,8 @@ public class ClienteRepository {
                 System.out.println("🆕 ID asignado: " + cliente.getId());
             }
 
-            // Verificar si ya existe por ID
-            Optional<Cliente> clienteExistente = BD_clientes.stream()
-                    .filter(c -> c.getId().equals(cliente.getId()))
-                    .findFirst();
+            // Verificar si ya existe por usuario
+            Optional<Cliente> clienteExistente = findByUsuario(cliente.getUsuario());
             
             if (clienteExistente.isPresent()) {
                 System.out.println("🔄 Cliente existe, actualizando...");
@@ -77,6 +74,11 @@ public class ClienteRepository {
         return cliente;
     }
 
+    // Método alias para compatibilidad
+    public Cliente guardar(Cliente cliente) {
+        return save(cliente);
+    }
+
     private List<Cliente> cargarClientesDesdeArchivo() {
         System.out.println("📥 === CARGANDO DESDE ARCHIVO ===");
         try {
@@ -84,10 +86,6 @@ public class ClienteRepository {
             System.out.println("📁 Ruta completa: " + archivo.getAbsolutePath());
             System.out.println("🔍 Archivo existe: " + archivo.exists());
             
-            if (archivo.exists()) {
-                System.out.println("📏 Tamaño del archivo: " + archivo.length() + " bytes");
-            }
-
             if (!archivo.exists()) {
                 System.out.println("📝 Creando nuevo archivo...");
                 boolean creado = archivo.createNewFile();
@@ -164,6 +162,15 @@ public class ClienteRepository {
         return BD_clientes.stream()
                 .filter(u -> u.getTelefono().equalsIgnoreCase(telefonoBuscado))
                 .findFirst();
+    }
+
+    /**
+     * Clear in-memory clients and persist empty list to storage.
+     * Useful for tests to reset repository state.
+     */
+    public void clearAll() {
+        BD_clientes.clear();
+        guardarClientesEnArchivo();
     }
 
     // Método para diagnóstico
