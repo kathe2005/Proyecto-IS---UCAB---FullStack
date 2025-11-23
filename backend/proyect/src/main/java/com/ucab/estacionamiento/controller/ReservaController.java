@@ -1,6 +1,8 @@
 package com.ucab.estacionamiento.controller;
 
-import com.ucab.estacionamiento.model.*;
+import com.ucab.estacionamiento.model.clases.PuestosDisponiblesResponse;
+import com.ucab.estacionamiento.model.clases.Reserva;
+import com.ucab.estacionamiento.model.clases.ReservaRequest;
 import com.ucab.estacionamiento.model.interfaces.ReservaService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -21,11 +23,17 @@ public class ReservaController {
     @GetMapping("/disponibles")
     public ResponseEntity<PuestosDisponiblesResponse> consultarPuestosDisponibles(
             @RequestParam String fecha,
-            @RequestParam String turno) {
+            @RequestParam String turno,
+            @RequestParam(required = false) String clienteId) {
         
         try {
             LocalDate fechaLocal = LocalDate.parse(fecha);
-            PuestosDisponiblesResponse response = reservaService.consultarPuestosDisponibles(fechaLocal, turno);
+            PuestosDisponiblesResponse response;
+            if (clienteId != null && !clienteId.trim().isEmpty()) {
+                response = reservaService.consultarPuestosDisponibles(fechaLocal, turno, clienteId);
+            } else {
+                response = reservaService.consultarPuestosDisponibles(fechaLocal, turno);
+            }
             return ResponseEntity.ok(response);
         } catch (Exception e) {
             return ResponseEntity.badRequest().build();

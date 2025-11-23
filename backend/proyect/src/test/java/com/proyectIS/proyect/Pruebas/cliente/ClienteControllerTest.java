@@ -6,8 +6,7 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.context.ApplicationContextInitializer;
-import org.springframework.context.ConfigurableApplicationContext;
-import com.ucab.estacionamiento.ProyectApplication;
+import org.springframework.lang.NonNull;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
@@ -18,6 +17,7 @@ import java.nio.file.Path;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.ucab.estacionamiento.application.ProyectApplication;
 
 import java.util.Objects; // IMPORT AÑADIDO
 
@@ -34,14 +34,14 @@ public class ClienteControllerTest {
     private MockMvc mockMvc; 
     
     @Autowired
-    private com.ucab.estacionamiento.repository.ClienteRepository clienteRepository;
+    private com.ucab.estacionamiento.model.archivosJson.ClienteRepository clienteRepository;
     
     private final ObjectMapper objectMapper = new ObjectMapper(); // AÑADIDO
     
     @BeforeEach
     void limpiarRepositorio() throws Exception {
         // Asegura que el archivo de persistencia esté vacío antes de cada test
-        Path path = Path.of("clientes.json");
+        Path path = Path.of("../../data/clientes.json");
         if (Files.exists(path)) {
             Files.writeString(path, "[]");
         } else {
@@ -53,11 +53,11 @@ public class ClienteControllerTest {
     }
 
     // ApplicationContextInitializer that runs BEFORE the Spring context is created.
-    public static class Initializer implements ApplicationContextInitializer<ConfigurableApplicationContext> {
+    public static class Initializer implements ApplicationContextInitializer<org.springframework.context.ConfigurableApplicationContext> {
         @Override
-        public void initialize(ConfigurableApplicationContext applicationContext) {
+        public void initialize(@NonNull org.springframework.context.ConfigurableApplicationContext applicationContext) {
             try {
-                java.nio.file.Path p = java.nio.file.Path.of("clientes.json");
+                java.nio.file.Path p = java.nio.file.Path.of("../../data/clientes.json");
                 if (java.nio.file.Files.exists(p)) {
                     java.nio.file.Files.writeString(p, "[]");
                 } else {
@@ -95,8 +95,8 @@ public class ClienteControllerTest {
         Objects.requireNonNull(cedula, "La cédula no puede ser null después de la conversión");
         
         mockMvc.perform(post("/api/clientes") 
-                .contentType(MediaType.APPLICATION_JSON_VALUE) 
-                .content(jsonRequest))
+            .contentType(MediaType.APPLICATION_JSON_VALUE) 
+            .content(Objects.requireNonNull(jsonRequest)))
                 
                 .andExpect(status().isCreated())
                 .andExpect(jsonPath("$.nombre").value("Estudiante"));
@@ -115,14 +115,14 @@ public class ClienteControllerTest {
 
         // 1. PRE-CONDICIÓN: Primer Registro Exitoso
         mockMvc.perform(post("/api/clientes")
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .content(jsonRequest))
+            .contentType(MediaType.APPLICATION_JSON_VALUE)
+            .content(Objects.requireNonNull(jsonRequest)))
                 .andExpect(status().isCreated()); 
 
         // 2. ACCIÓN & ASERCIÓN: Segundo intento (Duplicado)
         mockMvc.perform(post("/api/clientes")
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .content(jsonRequest))
+            .contentType(MediaType.APPLICATION_JSON_VALUE)
+            .content(Objects.requireNonNull(jsonRequest)))
                 
                 .andExpect(status().isConflict())
                 .andExpect(jsonPath("$.mensaje").value("El correo ingresado se encuentra registrado debe ingresar otro para continuar"));
@@ -134,19 +134,21 @@ public class ClienteControllerTest {
     @Test
     void registrarCliente_cedulaInvalida_retorna400BadRequest() throws Exception {
         String jsonBase = cargarJsonValido();
-        
-        // REUTILIZACIÓN: Modifica el JSON en la memoria
-        String jsonInvalido = jsonBase.replace("V-12345678", "12345"); 
-        
+
+        // Construir el JSON inválido de forma segura usando ObjectMapper
+        JsonNode node = objectMapper.readTree(jsonBase);
+        ((com.fasterxml.jackson.databind.node.ObjectNode) node).put("cedula", "12345");
+        String jsonInvalido = objectMapper.writeValueAsString(node);
+
         // VERIFICACIÓN SEGURA AÑADIDA
         String cedula = obtenerCedulaSegura(jsonInvalido);
         Objects.requireNonNull(cedula, "La cédula no puede ser null después de la conversión");
-        
+
         mockMvc.perform(post("/api/clientes")
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .content(jsonInvalido))
-                
-                .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("$.mensaje").value("El formato de la cédula debe contener solo números (ej. 12345678)"));
+            .contentType(MediaType.APPLICATION_JSON_VALUE)
+            .content(Objects.requireNonNull(jsonInvalido)))
+
+            .andExpect(status().isBadRequest())
+            .andExpect(jsonPath("$.mensaje").value("El formato de la cédula debe contener solo números (ej. 12345678)"));
     }
 }

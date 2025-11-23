@@ -1,7 +1,9 @@
 package com.ucab.estacionamiento.controller;
 
-import com.ucab.estacionamiento.model.*;
-import com.ucab.estacionamiento.service.PagoServiceImpl;
+import com.ucab.estacionamiento.model.clases.Pago;
+import com.ucab.estacionamiento.model.clases.PagoRequest;
+import com.ucab.estacionamiento.model.implement.PagoServiceImpl;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;

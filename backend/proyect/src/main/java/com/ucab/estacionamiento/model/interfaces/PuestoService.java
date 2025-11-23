@@ -1,6 +1,7 @@
 package com.ucab.estacionamiento.model.interfaces;
 
-import com.ucab.estacionamiento.model.*;
+import com.ucab.estacionamiento.model.clases.Puesto;
+import com.ucab.estacionamiento.model.clases.ResultadoOcupacion;
 import com.ucab.estacionamiento.model.enums.EstadoPuesto;
 import com.ucab.estacionamiento.model.enums.TipoPuesto;
 

@@ -1,7 +1,8 @@
 package com.ucab.estacionamiento.model.interfaces;
 
-import com.ucab.estacionamiento.model.Pago;
-import com.ucab.estacionamiento.model.PagoRequest;
+import com.ucab.estacionamiento.model.clases.Pago;
+import com.ucab.estacionamiento.model.clases.PagoRequest;
+
 import java.util.List;
 import java.util.Optional;
 

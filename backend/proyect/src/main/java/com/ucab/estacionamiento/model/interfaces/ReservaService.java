@@ -1,6 +1,10 @@
 package com.ucab.estacionamiento.model.interfaces;
 
-import com.ucab.estacionamiento.model.*;
+import com.ucab.estacionamiento.model.clases.Puesto;
+import com.ucab.estacionamiento.model.clases.PuestosDisponiblesResponse;
+import com.ucab.estacionamiento.model.clases.Reserva;
+import com.ucab.estacionamiento.model.clases.ReservaRequest;
+
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
