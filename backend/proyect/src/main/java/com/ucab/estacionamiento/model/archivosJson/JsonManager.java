@@ -1,3 +1,4 @@
+/* 
 package com.ucab.estacionamiento.model.archivosJson;
 
 import com.ucab.estacionamiento.model.clases.Puesto;
@@ -124,3 +125,5 @@ public class JsonManager {
         return new File(DATA_FILE).getAbsolutePath();
     }
 }
+
+*/

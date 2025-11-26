@@ -1,6 +1,7 @@
 package com.ucab.estacionamiento.model.interfaces;
 
 import java.util.List;
+import java.util.Optional;
 
 import com.ucab.estacionamiento.model.clases.Cliente;
 
@@ -14,5 +15,10 @@ public interface ClienteService {
     String clasificarDominio(String email); 
     void validarSinEspacios(String valor, String nombreCampo); 
     List<Cliente> obtenerTodos(); 
-    Cliente actualizarCliente(Cliente clienteActualizado); 
+    Cliente actualizarCliente(Cliente clienteActualizado);
+    public Optional<Cliente> obtenerPorUsuario(String usuario);
+    public Optional<Cliente> obtenerPorCedula(String cedula);
+    public Optional<Cliente> obtenerPorEmail(String email);
+    public Optional<Cliente> obtenerPorTelefono(String telefono);
+     
 }

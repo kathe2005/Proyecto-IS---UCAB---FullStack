@@ -2,8 +2,7 @@ package com.ucab.estacionamiento.model.implement;
 
 import org.springframework.stereotype.Service;
 
-import com.ucab.estacionamiento.model.archivosJson.ClienteRepository;
-import com.ucab.estacionamiento.model.archivosJson.JsonManager;
+import com.ucab.estacionamiento.model.archivosJson.UnifiedJsonRepository;
 import com.ucab.estacionamiento.model.clases.Cliente;
 import com.ucab.estacionamiento.model.clases.Puesto;
 import com.ucab.estacionamiento.model.interfaces.ReporteService;
@@ -18,18 +17,19 @@ import java.util.stream.Collectors;
 @Service
 public class ReporteServiceImpl implements ReporteService {
 
-    private final ClienteRepository clienteRepository;
+    private final UnifiedJsonRepository repository;
 
-    public ReporteServiceImpl(ClienteRepository clienteRepository) {
-        this.clienteRepository = clienteRepository;
+    public ReporteServiceImpl(UnifiedJsonRepository repository) {
+        this.repository = repository;
+        System.out.println("✅ ReporteServiceImpl inicializado con UnifiedJsonRepository");
     }
 
     @Override
     public ReporteOcupacion generarReporteOcupacion(LocalDate fecha, String turno) {
         System.out.println("📊 Generando reporte para fecha: " + fecha + ", turno: " + turno);
         
-        // Cargar puestos desde JSON
-        List<Puesto> todosLosPuestos = JsonManager.cargarPuestos();
+        // Cargar puestos desde el repositorio unificado
+        List<Puesto> todosLosPuestos = repository.obtenerTodosLosPuestos();
         if (todosLosPuestos == null) {
             todosLosPuestos = new ArrayList<>();
         }
@@ -59,8 +59,8 @@ public class ReporteServiceImpl implements ReporteService {
     public ReporteOcupacion generarReporteDiario(LocalDate fecha) {
         System.out.println("📊 Generando reporte diario para: " + fecha);
         
-        // Cargar puestos desde JSON
-        List<Puesto> todosLosPuestos = JsonManager.cargarPuestos();
+        // Cargar puestos desde el repositorio unificado
+        List<Puesto> todosLosPuestos = repository.obtenerTodosLosPuestos();
         if (todosLosPuestos == null) {
             todosLosPuestos = new ArrayList<>();
         }
@@ -113,11 +113,11 @@ public class ReporteServiceImpl implements ReporteService {
         // Obtener reporte base
         ReporteOcupacion reporteBase = generarReporteOcupacion(fecha, turno);
         
-        // Cargar clientes desde JSON para información adicional
-        List<Cliente> todosLosClientes = clienteRepository.findAll();
+        // Cargar clientes desde el repositorio unificado
+        List<Cliente> todosLosClientes = repository.findAll();
         
         // Cargar puestos para información detallada
-        List<Puesto> todosLosPuestos = JsonManager.cargarPuestos();
+        List<Puesto> todosLosPuestos = repository.obtenerTodosLosPuestos();
         if (todosLosPuestos == null) {
             todosLosPuestos = new ArrayList<>();
         }

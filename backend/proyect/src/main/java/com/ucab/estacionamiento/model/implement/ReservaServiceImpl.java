@@ -1,8 +1,6 @@
 package com.ucab.estacionamiento.model.implement;
 
-import com.ucab.estacionamiento.model.archivosJson.ClienteRepository;
-import com.ucab.estacionamiento.model.archivosJson.JsonManager;
-import com.ucab.estacionamiento.model.archivosJson.JsonManagerReserva;
+import com.ucab.estacionamiento.model.archivosJson.UnifiedJsonRepository;
 import com.ucab.estacionamiento.model.clases.Puesto;
 import com.ucab.estacionamiento.model.clases.PuestosDisponiblesResponse;
 import com.ucab.estacionamiento.model.clases.Reserva;
@@ -20,20 +18,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 @Service
 public class ReservaServiceImpl implements ReservaService {
     
-    private List<Reserva> reservas;
-    private final JsonManagerReserva jsonManagerReserva;
+    private final UnifiedJsonRepository repository;
 
     @Autowired
-    private ClienteRepository clienteRepository;
-
-    public ReservaServiceImpl() {
-        this.jsonManagerReserva = new JsonManagerReserva();
-        this.reservas = jsonManagerReserva.cargarReservas();
-        System.out.println("✅ ReservaServiceImpl inicializado con " + reservas.size() + " reservas");
-    }
-
-    private void guardarCambios() {
-        jsonManagerReserva.guardarReservas(reservas);
+    public ReservaServiceImpl(UnifiedJsonRepository repository) {
+        this.repository = repository;
+        System.out.println("✅ ReservaServiceImpl inicializado con UnifiedJsonRepository");
+        System.out.println("📅 Reservas cargadas: " + repository.obtenerTodasLasReservas().size());
     }
 
     @Override
@@ -41,9 +32,7 @@ public class ReservaServiceImpl implements ReservaService {
         System.out.println("📅 Creando reserva para fecha: " + request.getFecha() + ", turno: " + request.getTurno());
         
         // Validar que el puesto existe
-        Optional<Puesto> puestoOpt = JsonManager.cargarPuestos().stream()
-                .filter(p -> p.getId().equals(request.getPuestoId()))
-                .findFirst();
+        Optional<Puesto> puestoOpt = repository.obtenerPuestoPorId(request.getPuestoId());
                 
         if (puestoOpt.isEmpty()) {
             throw new IllegalArgumentException("Puesto no encontrado: " + request.getPuestoId());
@@ -55,16 +44,15 @@ public class ReservaServiceImpl implements ReservaService {
         }
 
         // Crear nueva reserva
-        String nuevoId = "R" + (reservas.size() + 1);
+        String nuevoId = "R" + (repository.obtenerTodasLasReservas().size() + 1);
         Reserva nuevaReserva = new Reserva(nuevoId, request.getPuestoId(), 
                                          request.getClienteId(), request.getUsuario(),
                                          request.getFecha(), request.getTurno());
         
-        reservas.add(nuevaReserva);
-        guardarCambios();
+        Reserva reservaGuardada = repository.guardarReserva(nuevaReserva);
         
         System.out.println("✅ Reserva creada exitosamente: " + nuevoId);
-        return nuevaReserva;
+        return reservaGuardada;
     }
 
     @Override
@@ -77,7 +65,7 @@ public class ReservaServiceImpl implements ReservaService {
     public PuestosDisponiblesResponse consultarPuestosDisponibles(LocalDate fecha, String turno, String clienteId) {
         System.out.println("🔍 Consultando puestos disponibles para: " + fecha + ", turno: " + turno + ", cliente: " + clienteId);
 
-        List<Puesto> todosLosPuestos = JsonManager.cargarPuestos();
+        List<Puesto> todosLosPuestos = repository.obtenerTodosLosPuestos();
         List<Puesto> puestosDisponibles = obtenerPuestosDisponiblesParaFecha(fecha, turno);
 
         // Si se proporcionó clienteId (puede ser usuario, cédula o email), filtrar por tipo de cliente
@@ -103,15 +91,15 @@ public class ReservaServiceImpl implements ReservaService {
     private String resolveTipoCliente(String clienteId) {
         try {
             // Buscar por usuario
-            var opt = clienteRepository.findByUsuario(clienteId);
+            var opt = repository.findByUsuario(clienteId);
             if (opt.isPresent()) return opt.get().getTipoPersona();
 
             // Buscar por cedula
-            opt = clienteRepository.findByCedula(clienteId);
+            opt = repository.findByCedula(clienteId);
             if (opt.isPresent()) return opt.get().getTipoPersona();
 
             // Buscar por email
-            opt = clienteRepository.findByEmail(clienteId);
+            opt = repository.findByEmail(clienteId);
             if (opt.isPresent()) return opt.get().getTipoPersona();
 
         } catch (Exception e) {
@@ -136,7 +124,7 @@ public class ReservaServiceImpl implements ReservaService {
 
     @Override
     public List<Puesto> obtenerPuestosDisponiblesParaFecha(LocalDate fecha, String turno) {
-        List<Puesto> todosLosPuestos = JsonManager.cargarPuestos();
+        List<Puesto> todosLosPuestos = repository.obtenerTodosLosPuestos();
         
         return todosLosPuestos.stream()
                 .filter(puesto -> puesto.getEstadoPuesto() == EstadoPuesto.DISPONIBLE)
@@ -146,6 +134,8 @@ public class ReservaServiceImpl implements ReservaService {
 
     @Override
     public boolean verificarDisponibilidadPuesto(String puestoId, LocalDate fecha, String turno) {
+        List<Reserva> reservas = repository.obtenerTodasLasReservas();
+        
         // Verificar si hay reservas activas para este puesto, fecha y turno
         boolean tieneReserva = reservas.stream()
                 .anyMatch(reserva -> 
@@ -166,7 +156,7 @@ public class ReservaServiceImpl implements ReservaService {
         if (reservaOpt.isPresent()) {
             Reserva reserva = reservaOpt.get();
             reserva.setEstado(EstadoReserva.CANCELADA);
-            guardarCambios();
+            repository.guardarReserva(reserva);
             System.out.println("✅ Reserva cancelada: " + reservaId);
             return true;
         }
@@ -179,32 +169,26 @@ public class ReservaServiceImpl implements ReservaService {
         if (reservaOpt.isPresent()) {
             Reserva reserva = reservaOpt.get();
             reserva.setEstado(EstadoReserva.CONFIRMADA);
-            guardarCambios();
+            Reserva reservaConfirmada = repository.guardarReserva(reserva);
             System.out.println("✅ Reserva confirmada: " + reservaId);
-            return reserva;
+            return reservaConfirmada;
         }
         throw new IllegalArgumentException("Reserva no encontrada: " + reservaId);
     }
 
     @Override
     public Optional<Reserva> obtenerReservaPorId(String id) {
-        return reservas.stream()
-                .filter(r -> r.getId().equals(id))
-                .findFirst();
+        return repository.obtenerReservaPorId(id);
     }
 
     @Override
     public List<Reserva> obtenerReservasPorCliente(String clienteId) {
-        return reservas.stream()
-                .filter(r -> r.getClienteId().equals(clienteId))
-                .collect(Collectors.toList());
+        return repository.obtenerReservasPorCliente(clienteId);
     }
 
     @Override
     public List<Reserva> obtenerReservasPorFecha(LocalDate fecha) {
-        return reservas.stream()
-                .filter(r -> r.getFecha().equals(fecha))
-                .collect(Collectors.toList());
+        return repository.obtenerReservasPorFecha(fecha);
     }
 
     @Override
@@ -213,7 +197,7 @@ public class ReservaServiceImpl implements ReservaService {
         if (reservaOpt.isPresent()) {
             Reserva reserva = reservaOpt.get();
             reserva.setEstado(EstadoReserva.ACTIVA);
-            guardarCambios();
+            repository.guardarReserva(reserva);
             return true;
         }
         return false;
@@ -225,7 +209,7 @@ public class ReservaServiceImpl implements ReservaService {
         if (reservaOpt.isPresent()) {
             Reserva reserva = reservaOpt.get();
             reserva.setEstado(EstadoReserva.COMPLETADA);
-            guardarCambios();
+            repository.guardarReserva(reserva);
             return true;
         }
         return false;
@@ -233,8 +217,6 @@ public class ReservaServiceImpl implements ReservaService {
 
     @Override
     public List<Reserva> obtenerReservasPendientes() {
-        return reservas.stream()
-                .filter(r -> r.getEstado() == EstadoReserva.PENDIENTE)
-                .collect(Collectors.toList());
+        return repository.obtenerReservasPendientes();
     }
 }

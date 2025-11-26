@@ -169,6 +169,7 @@ public class ClienteRepository implements ClienteRepositoryPort {
      * Clear in-memory clients and persist empty list to storage.
      * Useful for tests to reset repository state.
      */
+    
     public void clearAll() {
         BD_clientes.clear();
         guardarClientesEnArchivo();

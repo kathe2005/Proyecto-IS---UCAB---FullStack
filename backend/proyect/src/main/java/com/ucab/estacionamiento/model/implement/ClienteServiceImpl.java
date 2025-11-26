@@ -1,22 +1,25 @@
 package com.ucab.estacionamiento.model.implement;
 
-import com.ucab.estacionamiento.model.archivosJson.ClienteRepository;
+import com.ucab.estacionamiento.model.archivosJson.UnifiedJsonRepository;
 import com.ucab.estacionamiento.model.clases.Cliente;
 import com.ucab.estacionamiento.model.exepciones.RegistroClienteException;
 import com.ucab.estacionamiento.model.interfaces.ClienteService;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import java.util.List;
-
+import java.util.Optional;
 
 @Service
 public class ClienteServiceImpl implements ClienteService {
 
+    private final UnifiedJsonRepository repository;
 
-    private final ClienteRepository clienteRepository;
-
-    public ClienteServiceImpl(ClienteRepository clienteRepository) {
-        this.clienteRepository = clienteRepository;
+    @Autowired
+    public ClienteServiceImpl(UnifiedJsonRepository repository) {
+        this.repository = repository;
+        System.out.println("✅ ClienteServiceImpl inicializado con UnifiedJsonRepository");
+        System.out.println("👥 Clientes cargados: " + repository.findAll().size());
     }
 
     // ------------------------- Registrar Cliente ---------------------------------------
@@ -52,22 +55,22 @@ public class ClienteServiceImpl implements ClienteService {
 
         //Validacion de unicidad: comprobar email primero para detectar duplicados por correo
         //Email
-        if(clienteRepository.findByEmail(nuevoCliente.getEmail()).isPresent()) {
+        if(repository.findByEmail(nuevoCliente.getEmail()).isPresent()) {
             throw new RegistroClienteException("El correo ingresado se encuentra registrado debe ingresar otro para continuar", 409);
         }
 
         //Usuario
-        if(clienteRepository.findByUsuario(nuevoCliente.getUsuario()).isPresent()) {
+        if(repository.findByUsuario(nuevoCliente.getUsuario()).isPresent()) {
             throw new RegistroClienteException("El usuario ingresado se encuentra registrado ingresa otro para continuar", 409);
         }
 
         //Cedula
-        if(clienteRepository.findByCedula(nuevoCliente.getCedula()).isPresent()) {
+        if(repository.findByCedula(nuevoCliente.getCedula()).isPresent()) {
             throw new RegistroClienteException("La cedula ingresada se encuentra registrada",409);
         }
 
         //Telefono
-        if(clienteRepository.findByTelefono(nuevoCliente.getTelefono()).isPresent()) {
+        if(repository.findByTelefono(nuevoCliente.getTelefono()).isPresent()) {
             throw new RegistroClienteException("El telefono se encuentra registrado ingrese otro para continuar",409);
         }
 
@@ -85,7 +88,7 @@ public class ClienteServiceImpl implements ClienteService {
 
         //Guardar en el repositorio es decir en la conexion a  la base de datos
         System.out.println("Registrado Exitosamente");
-        Cliente clienteGuardado = clienteRepository.save(nuevoCliente); 
+        Cliente clienteGuardado = repository.save(nuevoCliente); 
         obtenerTodos(); // <--- LLAMADA CLAVE: Imprime la lista actualizada
         return clienteGuardado;
     }
@@ -95,7 +98,7 @@ public class ClienteServiceImpl implements ClienteService {
     @Override
     public Cliente actualizarCliente(Cliente clienteActualizado) 
     {
-    Cliente clienteExistente = clienteRepository.findByUsuario(clienteActualizado.getUsuario())
+    Cliente clienteExistente = repository.findByUsuario(clienteActualizado.getUsuario())
         .orElseThrow(() -> new RuntimeException("Cliente no encontrado para la actualización.")); 
 
     if (clienteActualizado.getContrasena() != null && !clienteActualizado.getContrasena().isEmpty()) 
@@ -115,7 +118,7 @@ public class ClienteServiceImpl implements ClienteService {
     validarEmailPorTipoPersona(clienteActualizado.getTipoPersona(), clienteActualizado.getEmail());
 
 
-    clienteRepository.findByEmail(clienteActualizado.getEmail()).ifPresent(duplicado -> {
+    repository.findByEmail(clienteActualizado.getEmail()).ifPresent(duplicado -> {
         if (!clienteExistente.getUsuario().equals(duplicado.getUsuario())) {
             // Se encontró un duplicado, y no es el cliente que estamos actualizando.
             System.err.println("!!! CONFLICTO EMAIL !!!: El email '" + clienteActualizado.getEmail() + "' ya pertenece al usuario: " + duplicado.getUsuario());
@@ -123,7 +126,7 @@ public class ClienteServiceImpl implements ClienteService {
         }
     });
 
-    clienteRepository.findByCedula(clienteActualizado.getCedula()).ifPresent(duplicado -> {
+    repository.findByCedula(clienteActualizado.getCedula()).ifPresent(duplicado -> {
         if (!clienteExistente.getUsuario().equals(duplicado.getUsuario())) {
             System.err.println("!!! CONFLICTO CÉDULA !!!: La cédula '" + clienteActualizado.getCedula() + "' ya pertenece al usuario: " + duplicado.getUsuario());
             throw new RegistroClienteException("La nueva cédula ingresada ya está registrada por otro usuario.", 409);
@@ -131,7 +134,7 @@ public class ClienteServiceImpl implements ClienteService {
     });
 
 
-    clienteRepository.findByTelefono(clienteActualizado.getTelefono()).ifPresent(duplicado -> {
+    repository.findByTelefono(clienteActualizado.getTelefono()).ifPresent(duplicado -> {
         if (!clienteExistente.getUsuario().equals(duplicado.getUsuario())) {
             System.err.println("!!! CONFLICTO TELÉFONO !!!: El teléfono '" + clienteActualizado.getTelefono() + "' ya pertenece al usuario: " + duplicado.getUsuario());
             throw new RegistroClienteException("El nuevo teléfono ya está registrado por otro usuario.", 409);
@@ -147,7 +150,7 @@ public class ClienteServiceImpl implements ClienteService {
     clienteExistente.setDireccion(clienteActualizado.getDireccion());
     clienteExistente.setTelefono(clienteActualizado.getTelefono());
 
-    Cliente clienteGuardado = clienteRepository.save(clienteExistente);
+    Cliente clienteGuardado = repository.save(clienteExistente);
     obtenerTodos(); 
     return clienteGuardado;
     }
@@ -350,7 +353,7 @@ public class ClienteServiceImpl implements ClienteService {
     public List<Cliente> obtenerTodos() 
     {
         //Obtener Lista del Repositorio
-        List<Cliente>clientes = clienteRepository.findAll(); 
+        List<Cliente>clientes = repository.findAll(); 
 
         //Imprimir el encabezado
         System.out.println("\n-- Lista de Clientes Registrados ");
@@ -376,5 +379,25 @@ public class ClienteServiceImpl implements ClienteService {
 
         //Devolver la lista al controlador 
         return clientes; 
+    }
+
+    @Override
+    public Optional<Cliente> obtenerPorUsuario(String usuario) {
+        return repository.findByUsuario(usuario);
+    }
+
+    @Override
+    public Optional<Cliente> obtenerPorCedula(String cedula) {
+        return repository.findByCedula(cedula);
+    }
+
+    @Override
+    public Optional<Cliente> obtenerPorEmail(String email) {
+        return repository.findByEmail(email);
+    }
+
+    @Override
+    public Optional<Cliente> obtenerPorTelefono(String telefono) {
+        return repository.findByTelefono(telefono);
     }
 }

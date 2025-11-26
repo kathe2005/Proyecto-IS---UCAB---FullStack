@@ -1,35 +1,26 @@
 package com.ucab.estacionamiento.model.implement;
 
-import com.ucab.estacionamiento.model.archivosJson.ClienteRepository;
-import com.ucab.estacionamiento.model.archivosJson.JsonManager;
-import com.ucab.estacionamiento.model.archivosJson.JsonManagerPago;
-import com.ucab.estacionamiento.model.archivosJson.JsonManagerReserva;
-import com.ucab.estacionamiento.model.clases.Cliente;
-import com.ucab.estacionamiento.model.clases.Pago;
-import com.ucab.estacionamiento.model.clases.PagoRequest;
-import com.ucab.estacionamiento.model.clases.Puesto;
-import com.ucab.estacionamiento.model.clases.Reserva;
+import com.ucab.estacionamiento.model.archivosJson.UnifiedJsonRepository;
+import com.ucab.estacionamiento.model.clases.*;
 import com.ucab.estacionamiento.model.enums.EstadoReserva;
 import com.ucab.estacionamiento.model.interfaces.PagoService;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
 import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
 public class PagoServiceImpl implements PagoService {
     
-    private List<Pago> pagos;
-    private final JsonManagerPago jsonManagerPago;
+    private final UnifiedJsonRepository repository;
 
-    public PagoServiceImpl() {
-        this.jsonManagerPago = new JsonManagerPago();
-        this.pagos = jsonManagerPago.cargarPagos();
-        System.out.println("✅ PagoServiceImpl inicializado con " + pagos.size() + " pagos");
-    }
-
-    private void guardarCambios() {
-        jsonManagerPago.guardarPagos(pagos);
+    @Autowired
+    public PagoServiceImpl(UnifiedJsonRepository repository) {
+        this.repository = repository;
+        System.out.println("✅ PagoServiceImpl inicializado con UnifiedJsonRepository");
+        System.out.println("💰 Pagos cargados: " + repository.obtenerTodosLosPagos().size());
     }
 
     @Override
@@ -47,53 +38,45 @@ public class PagoServiceImpl implements PagoService {
         }
 
         // Crear nuevo pago
-        String nuevoId = "PAY" + (pagos.size() + 1);
+        String nuevoId = "PAY" + (repository.obtenerTodosLosPagos().size() + 1);
         Pago nuevoPago = new Pago(nuevoId, pagoRequest.getReservaId(), 
                                 pagoRequest.getClienteId(), pagoRequest.getMonto(),
                                 pagoRequest.getMetodoPago(), pagoRequest.getReferencia());
         
         nuevoPago.setDescripcion(pagoRequest.getDescripcion());
 
-        pagos.add(nuevoPago);
-        guardarCambios();
+        Pago pagoGuardado = repository.guardarPago(nuevoPago);
         
         System.out.println("✅ Pago registrado exitosamente: " + nuevoId);
-        return nuevoPago;
+        return pagoGuardado;
     }
 
     @Override
     public Optional<Pago> obtenerPagoPorId(String id) {
-        return pagos.stream()
-                .filter(p -> p.getId().equals(id))
-                .findFirst();
+        return repository.obtenerPagoPorId(id);
     }
 
     @Override
     public List<Pago> obtenerPagosPorCliente(String clienteId) {
-        return pagos.stream()
-                .filter(p -> p.getClienteId().equals(clienteId))
-                .collect(Collectors.toList());
+        return repository.obtenerPagosPorCliente(clienteId);
     }
 
     @Override
     public List<Pago> obtenerTodosLosPagos() {
-        return new ArrayList<>(pagos);
+        return repository.obtenerTodosLosPagos();
     }
 
     @Override
     public boolean existePagoParaReserva(String reservaId) {
-        return pagos.stream()
+        return repository.obtenerTodosLosPagos().stream()
                 .anyMatch(p -> p.getReservaId().equals(reservaId));
     }
 
     // Método para obtener reservas pendientes de pago
     public List<Map<String, Object>> obtenerReservasPendientesPago() {
-        // Cargar reservas
-        List<Reserva> reservas = new JsonManagerReserva().cargarReservas();
-        // Cargar clientes
-        List<Cliente> clientes = new ClienteRepository().findAll();
-        // Cargar puestos
-        List<Puesto> puestos = JsonManager.cargarPuestos();
+        List<Reserva> reservas = repository.obtenerTodasLasReservas();
+        List<Cliente> clientes = repository.findAll();
+        List<Puesto> puestos = repository.obtenerTodosLosPuestos();
 
         return reservas.stream()
                 .filter(reserva -> reserva.getEstado() == EstadoReserva.CONFIRMADA)

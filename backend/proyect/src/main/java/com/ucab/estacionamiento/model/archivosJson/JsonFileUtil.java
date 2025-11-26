@@ -1,4 +1,4 @@
-package com.ucab.estacionamiento.model.archivosJson;
+/*package com.ucab.estacionamiento.model.archivosJson;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
@@ -48,3 +48,4 @@ public class JsonFileUtil {
         }
     }
 }
+*/

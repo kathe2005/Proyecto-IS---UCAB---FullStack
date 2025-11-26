@@ -1,12 +1,13 @@
 package com.ucab.estacionamiento.model.implement;
 
-import com.ucab.estacionamiento.model.archivosJson.JsonManager;
+import com.ucab.estacionamiento.model.archivosJson.UnifiedJsonRepository;
 import com.ucab.estacionamiento.model.clases.Puesto;
 import com.ucab.estacionamiento.model.clases.ResultadoOcupacion;
 import com.ucab.estacionamiento.model.enums.EstadoPuesto;
 import com.ucab.estacionamiento.model.enums.TipoPuesto;
 import com.ucab.estacionamiento.model.interfaces.PuestoService;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -15,35 +16,19 @@ import java.util.stream.Collectors;
 
 @Service
 public class PuestoServiceImpl implements PuestoService {
-    private List<Puesto> puestos;
+    
+    private final UnifiedJsonRepository repository;
 
-    public PuestoServiceImpl() {
-        System.out.println("🚀 Inicializando PuestoServiceImpl...");
-        try {
-            this.puestos = JsonManager.cargarPuestos();
-            if (this.puestos == null) {
-                System.err.println("❌ ERROR: Lista de puestos es null, inicializando lista vacía");
-                this.puestos = new ArrayList<>();
-            }
-            System.out.println("✅ Servicio Spring inicializado con " + puestos.size() + " puestos");
-            
-        } catch (Exception e) {
-            System.err.println("❌ Error crítico en inicialización: " + e.getMessage());
-            e.printStackTrace();
-            this.puestos = new ArrayList<>();
-        }
-    }
-
-    private void guardarCambios() {
-        System.out.println("💾 Ejecutando guardarCambios() - " + puestos.size() + " puestos");
-        JsonManager.guardarPuestos(puestos);
+    @Autowired
+    public PuestoServiceImpl(UnifiedJsonRepository repository) {
+        this.repository = repository;
+        System.out.println("🚀 PuestoServiceImpl inicializado con UnifiedJsonRepository");
+        System.out.println("✅ Puestos cargados: " + repository.obtenerTodosLosPuestos().size());
     }
 
     @Override
     public List<Puesto> obtenerPuestos() {
-        if (puestos == null) {
-            puestos = new ArrayList<>();
-        }
+        List<Puesto> puestos = repository.obtenerTodosLosPuestos();
         System.out.println("📋 Obteniendo " + puestos.size() + " puestos");
         return new ArrayList<>(puestos);
     }
@@ -51,9 +36,7 @@ public class PuestoServiceImpl implements PuestoService {
     @Override
     public Optional<Puesto> obtenerPuestoPorId(String idPuesto) {
         System.out.println("🔍 Buscando puesto por ID: " + idPuesto);
-        Optional<Puesto> resultado = puestos.stream()
-                .filter(p -> p.getId().equals(idPuesto))
-                .findFirst();
+        Optional<Puesto> resultado = repository.obtenerPuestoPorId(idPuesto);
         System.out.println("🔍 Resultado búsqueda: " + (resultado.isPresent() ? "Encontrado" : "No encontrado"));
         return resultado;
     }
@@ -63,7 +46,7 @@ public class PuestoServiceImpl implements PuestoService {
         System.out.println("🔧 Creando puesto: " + puesto.getNumero());
         
         // Validar número único
-        boolean numeroExiste = puestos.stream()
+        boolean numeroExiste = repository.obtenerTodosLosPuestos().stream()
                 .anyMatch(p -> p.getNumero().equals(puesto.getNumero()));
 
         if (numeroExiste) {
@@ -91,17 +74,13 @@ public class PuestoServiceImpl implements PuestoService {
         // Agregar registro inicial al historial
         puesto.agregarRegistroHistorial("Creado en " + LocalDateTime.now());
 
-        puestos.add(puesto);
-        
-        System.out.println("💾 Guardando cambios...");
-        guardarCambios();
-        
-        System.out.println("✅ Puesto creado exitosamente: " + puesto.getId());
-        return puesto;
+        Puesto puestoGuardado = repository.guardarPuesto(puesto);
+        System.out.println("✅ Puesto creado exitosamente: " + puestoGuardado.getId());
+        return puestoGuardado;
     }
 
     private String generarNuevoId() {
-        // CORREGIDO: Usar Comparator.naturalOrder() para evitar problemas de type safety
+        List<Puesto> puestos = repository.obtenerTodosLosPuestos();
         Optional<Integer> maxId = puestos.stream()
                 .map(p -> {
                     if (p.getId() != null && p.getId().startsWith("P")) {
@@ -113,41 +92,40 @@ public class PuestoServiceImpl implements PuestoService {
                     }
                     return 0;
                 })
-                .max(Comparator.naturalOrder()); // CORREGIDO AQUÍ
+                .max(Comparator.naturalOrder());
         
         return "P" + (maxId.orElse(0) + 1);
     }
-
-    // ... (el resto de los métodos se mantienen igual)
 
     @Override
     public Puesto actualizarPuesto(Puesto puesto) {
         System.out.println("🔄 Actualizando puesto: " + puesto.getId());
         
-        Optional<Puesto> puestoExistente = obtenerPuestoPorId(puesto.getId());
+        Optional<Puesto> puestoExistente = repository.obtenerPuestoPorId(puesto.getId());
         if (puestoExistente.isEmpty()) {
             throw new IllegalArgumentException("Puesto no encontrado: " + puesto.getId());
         }
 
-        int index = puestos.indexOf(puestoExistente.get());
-        puestos.set(index, puesto);
-        
         // Agregar al historial
         puesto.agregarRegistroHistorial("Actualizado en " + LocalDateTime.now());
         
-        guardarCambios();
-        System.out.println("✅ Puesto actualizado: " + puesto.getId());
-        return puesto;
+        Puesto puestoActualizado = repository.guardarPuesto(puesto);
+        System.out.println("✅ Puesto actualizado: " + puestoActualizado.getId());
+        return puestoActualizado;
     }
 
     @Override
     public boolean eliminarPuesto(String id) {
         System.out.println("🗑️ Eliminando puesto: " + id);
         
-        Optional<Puesto> puesto = obtenerPuestoPorId(id);
+        Optional<Puesto> puesto = repository.obtenerPuestoPorId(id);
         if (puesto.isPresent()) {
-            puestos.remove(puesto.get());
-            guardarCambios();
+            // Para eliminar, necesitamos obtener todos los puestos, remover el específico y guardar
+            List<Puesto> puestos = repository.obtenerTodosLosPuestos();
+            puestos.removeIf(p -> p.getId().equals(id));
+            
+            // Actualizar la lista en el repositorio
+            puestos.forEach(repository::guardarPuesto);
             System.out.println("✅ Puesto eliminado: " + id);
             return true;
         }
@@ -160,7 +138,7 @@ public class PuestoServiceImpl implements PuestoService {
     public ResultadoOcupacion ocuparPuesto(String puestoId, String usuario) {
         System.out.println("🚗 Ocupando puesto: " + puestoId + " por usuario: " + usuario);
         
-        Optional<Puesto> puestoOpt = obtenerPuestoPorId(puestoId);
+        Optional<Puesto> puestoOpt = repository.obtenerPuestoPorId(puestoId);
 
         if (puestoOpt.isEmpty()) {
             System.err.println("❌ Puesto no encontrado: " + puestoId);
@@ -183,7 +161,7 @@ public class PuestoServiceImpl implements PuestoService {
         String registroHistorial = String.format("Ocupado por %s en %s", usuario, LocalDateTime.now());
         puesto.agregarRegistroHistorial(registroHistorial);
 
-        guardarCambios();
+        repository.guardarPuesto(puesto);
 
         String mensaje = String.format("Puesto %s ocupado por %s", puesto.getNumero(), usuario);
         System.out.println("✅ " + mensaje);
@@ -194,7 +172,7 @@ public class PuestoServiceImpl implements PuestoService {
     public boolean liberarPuesto(String puestoId) {
         System.out.println("🔄 Liberando puesto: " + puestoId);
         
-        Optional<Puesto> puestoOpt = obtenerPuestoPorId(puestoId);
+        Optional<Puesto> puestoOpt = repository.obtenerPuestoPorId(puestoId);
 
         if (puestoOpt.isPresent() && puestoOpt.get().getEstadoPuesto() == EstadoPuesto.OCUPADO) {
             Puesto puesto = puestoOpt.get();
@@ -205,7 +183,7 @@ public class PuestoServiceImpl implements PuestoService {
             String registroHistorial = String.format("Liberado en %s", LocalDateTime.now());
             puesto.agregarRegistroHistorial(registroHistorial);
 
-            guardarCambios();
+            repository.guardarPuesto(puesto);
             System.out.println("✅ Puesto liberado: " + puestoId);
             return true;
         }
@@ -214,66 +192,51 @@ public class PuestoServiceImpl implements PuestoService {
         return false;
     }
 
-    // Resto de métodos implementados...
     @Override
     public List<Puesto> obtenerPuestosPorEstado(EstadoPuesto estado) {
-        return puestos.stream()
-                .filter(p -> p.getEstadoPuesto() == estado)
-                .collect(Collectors.toList());
+        return repository.obtenerPuestosPorEstado(estado);
     }
 
     @Override
     public List<Puesto> obtenerPuestosPorTipo(TipoPuesto tipo) {
-        return puestos.stream()
-                .filter(p -> p.getTipoPuesto() == tipo)
-                .collect(Collectors.toList());
+        return repository.obtenerPuestosPorTipo(tipo);
     }
 
     @Override
     public List<Puesto> filtrarPuestosPorUbicacion(String ubicacion) {
-        return puestos.stream()
-                .filter(p -> p.getUbicacion().toLowerCase().contains(ubicacion.toLowerCase()))
-                .collect(Collectors.toList());
+        return repository.filtrarPuestosPorUbicacion(ubicacion);
     }
 
     @Override
     public int contarPuestosDisponibles() {
-        return (int) puestos.stream()
-                .filter(p -> p.getEstadoPuesto() == EstadoPuesto.DISPONIBLE)
-                .count();
+        return repository.obtenerPuestosPorEstado(EstadoPuesto.DISPONIBLE).size();
     }
 
     @Override
     public int contarPuestosOcupados() {
-        return (int) puestos.stream()
-                .filter(p -> p.getEstadoPuesto() == EstadoPuesto.OCUPADO)
-                .count();
+        return repository.obtenerPuestosPorEstado(EstadoPuesto.OCUPADO).size();
     }
 
     @Override
     public int contarPuestosReservados() {
-        return (int) puestos.stream()
-                .filter(p -> p.getEstadoPuesto() == EstadoPuesto.RESERVADO)
-                .count();
+        return repository.obtenerPuestosPorEstado(EstadoPuesto.RESERVADO).size();
     }
 
     @Override
     public int contarPuestosBloqueados() {
-        return (int) puestos.stream()
-                .filter(p -> p.getEstadoPuesto() == EstadoPuesto.BLOQUEADO)
-                .count();
+        return repository.obtenerPuestosPorEstado(EstadoPuesto.BLOQUEADO).size();
     }
 
     @Override
     public List<Puesto> obtenerPuestosBloqueados() {
-        return obtenerPuestosPorEstado(EstadoPuesto.BLOQUEADO);
+        return repository.obtenerPuestosPorEstado(EstadoPuesto.BLOQUEADO);
     }
 
     @Override
     public boolean bloquearPuesto(String puestoId) {
         System.out.println("🔒 Bloqueando puesto: " + puestoId);
         
-        Optional<Puesto> puestoOpt = obtenerPuestoPorId(puestoId);
+        Optional<Puesto> puestoOpt = repository.obtenerPuestoPorId(puestoId);
         if (puestoOpt.isPresent()) {
             Puesto puesto = puestoOpt.get();
             puesto.setEstadoPuesto(EstadoPuesto.BLOQUEADO);
@@ -282,7 +245,7 @@ public class PuestoServiceImpl implements PuestoService {
             String registroHistorial = String.format("Bloqueado en %s", LocalDateTime.now());
             puesto.agregarRegistroHistorial(registroHistorial);
             
-            guardarCambios();
+            repository.guardarPuesto(puesto);
             System.out.println("✅ Puesto bloqueado: " + puestoId);
             return true;
         }
@@ -295,7 +258,7 @@ public class PuestoServiceImpl implements PuestoService {
     public boolean desbloquearPuesto(String puestoId) {
         System.out.println("🔓 Desbloqueando puesto: " + puestoId);
         
-        Optional<Puesto> puestoOpt = obtenerPuestoPorId(puestoId);
+        Optional<Puesto> puestoOpt = repository.obtenerPuestoPorId(puestoId);
         if (puestoOpt.isPresent()) {
             Puesto puesto = puestoOpt.get();
             puesto.setEstadoPuesto(EstadoPuesto.DISPONIBLE);
@@ -303,7 +266,7 @@ public class PuestoServiceImpl implements PuestoService {
             String registroHistorial = String.format("Desbloqueado en %s", LocalDateTime.now());
             puesto.agregarRegistroHistorial(registroHistorial);
             
-            guardarCambios();
+            repository.guardarPuesto(puesto);
             System.out.println("✅ Puesto desbloqueado: " + puestoId);
             return true;
         }
@@ -316,7 +279,7 @@ public class PuestoServiceImpl implements PuestoService {
     public ResultadoOcupacion asignarPuestoManual(String puestoId, String usuario) {
         System.out.println("👨‍💼 Asignando manualmente puesto: " + puestoId + " a: " + usuario);
         
-        Optional<Puesto> puestoOpt = obtenerPuestoPorId(puestoId);
+        Optional<Puesto> puestoOpt = repository.obtenerPuestoPorId(puestoId);
         
         if (puestoOpt.isEmpty()) {
             return new ResultadoOcupacion(false, "Puesto no encontrado", null, "PUESTO_NO_ENCONTRADO");
@@ -339,7 +302,7 @@ public class PuestoServiceImpl implements PuestoService {
                 usuario, LocalDateTime.now());
         puesto.agregarRegistroHistorial(registroHistorial);
         
-        guardarCambios();
+        repository.guardarPuesto(puesto);
         
         String mensaje = String.format("Puesto %s asignado manualmente a %s", puesto.getNumero(), usuario);
         System.out.println("✅ " + mensaje);
@@ -350,7 +313,7 @@ public class PuestoServiceImpl implements PuestoService {
     public Puesto reasignarPuesto(String puestoId, String nuevaUbicacion) {
         System.out.println("📍 Reasignando puesto: " + puestoId + " a: " + nuevaUbicacion);
         
-        Optional<Puesto> puestoOpt = obtenerPuestoPorId(puestoId);
+        Optional<Puesto> puestoOpt = repository.obtenerPuestoPorId(puestoId);
         if (puestoOpt.isPresent()) {
             Puesto puesto = puestoOpt.get();
             String ubicacionAnterior = puesto.getUbicacion();
@@ -360,9 +323,9 @@ public class PuestoServiceImpl implements PuestoService {
                     ubicacionAnterior, nuevaUbicacion, LocalDateTime.now());
             puesto.agregarRegistroHistorial(registroHistorial);
             
-            guardarCambios();
+            Puesto puestoActualizado = repository.guardarPuesto(puesto);
             System.out.println("✅ Puesto reasignado: " + puestoId);
-            return puesto;
+            return puestoActualizado;
         }
         throw new IllegalArgumentException("Puesto no encontrado: " + puestoId);
     }
@@ -371,7 +334,7 @@ public class PuestoServiceImpl implements PuestoService {
     public boolean ponerPuestoEnMantenimiento(String puestoId) {
         System.out.println("🔧 Poniendo en mantenimiento puesto: " + puestoId);
         
-        Optional<Puesto> puestoOpt = obtenerPuestoPorId(puestoId);
+        Optional<Puesto> puestoOpt = repository.obtenerPuestoPorId(puestoId);
         
         if (puestoOpt.isPresent()) {
             Puesto puesto = puestoOpt.get();
@@ -383,7 +346,7 @@ public class PuestoServiceImpl implements PuestoService {
                     LocalDateTime.now());
             puesto.agregarRegistroHistorial(registroHistorial);
             
-            guardarCambios();
+            repository.guardarPuesto(puesto);
             System.out.println("✅ Puesto en mantenimiento: " + puestoId);
             return true;
         }
@@ -394,7 +357,7 @@ public class PuestoServiceImpl implements PuestoService {
 
     @Override
     public List<String> obtenerHistorial(String puestoId) {
-        Optional<Puesto> puestoOpt = obtenerPuestoPorId(puestoId);
+        Optional<Puesto> puestoOpt = repository.obtenerPuestoPorId(puestoId);
         
         if (puestoOpt.isPresent()) {
             Puesto puesto = puestoOpt.get();
@@ -407,7 +370,7 @@ public class PuestoServiceImpl implements PuestoService {
     public ResultadoOcupacion ocuparPuesto(String puestoId, String usuario, String clienteId, String tipoCliente) {
         System.out.println("🚗 Ocupando puesto: " + puestoId + " por usuario: " + usuario + " (Cliente: " + clienteId + ", Tipo: " + tipoCliente + ")");
         
-        Optional<Puesto> puestoOpt = obtenerPuestoPorId(puestoId);
+        Optional<Puesto> puestoOpt = repository.obtenerPuestoPorId(puestoId);
 
         if (puestoOpt.isEmpty()) {
             System.err.println("❌ Puesto no encontrado: " + puestoId);
@@ -432,7 +395,7 @@ public class PuestoServiceImpl implements PuestoService {
         }
 
         // Verificar si el cliente ya tiene un puesto activo
-        boolean clienteConPuesto = puestos.stream()
+        boolean clienteConPuesto = repository.obtenerTodosLosPuestos().stream()
                 .anyMatch(p -> p.getUsuarioOcupante() != null && 
                             p.getUsuarioOcupante().equals(usuario) && 
                             p.getEstadoPuesto() == EstadoPuesto.OCUPADO);
@@ -451,7 +414,7 @@ public class PuestoServiceImpl implements PuestoService {
                 usuario, clienteId, tipoCliente, LocalDateTime.now());
         puesto.agregarRegistroHistorial(registroHistorial);
 
-        guardarCambios();
+        repository.guardarPuesto(puesto);
 
         String mensaje = String.format("Puesto %s ocupado por %s", puesto.getNumero(), usuario);
         System.out.println("✅ " + mensaje);
