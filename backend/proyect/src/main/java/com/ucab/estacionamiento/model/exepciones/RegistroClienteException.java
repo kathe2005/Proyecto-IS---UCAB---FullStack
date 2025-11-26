@@ -1,3 +1,4 @@
+/*
 package com.ucab.estacionamiento.model.exepciones;
 
 public class RegistroClienteException extends RuntimeException {
@@ -16,4 +17,5 @@ public class RegistroClienteException extends RuntimeException {
     public int getStatus() {
         return codigoError;
     }
-}
+} 
+*/

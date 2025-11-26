@@ -1,12 +1,12 @@
-package com.ucab.estacionamiento.model.implement;
-import com.ucab.estacionamiento.model.interfaces.*;
+package com.ucab.estacionamiento.model.service;
+
 
 
 import java.time.LocalDate;
 import java.util.Map;
 import java.util.HashMap;
 
-public class ReporteOcupacionImpl implements ReporteOcupacion {
+public class ReporteOcupacionImpl {
     private LocalDate fecha;
     private String turno;
     private int totalPuestos;
@@ -76,28 +76,20 @@ public class ReporteOcupacionImpl implements ReporteOcupacion {
     }
 
     // Getters
-    @Override
     public LocalDate getFecha() { return fecha; }
 
-    @Override
     public String getTurno() { return turno; }
 
-    @Override
     public int getTotalPuestos() { return totalPuestos; }
 
-    @Override
     public int getPuestosOcupados() { return puestosOcupados; }
 
-    @Override
     public int getPuestosDisponibles() { return puestosDisponibles; }
 
-    @Override
     public double getPorcentajeOcupacion() { return porcentajeOcupacion; }
 
-    @Override
     public Map<String, Integer> getOcupacionPorTipo() { return ocupacionPorTipo; }
 
-    @Override
     public Map<String, Integer> getOcupacionPorUbicacion() { return ocupacionPorUbicacion; }
 
     // Setters
@@ -141,7 +133,6 @@ public class ReporteOcupacionImpl implements ReporteOcupacion {
         }
     }
 
-    @Override
     public String toString() {
         return String.format("ReporteOcupacion{fecha=%s, turno='%s', ocupados=%d/%d (%.1f%%)}", 
                 fecha, turno, puestosOcupados, totalPuestos, porcentajeOcupacion);

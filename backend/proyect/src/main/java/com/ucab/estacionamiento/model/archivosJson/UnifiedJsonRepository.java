@@ -1,3 +1,4 @@
+/*
 package com.ucab.estacionamiento.model.archivosJson;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -9,7 +10,6 @@ import com.ucab.estacionamiento.model.enums.TipoPuesto;
 import org.springframework.stereotype.Repository;
 
 import java.io.File;
-import java.io.IOException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.*;
@@ -559,3 +559,4 @@ public class UnifiedJsonRepository implements ClienteRepositoryPort {
         }
     }
 }
+*/

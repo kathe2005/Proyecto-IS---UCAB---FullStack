@@ -1,13 +1,10 @@
-package com.ucab.estacionamiento.model.implement;
+package com.ucab.estacionamiento.model.service;
 
-import com.ucab.estacionamiento.model.archivosJson.UnifiedJsonRepository;
+import com.ucab.estacionamiento.model.archivosJson.JsonManagerPuesto;
 import com.ucab.estacionamiento.model.clases.Puesto;
 import com.ucab.estacionamiento.model.clases.ResultadoOcupacion;
 import com.ucab.estacionamiento.model.enums.EstadoPuesto;
 import com.ucab.estacionamiento.model.enums.TipoPuesto;
-import com.ucab.estacionamiento.model.interfaces.PuestoService;
-
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -15,38 +12,48 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
-public class PuestoServiceImpl implements PuestoService {
+public class PuestoServiceImpl {
     
-    private final UnifiedJsonRepository repository;
+    private final JsonManagerPuesto jsonManagerPuesto;
 
-    @Autowired
-    public PuestoServiceImpl(UnifiedJsonRepository repository) {
-        this.repository = repository;
-        System.out.println("🚀 PuestoServiceImpl inicializado con UnifiedJsonRepository");
-        System.out.println("✅ Puestos cargados: " + repository.obtenerTodosLosPuestos().size());
+    public PuestoServiceImpl() {
+        this.jsonManagerPuesto = new JsonManagerPuesto();
+        System.out.println("🚀 PuestoServiceImpl inicializado con JsonManagerPuesto");
+        System.out.println("✅ Puestos cargados: " + jsonManagerPuesto.obtenerTodosPuestos().size());
+        mostrarEstadisticasIniciales();
     }
 
-    @Override
+    private void mostrarEstadisticasIniciales() {
+        List<Puesto> puestos = jsonManagerPuesto.obtenerTodosPuestos();
+        System.out.println("📊 Estadísticas iniciales de puestos:");
+        for (EstadoPuesto estado : EstadoPuesto.values()) {
+            long count = puestos.stream().filter(p -> p.getEstadoPuesto() == estado).count();
+            System.out.println("   " + estado.getDescripcion() + ": " + count);
+        }
+        for (TipoPuesto tipo : TipoPuesto.values()) {
+            long count = puestos.stream().filter(p -> p.getTipoPuesto() == tipo).count();
+            System.out.println("   " + tipo.getDescripcion() + ": " + count);
+        }
+    }
+
     public List<Puesto> obtenerPuestos() {
-        List<Puesto> puestos = repository.obtenerTodosLosPuestos();
+        List<Puesto> puestos = jsonManagerPuesto.obtenerTodosPuestos();
         System.out.println("📋 Obteniendo " + puestos.size() + " puestos");
         return new ArrayList<>(puestos);
     }
 
-    @Override
     public Optional<Puesto> obtenerPuestoPorId(String idPuesto) {
         System.out.println("🔍 Buscando puesto por ID: " + idPuesto);
-        Optional<Puesto> resultado = repository.obtenerPuestoPorId(idPuesto);
+        Optional<Puesto> resultado = jsonManagerPuesto.buscarPuestoPorId(idPuesto);
         System.out.println("🔍 Resultado búsqueda: " + (resultado.isPresent() ? "Encontrado" : "No encontrado"));
         return resultado;
     }
 
-    @Override
     public Puesto crearPuesto(Puesto puesto) {
         System.out.println("🔧 Creando puesto: " + puesto.getNumero());
         
         // Validar número único
-        boolean numeroExiste = repository.obtenerTodosLosPuestos().stream()
+        boolean numeroExiste = jsonManagerPuesto.obtenerTodosPuestos().stream()
                 .anyMatch(p -> p.getNumero().equals(puesto.getNumero()));
 
         if (numeroExiste) {
@@ -74,13 +81,15 @@ public class PuestoServiceImpl implements PuestoService {
         // Agregar registro inicial al historial
         puesto.agregarRegistroHistorial("Creado en " + LocalDateTime.now());
 
-        Puesto puestoGuardado = repository.guardarPuesto(puesto);
+        Puesto puestoGuardado = jsonManagerPuesto.guardarPuesto(puesto);
         System.out.println("✅ Puesto creado exitosamente: " + puestoGuardado.getId());
+        System.out.println("📍 Ubicación: " + puestoGuardado.getUbicacion());
+        System.out.println("🎯 Tipo: " + puestoGuardado.getTipoPuesto().getDescripcion());
         return puestoGuardado;
     }
 
     private String generarNuevoId() {
-        List<Puesto> puestos = repository.obtenerTodosLosPuestos();
+        List<Puesto> puestos = jsonManagerPuesto.obtenerTodosPuestos();
         Optional<Integer> maxId = puestos.stream()
                 .map(p -> {
                     if (p.getId() != null && p.getId().startsWith("P")) {
@@ -97,11 +106,10 @@ public class PuestoServiceImpl implements PuestoService {
         return "P" + (maxId.orElse(0) + 1);
     }
 
-    @Override
     public Puesto actualizarPuesto(Puesto puesto) {
         System.out.println("🔄 Actualizando puesto: " + puesto.getId());
         
-        Optional<Puesto> puestoExistente = repository.obtenerPuestoPorId(puesto.getId());
+        Optional<Puesto> puestoExistente = jsonManagerPuesto.buscarPuestoPorId(puesto.getId());
         if (puestoExistente.isEmpty()) {
             throw new IllegalArgumentException("Puesto no encontrado: " + puesto.getId());
         }
@@ -109,36 +117,27 @@ public class PuestoServiceImpl implements PuestoService {
         // Agregar al historial
         puesto.agregarRegistroHistorial("Actualizado en " + LocalDateTime.now());
         
-        Puesto puestoActualizado = repository.guardarPuesto(puesto);
+        Puesto puestoActualizado = jsonManagerPuesto.guardarPuesto(puesto);
         System.out.println("✅ Puesto actualizado: " + puestoActualizado.getId());
         return puestoActualizado;
     }
 
-    @Override
     public boolean eliminarPuesto(String id) {
         System.out.println("🗑️ Eliminando puesto: " + id);
         
-        Optional<Puesto> puesto = repository.obtenerPuestoPorId(id);
-        if (puesto.isPresent()) {
-            // Para eliminar, necesitamos obtener todos los puestos, remover el específico y guardar
-            List<Puesto> puestos = repository.obtenerTodosLosPuestos();
-            puestos.removeIf(p -> p.getId().equals(id));
-            
-            // Actualizar la lista en el repositorio
-            puestos.forEach(repository::guardarPuesto);
+        boolean eliminado = jsonManagerPuesto.eliminarPuesto(id);
+        if (eliminado) {
             System.out.println("✅ Puesto eliminado: " + id);
-            return true;
+        } else {
+            System.out.println("❌ Puesto no encontrado para eliminar: " + id);
         }
-        
-        System.out.println("❌ Puesto no encontrado para eliminar: " + id);
-        return false;
+        return eliminado;
     }
 
-    @Override
     public ResultadoOcupacion ocuparPuesto(String puestoId, String usuario) {
         System.out.println("🚗 Ocupando puesto: " + puestoId + " por usuario: " + usuario);
         
-        Optional<Puesto> puestoOpt = repository.obtenerPuestoPorId(puestoId);
+        Optional<Puesto> puestoOpt = jsonManagerPuesto.buscarPuestoPorId(puestoId);
 
         if (puestoOpt.isEmpty()) {
             System.err.println("❌ Puesto no encontrado: " + puestoId);
@@ -161,18 +160,17 @@ public class PuestoServiceImpl implements PuestoService {
         String registroHistorial = String.format("Ocupado por %s en %s", usuario, LocalDateTime.now());
         puesto.agregarRegistroHistorial(registroHistorial);
 
-        repository.guardarPuesto(puesto);
+        jsonManagerPuesto.guardarPuesto(puesto);
 
         String mensaje = String.format("Puesto %s ocupado por %s", puesto.getNumero(), usuario);
         System.out.println("✅ " + mensaje);
         return new ResultadoOcupacion(true, mensaje, puesto);
     }
 
-    @Override
     public boolean liberarPuesto(String puestoId) {
         System.out.println("🔄 Liberando puesto: " + puestoId);
         
-        Optional<Puesto> puestoOpt = repository.obtenerPuestoPorId(puestoId);
+        Optional<Puesto> puestoOpt = jsonManagerPuesto.buscarPuestoPorId(puestoId);
 
         if (puestoOpt.isPresent() && puestoOpt.get().getEstadoPuesto() == EstadoPuesto.OCUPADO) {
             Puesto puesto = puestoOpt.get();
@@ -183,7 +181,7 @@ public class PuestoServiceImpl implements PuestoService {
             String registroHistorial = String.format("Liberado en %s", LocalDateTime.now());
             puesto.agregarRegistroHistorial(registroHistorial);
 
-            repository.guardarPuesto(puesto);
+            jsonManagerPuesto.guardarPuesto(puesto);
             System.out.println("✅ Puesto liberado: " + puestoId);
             return true;
         }
@@ -192,51 +190,50 @@ public class PuestoServiceImpl implements PuestoService {
         return false;
     }
 
-    @Override
     public List<Puesto> obtenerPuestosPorEstado(EstadoPuesto estado) {
-        return repository.obtenerPuestosPorEstado(estado);
+        return jsonManagerPuesto.buscarPuestosPorEstado(estado);
     }
 
-    @Override
     public List<Puesto> obtenerPuestosPorTipo(TipoPuesto tipo) {
-        return repository.obtenerPuestosPorTipo(tipo);
+        return jsonManagerPuesto.buscarPuestosPorTipo(tipo);
     }
 
-    @Override
     public List<Puesto> filtrarPuestosPorUbicacion(String ubicacion) {
-        return repository.filtrarPuestosPorUbicacion(ubicacion);
+        return jsonManagerPuesto.filtrarPuestosPorUbicacion(ubicacion);
     }
 
-    @Override
     public int contarPuestosDisponibles() {
-        return repository.obtenerPuestosPorEstado(EstadoPuesto.DISPONIBLE).size();
+        return jsonManagerPuesto.buscarPuestosPorEstado(EstadoPuesto.DISPONIBLE).size();
     }
 
-    @Override
     public int contarPuestosOcupados() {
-        return repository.obtenerPuestosPorEstado(EstadoPuesto.OCUPADO).size();
+        return jsonManagerPuesto.buscarPuestosPorEstado(EstadoPuesto.OCUPADO).size();
     }
 
-    @Override
     public int contarPuestosReservados() {
-        return repository.obtenerPuestosPorEstado(EstadoPuesto.RESERVADO).size();
+        return jsonManagerPuesto.buscarPuestosPorEstado(EstadoPuesto.RESERVADO).size();
     }
 
-    @Override
     public int contarPuestosBloqueados() {
-        return repository.obtenerPuestosPorEstado(EstadoPuesto.BLOQUEADO).size();
+        return jsonManagerPuesto.buscarPuestosPorEstado(EstadoPuesto.BLOQUEADO).size();
     }
 
-    @Override
+    public int contarPuestosMantenimiento() {
+        return jsonManagerPuesto.buscarPuestosPorEstado(EstadoPuesto.MANTENIMIENTO).size();
+    }
+
     public List<Puesto> obtenerPuestosBloqueados() {
-        return repository.obtenerPuestosPorEstado(EstadoPuesto.BLOQUEADO);
+        return jsonManagerPuesto.buscarPuestosPorEstado(EstadoPuesto.BLOQUEADO);
     }
 
-    @Override
+    public List<Puesto> obtenerPuestosMantenimiento() {
+        return jsonManagerPuesto.buscarPuestosPorEstado(EstadoPuesto.MANTENIMIENTO);
+    }
+
     public boolean bloquearPuesto(String puestoId) {
         System.out.println("🔒 Bloqueando puesto: " + puestoId);
         
-        Optional<Puesto> puestoOpt = repository.obtenerPuestoPorId(puestoId);
+        Optional<Puesto> puestoOpt = jsonManagerPuesto.buscarPuestoPorId(puestoId);
         if (puestoOpt.isPresent()) {
             Puesto puesto = puestoOpt.get();
             puesto.setEstadoPuesto(EstadoPuesto.BLOQUEADO);
@@ -245,7 +242,7 @@ public class PuestoServiceImpl implements PuestoService {
             String registroHistorial = String.format("Bloqueado en %s", LocalDateTime.now());
             puesto.agregarRegistroHistorial(registroHistorial);
             
-            repository.guardarPuesto(puesto);
+            jsonManagerPuesto.guardarPuesto(puesto);
             System.out.println("✅ Puesto bloqueado: " + puestoId);
             return true;
         }
@@ -254,11 +251,10 @@ public class PuestoServiceImpl implements PuestoService {
         return false;
     }
 
-    @Override
     public boolean desbloquearPuesto(String puestoId) {
         System.out.println("🔓 Desbloqueando puesto: " + puestoId);
         
-        Optional<Puesto> puestoOpt = repository.obtenerPuestoPorId(puestoId);
+        Optional<Puesto> puestoOpt = jsonManagerPuesto.buscarPuestoPorId(puestoId);
         if (puestoOpt.isPresent()) {
             Puesto puesto = puestoOpt.get();
             puesto.setEstadoPuesto(EstadoPuesto.DISPONIBLE);
@@ -266,7 +262,7 @@ public class PuestoServiceImpl implements PuestoService {
             String registroHistorial = String.format("Desbloqueado en %s", LocalDateTime.now());
             puesto.agregarRegistroHistorial(registroHistorial);
             
-            repository.guardarPuesto(puesto);
+            jsonManagerPuesto.guardarPuesto(puesto);
             System.out.println("✅ Puesto desbloqueado: " + puestoId);
             return true;
         }
@@ -275,11 +271,10 @@ public class PuestoServiceImpl implements PuestoService {
         return false;
     }
 
-    @Override
     public ResultadoOcupacion asignarPuestoManual(String puestoId, String usuario) {
         System.out.println("👨‍💼 Asignando manualmente puesto: " + puestoId + " a: " + usuario);
         
-        Optional<Puesto> puestoOpt = repository.obtenerPuestoPorId(puestoId);
+        Optional<Puesto> puestoOpt = jsonManagerPuesto.buscarPuestoPorId(puestoId);
         
         if (puestoOpt.isEmpty()) {
             return new ResultadoOcupacion(false, "Puesto no encontrado", null, "PUESTO_NO_ENCONTRADO");
@@ -302,18 +297,17 @@ public class PuestoServiceImpl implements PuestoService {
                 usuario, LocalDateTime.now());
         puesto.agregarRegistroHistorial(registroHistorial);
         
-        repository.guardarPuesto(puesto);
+        jsonManagerPuesto.guardarPuesto(puesto);
         
         String mensaje = String.format("Puesto %s asignado manualmente a %s", puesto.getNumero(), usuario);
         System.out.println("✅ " + mensaje);
         return new ResultadoOcupacion(true, mensaje, puesto);
     }
 
-    @Override
     public Puesto reasignarPuesto(String puestoId, String nuevaUbicacion) {
         System.out.println("📍 Reasignando puesto: " + puestoId + " a: " + nuevaUbicacion);
         
-        Optional<Puesto> puestoOpt = repository.obtenerPuestoPorId(puestoId);
+        Optional<Puesto> puestoOpt = jsonManagerPuesto.buscarPuestoPorId(puestoId);
         if (puestoOpt.isPresent()) {
             Puesto puesto = puestoOpt.get();
             String ubicacionAnterior = puesto.getUbicacion();
@@ -323,18 +317,18 @@ public class PuestoServiceImpl implements PuestoService {
                     ubicacionAnterior, nuevaUbicacion, LocalDateTime.now());
             puesto.agregarRegistroHistorial(registroHistorial);
             
-            Puesto puestoActualizado = repository.guardarPuesto(puesto);
+            Puesto puestoActualizado = jsonManagerPuesto.guardarPuesto(puesto);
             System.out.println("✅ Puesto reasignado: " + puestoId);
+            System.out.println("📍 Nueva ubicación: " + nuevaUbicacion);
             return puestoActualizado;
         }
         throw new IllegalArgumentException("Puesto no encontrado: " + puestoId);
     }
 
-    @Override
     public boolean ponerPuestoEnMantenimiento(String puestoId) {
         System.out.println("🔧 Poniendo en mantenimiento puesto: " + puestoId);
         
-        Optional<Puesto> puestoOpt = repository.obtenerPuestoPorId(puestoId);
+        Optional<Puesto> puestoOpt = jsonManagerPuesto.buscarPuestoPorId(puestoId);
         
         if (puestoOpt.isPresent()) {
             Puesto puesto = puestoOpt.get();
@@ -346,7 +340,7 @@ public class PuestoServiceImpl implements PuestoService {
                     LocalDateTime.now());
             puesto.agregarRegistroHistorial(registroHistorial);
             
-            repository.guardarPuesto(puesto);
+            jsonManagerPuesto.guardarPuesto(puesto);
             System.out.println("✅ Puesto en mantenimiento: " + puestoId);
             return true;
         }
@@ -355,9 +349,8 @@ public class PuestoServiceImpl implements PuestoService {
         return false;
     }
 
-    @Override
     public List<String> obtenerHistorial(String puestoId) {
-        Optional<Puesto> puestoOpt = repository.obtenerPuestoPorId(puestoId);
+        Optional<Puesto> puestoOpt = jsonManagerPuesto.buscarPuestoPorId(puestoId);
         
         if (puestoOpt.isPresent()) {
             Puesto puesto = puestoOpt.get();
@@ -366,11 +359,10 @@ public class PuestoServiceImpl implements PuestoService {
         return new ArrayList<>();
     }
 
-    @Override
     public ResultadoOcupacion ocuparPuesto(String puestoId, String usuario, String clienteId, String tipoCliente) {
         System.out.println("🚗 Ocupando puesto: " + puestoId + " por usuario: " + usuario + " (Cliente: " + clienteId + ", Tipo: " + tipoCliente + ")");
         
-        Optional<Puesto> puestoOpt = repository.obtenerPuestoPorId(puestoId);
+        Optional<Puesto> puestoOpt = jsonManagerPuesto.buscarPuestoPorId(puestoId);
 
         if (puestoOpt.isEmpty()) {
             System.err.println("❌ Puesto no encontrado: " + puestoId);
@@ -395,7 +387,7 @@ public class PuestoServiceImpl implements PuestoService {
         }
 
         // Verificar si el cliente ya tiene un puesto activo
-        boolean clienteConPuesto = repository.obtenerTodosLosPuestos().stream()
+        boolean clienteConPuesto = jsonManagerPuesto.obtenerTodosPuestos().stream()
                 .anyMatch(p -> p.getUsuarioOcupante() != null && 
                             p.getUsuarioOcupante().equals(usuario) && 
                             p.getEstadoPuesto() == EstadoPuesto.OCUPADO);
@@ -414,10 +406,12 @@ public class PuestoServiceImpl implements PuestoService {
                 usuario, clienteId, tipoCliente, LocalDateTime.now());
         puesto.agregarRegistroHistorial(registroHistorial);
 
-        repository.guardarPuesto(puesto);
+        jsonManagerPuesto.guardarPuesto(puesto);
 
         String mensaje = String.format("Puesto %s ocupado por %s", puesto.getNumero(), usuario);
         System.out.println("✅ " + mensaje);
+        System.out.println("👤 Cliente ID: " + clienteId);
+        System.out.println("🎯 Tipo Cliente: " + tipoCliente);
         return new ResultadoOcupacion(true, mensaje, puesto);
     }
 
@@ -434,5 +428,50 @@ public class PuestoServiceImpl implements PuestoService {
                 tipoPuesto == TipoPuesto.VISITANTE;
         }
         return false;
+    }
+
+    // Métodos adicionales para estadísticas y reporting
+
+    public Map<String, Object> obtenerEstadisticasCompletas() {
+        List<Puesto> puestos = jsonManagerPuesto.obtenerTodosPuestos();
+        
+        Map<String, Object> estadisticas = new HashMap<>();
+        estadisticas.put("totalPuestos", puestos.size());
+        
+        // Estadísticas por estado
+        Map<String, Integer> porEstado = new HashMap<>();
+        for (EstadoPuesto estado : EstadoPuesto.values()) {
+            int count = (int) puestos.stream().filter(p -> p.getEstadoPuesto() == estado).count();
+            porEstado.put(estado.name(), count);
+        }
+        estadisticas.put("puestosPorEstado", porEstado);
+        
+        // Estadísticas por tipo
+        Map<String, Integer> porTipo = new HashMap<>();
+        for (TipoPuesto tipo : TipoPuesto.values()) {
+            int count = (int) puestos.stream().filter(p -> p.getTipoPuesto() == tipo).count();
+            porTipo.put(tipo.name(), count);
+        }
+        estadisticas.put("puestosPorTipo", porTipo);
+        
+        // Estadísticas por ubicación
+        Map<String, Long> porUbicacion = puestos.stream()
+                .collect(Collectors.groupingBy(Puesto::getUbicacion, Collectors.counting()));
+        estadisticas.put("puestosPorUbicacion", porUbicacion);
+        
+        estadisticas.put("fechaGeneracion", LocalDateTime.now());
+        
+        return estadisticas;
+    }
+
+    public void diagnostico() {
+        System.out.println("🩺 DIAGNÓSTICO DEL SERVICIO PUESTOS");
+        jsonManagerPuesto.diagnostico();
+        
+        Map<String, Object> estadisticas = obtenerEstadisticasCompletas();
+        System.out.println("📊 Estadísticas completas:");
+        System.out.println("   Total puestos: " + estadisticas.get("totalPuestos"));
+        System.out.println("   Por estado: " + estadisticas.get("puestosPorEstado"));
+        System.out.println("   Por tipo: " + estadisticas.get("puestosPorTipo"));
     }
 }

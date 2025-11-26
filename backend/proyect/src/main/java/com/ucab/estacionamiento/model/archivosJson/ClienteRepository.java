@@ -1,3 +1,4 @@
+/* 
 package com.ucab.estacionamiento.model.archivosJson;
 
 import org.springframework.stereotype.Repository;
@@ -169,13 +170,13 @@ public class ClienteRepository implements ClienteRepositoryPort {
      * Clear in-memory clients and persist empty list to storage.
      * Useful for tests to reset repository state.
      */
-    
+    /* 
     public void clearAll() {
         BD_clientes.clear();
         guardarClientesEnArchivo();
-    }
+    }*/
 
-    // Método para diagnóstico
+    /* Método para diagnóstico
     public void diagnostico() {
         System.out.println("🩺 === DIAGNÓSTICO DEL REPOSITORY ===");
         File archivo = new File(JSON_FILE_PATH);
@@ -187,3 +188,4 @@ public class ClienteRepository implements ClienteRepositoryPort {
         System.out.println("🩺 === FIN DIAGNÓSTICO ===");
     }
 }
+*/

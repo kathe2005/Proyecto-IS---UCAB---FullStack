@@ -1,3 +1,4 @@
+/* 
 package com.ucab.estacionamiento.model.exepciones;
 
 import org.springframework.http.HttpStatus;
@@ -42,3 +43,4 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(errorResponse, HttpStatus.INTERNAL_SERVER_ERROR);
     }
 }
+*/

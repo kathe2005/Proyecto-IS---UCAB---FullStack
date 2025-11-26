@@ -1,66 +1,126 @@
-/* 
 package com.ucab.estacionamiento.controller;
 
-import com.ucab.estacionamiento.model.archivosJson.JsonManager;
+import com.ucab.estacionamiento.model.archivosJson.JsonManagerPuesto;
 import com.ucab.estacionamiento.model.clases.OcuparPuestoRequest;
 import com.ucab.estacionamiento.model.clases.Puesto;
 import com.ucab.estacionamiento.model.clases.ResultadoOcupacion;
 import com.ucab.estacionamiento.model.enums.EstadoPuesto;
 import com.ucab.estacionamiento.model.enums.TipoPuesto;
-import com.ucab.estacionamiento.model.interfaces.PuestoService;
-
+import com.ucab.estacionamiento.model.service.PuestoServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Controller
 @RequestMapping("/puestos")
+@CrossOrigin(origins = "http://localhost:4200")
 public class PuestoController {
 
     @Autowired
-    private PuestoService puestoService;
+    private PuestoServiceImpl puestoService;
+
+    // Inyectar JsonManagerPuesto para operaciones directas con JSON
+    private final JsonManagerPuesto jsonManagerPuesto = new JsonManagerPuesto();
+
+    // ========== VISTAS THYMELEAF ==========
 
     @GetMapping
     public String mostrarTodosLosPuestos(Model model) {
-        List<Puesto> puestos = puestoService.obtenerPuestos();
-        model.addAttribute("puestos", puestos);
-        model.addAttribute("titulo", "Todos los Puestos");
-        return "puestos/lista";
+        try {
+            List<Puesto> puestos = puestoService.obtenerPuestos();
+            model.addAttribute("puestos", puestos);
+            model.addAttribute("titulo", "Todos los Puestos");
+            return "puestos/lista";
+        } catch (Exception e) {
+            model.addAttribute("error", "Error al cargar puestos: " + e.getMessage());
+            return "error";
+        }
     }
 
     @GetMapping("/disponibles")
     public String mostrarPuestosDisponibles(Model model) {
-        List<Puesto> puestos = puestoService.obtenerPuestosPorEstado(EstadoPuesto.DISPONIBLE);
-        model.addAttribute("puestos", puestos);
-        model.addAttribute("titulo", "Puestos Disponibles");
-        return "puestos/lista";
+        try {
+            List<Puesto> puestos = puestoService.obtenerPuestosPorEstado(EstadoPuesto.DISPONIBLE);
+            model.addAttribute("puestos", puestos);
+            model.addAttribute("titulo", "Puestos Disponibles");
+            return "puestos/lista";
+        } catch (Exception e) {
+            model.addAttribute("error", "Error al cargar puestos disponibles: " + e.getMessage());
+            return "error";
+        }
     }
 
     @GetMapping("/ocupados")
     public String mostrarPuestosOcupados(Model model) {
-        List<Puesto> puestos = puestoService.obtenerPuestosPorEstado(EstadoPuesto.OCUPADO);
-        model.addAttribute("puestos", puestos);
-        model.addAttribute("titulo", "Puestos Ocupados");
-        return "puestos/lista";
+        try {
+            List<Puesto> puestos = puestoService.obtenerPuestosPorEstado(EstadoPuesto.OCUPADO);
+            model.addAttribute("puestos", puestos);
+            model.addAttribute("titulo", "Puestos Ocupados");
+            return "puestos/lista";
+        } catch (Exception e) {
+            model.addAttribute("error", "Error al cargar puestos ocupados: " + e.getMessage());
+            return "error";
+        }
     }
 
     @GetMapping("/bloqueados")
     public String mostrarPuestosBloqueados(Model model) {
-        List<Puesto> puestos = puestoService.obtenerPuestosPorEstado(EstadoPuesto.BLOQUEADO);
-        model.addAttribute("puestos", puestos);
-        model.addAttribute("titulo", "Puestos Bloqueados");
-        return "puestos/lista";
+        try {
+            List<Puesto> puestos = puestoService.obtenerPuestosPorEstado(EstadoPuesto.BLOQUEADO);
+            model.addAttribute("puestos", puestos);
+            model.addAttribute("titulo", "Puestos Bloqueados");
+            return "puestos/lista";
+        } catch (Exception e) {
+            model.addAttribute("error", "Error al cargar puestos bloqueados: " + e.getMessage());
+            return "error";
+        }
     }
 
     @GetMapping("/mantenimiento")
     public String mostrarPuestosMantenimiento(Model model) {
-        List<Puesto> puestos = puestoService.obtenerPuestosPorEstado(EstadoPuesto.MANTENIMIENTO);
-        model.addAttribute("puestos", puestos);
-        model.addAttribute("titulo", "Puestos en Mantenimiento");
-        return "puestos/lista";
+        try {
+            List<Puesto> puestos = puestoService.obtenerPuestosPorEstado(EstadoPuesto.MANTENIMIENTO);
+            model.addAttribute("puestos", puestos);
+            model.addAttribute("titulo", "Puestos en Mantenimiento");
+            return "puestos/lista";
+        } catch (Exception e) {
+            model.addAttribute("error", "Error al cargar puestos en mantenimiento: " + e.getMessage());
+            return "error";
+        }
+    }
+
+    @GetMapping("/estadisticas")
+    public String mostrarEstadisticas(Model model) {
+        try {
+            int total = puestoService.obtenerPuestos().size();
+            int disponibles = puestoService.contarPuestosDisponibles();
+            int ocupados = puestoService.contarPuestosOcupados();
+            int bloqueados = puestoService.contarPuestosBloqueados();
+            int mantenimiento = puestoService.obtenerPuestosPorEstado(EstadoPuesto.MANTENIMIENTO).size();
+            
+            model.addAttribute("total", total);
+            model.addAttribute("disponibles", disponibles);
+            model.addAttribute("ocupados", ocupados);
+            model.addAttribute("bloqueados", bloqueados);
+            model.addAttribute("mantenimiento", mantenimiento);
+            model.addAttribute("porcentajeOcupacion", total > 0 ? (ocupados * 100.0) / total : 0);
+            
+            return "puestos/estadisticas";
+        } catch (Exception e) {
+            model.addAttribute("error", "Error al cargar estadísticas: " + e.getMessage());
+            return "error";
+        }
+    }
+
+    @GetMapping("/menu")
+    public String menu() {
+        return "menu";
     }
 
     @GetMapping("/ocupar")
@@ -83,70 +143,6 @@ public class PuestoController {
             model.addAttribute("puestosDisponibles", disponibles);
             return "puestos/ocupar";
         }
-    }
-
-    @GetMapping("/asignar-manual")
-    public String mostrarFormularioAsignarManual(Model model) {
-        List<Puesto> puestos = puestoService.obtenerPuestos();
-        model.addAttribute("puestos", puestos);
-        model.addAttribute("asignarRequest", new OcuparPuestoRequest());
-        return "puestos/asignar-manual";
-    }
-
-    @PostMapping("/asignar-manual")
-    public String asignarPuestoManual(@ModelAttribute OcuparPuestoRequest request, Model model) {
-        ResultadoOcupacion resultado = puestoService.asignarPuestoManual(request.getPuestoId(), request.getUsuario());
-        model.addAttribute("resultado", resultado);
-        
-        if (resultado.isExito()) {
-            return "redirect:/puestos";
-        } else {
-            List<Puesto> puestos = puestoService.obtenerPuestos();
-            model.addAttribute("puestos", puestos);
-            return "puestos/asignar-manual";
-        }
-    }
-
-    @PostMapping("/liberar/{id}")
-    public String liberarPuesto(@PathVariable String id) {
-        puestoService.liberarPuesto(id);
-        return "redirect:/puestos";
-    }
-
-    @PostMapping("/bloquear/{id}")
-    public String bloquearPuesto(@PathVariable String id) {
-        puestoService.bloquearPuesto(id);
-        return "redirect:/puestos";
-    }
-
-    @PostMapping("/desbloquear/{id}")
-    public String desbloquearPuesto(@PathVariable String id) {
-        puestoService.desbloquearPuesto(id);
-        return "redirect:/puestos";
-    }
-
-    @PostMapping("/mantenimiento/{id}")
-    public String ponerEnMantenimiento(@PathVariable String id) {
-        puestoService.ponerPuestoEnMantenimiento(id);
-        return "redirect:/puestos";
-    }
-
-    @GetMapping("/estadisticas")
-    public String mostrarEstadisticas(Model model) {
-        int total = puestoService.obtenerPuestos().size();
-        int disponibles = puestoService.contarPuestosDisponibles();
-        int ocupados = puestoService.contarPuestosOcupados();
-        int bloqueados = puestoService.contarPuestosBloqueados();
-        int mantenimiento = puestoService.obtenerPuestosPorEstado(EstadoPuesto.MANTENIMIENTO).size();
-        
-        model.addAttribute("total", total);
-        model.addAttribute("disponibles", disponibles);
-        model.addAttribute("ocupados", ocupados);
-        model.addAttribute("bloqueados", bloqueados);
-        model.addAttribute("mantenimiento", mantenimiento);
-        model.addAttribute("porcentajeOcupacion", total > 0 ? (ocupados * 100.0) / total : 0);
-        
-        return "puestos/estadisticas";
     }
 
     @GetMapping("/buscar")
@@ -184,15 +180,6 @@ public class PuestoController {
         return "puestos/lista";
     }
 
-    @GetMapping("/buscar/ubicacion")
-    public String buscarPorUbicacion(@RequestParam String ubicacion, Model model) {
-        List<Puesto> puestos = puestoService.filtrarPuestosPorUbicacion(ubicacion);
-        model.addAttribute("puestos", puestos);
-        model.addAttribute("titulo", "Puestos - Ubicación: " + ubicacion);
-        model.addAttribute("criterioBusqueda", "Ubicación: " + ubicacion);
-        return "puestos/lista";
-    }
-
     @GetMapping("/historial/{id}")
     public String mostrarHistorial(@PathVariable String id, Model model) {
         List<String> historial = puestoService.obtenerHistorial(id);
@@ -204,35 +191,266 @@ public class PuestoController {
         return "puestos/historial";
     }
 
-    @GetMapping("/json")
-    public String mostrarJson(Model model) {
-        JsonManager.mostrarArchivoJSON();
-        model.addAttribute("mensaje", "Contenido del archivo JSON mostrado en la consola del servidor");
-        return "puestos/json";
-    }
+    // ========== API REST ==========
 
-    @GetMapping("/reasignar/{id}")
-    public String mostrarFormularioReasignar(@PathVariable String id, Model model) {
-        Puesto puesto = puestoService.obtenerPuestoPorId(id).orElse(null);
-        if (puesto == null) {
-            return "redirect:/puestos";
-        }
-        model.addAttribute("puesto", puesto);
-        return "puestos/reasignar";
-    }
-
-    @PostMapping("/reasignar/{id}")
-    public String reasignarPuesto(@PathVariable String id, @RequestParam String nuevaUbicacion, Model model) {
+    @GetMapping("/api")
+    @ResponseBody
+    public ResponseEntity<?> obtenerTodosLosPuestosApi() {
         try {
-            Puesto puestoActualizado = puestoService.reasignarPuesto(id, nuevaUbicacion);
-            model.addAttribute("mensaje", "Puesto reasignado exitosamente a: " + nuevaUbicacion);
-            model.addAttribute("puesto", puestoActualizado);
-        } catch (IllegalArgumentException e) {
-            model.addAttribute("error", e.getMessage());
-            Puesto puesto = puestoService.obtenerPuestoPorId(id).orElse(null);
-            model.addAttribute("puesto", puesto);
+            List<Puesto> puestos = puestoService.obtenerPuestos();
+            return ResponseEntity.ok(puestos);
+        } catch (Exception e) {
+            Map<String, String> errorResponse = new HashMap<>();
+            errorResponse.put("error", "Error al obtener puestos: " + e.getMessage());
+            return ResponseEntity.badRequest().body(errorResponse);
         }
-        return "puestos/reasignar";
+    }
+
+    @GetMapping("/api/{id}")
+    @ResponseBody
+    public ResponseEntity<?> obtenerPuestoPorIdApi(@PathVariable String id) {
+        try {
+            return puestoService.obtenerPuestoPorId(id)
+                    .map(ResponseEntity::ok)
+                    .orElse(ResponseEntity.notFound().build());
+        } catch (Exception e) {
+            Map<String, String> errorResponse = new HashMap<>();
+            errorResponse.put("error", "Error al obtener puesto: " + e.getMessage());
+            return ResponseEntity.badRequest().body(errorResponse);
+        }
+    }
+
+    @PostMapping("/api/ocupar")
+    @ResponseBody
+    public ResponseEntity<?> ocuparPuestoApi(@RequestBody OcuparPuestoRequest request) {
+        try {
+            ResultadoOcupacion resultado = puestoService.ocuparPuesto(
+                request.getPuestoId(), 
+                request.getUsuario(), 
+                request.getClienteId(), 
+                request.getTipoCliente()
+            );
+            return ResponseEntity.ok(resultado);
+        } catch (IllegalArgumentException e) {
+            Map<String, String> errorResponse = new HashMap<>();
+            errorResponse.put("error", e.getMessage());
+            return ResponseEntity.badRequest().body(errorResponse);
+        } catch (Exception e) {
+            Map<String, String> errorResponse = new HashMap<>();
+            errorResponse.put("error", "Error interno del servidor");
+            return ResponseEntity.internalServerError().body(errorResponse);
+        }
+    }
+
+    @PostMapping("/api/liberar/{id}")
+    @ResponseBody
+    public ResponseEntity<?> liberarPuestoApi(@PathVariable String id) {
+        try {
+            boolean exito = puestoService.liberarPuesto(id);
+            if (exito) {
+                Map<String, String> successResponse = new HashMap<>();
+                successResponse.put("mensaje", "Puesto liberado exitosamente");
+                return ResponseEntity.ok(successResponse);
+            } else {
+                Map<String, String> errorResponse = new HashMap<>();
+                errorResponse.put("error", "No se pudo liberar el puesto");
+                return ResponseEntity.badRequest().body(errorResponse);
+            }
+        } catch (Exception e) {
+            Map<String, String> errorResponse = new HashMap<>();
+            errorResponse.put("error", "Error al liberar puesto: " + e.getMessage());
+            return ResponseEntity.badRequest().body(errorResponse);
+        }
+    }
+
+    @PostMapping("/api/bloquear/{id}")
+    @ResponseBody
+    public ResponseEntity<?> bloquearPuestoApi(@PathVariable String id) {
+        try {
+            boolean exito = puestoService.bloquearPuesto(id);
+            if (exito) {
+                Map<String, String> successResponse = new HashMap<>();
+                successResponse.put("mensaje", "Puesto bloqueado exitosamente");
+                return ResponseEntity.ok(successResponse);
+            } else {
+                Map<String, String> errorResponse = new HashMap<>();
+                errorResponse.put("error", "No se pudo bloquear el puesto");
+                return ResponseEntity.badRequest().body(errorResponse);
+            }
+        } catch (Exception e) {
+            Map<String, String> errorResponse = new HashMap<>();
+            errorResponse.put("error", "Error al bloquear puesto: " + e.getMessage());
+            return ResponseEntity.badRequest().body(errorResponse);
+        }
+    }
+
+    @PostMapping("/api/desbloquear/{id}")
+    @ResponseBody
+    public ResponseEntity<?> desbloquearPuestoApi(@PathVariable String id) {
+        try {
+            boolean exito = puestoService.desbloquearPuesto(id);
+            if (exito) {
+                Map<String, String> successResponse = new HashMap<>();
+                successResponse.put("mensaje", "Puesto desbloqueado exitosamente");
+                return ResponseEntity.ok(successResponse);
+            } else {
+                Map<String, String> errorResponse = new HashMap<>();
+                errorResponse.put("error", "No se pudo desbloquear el puesto");
+                return ResponseEntity.badRequest().body(errorResponse);
+            }
+        } catch (Exception e) {
+            Map<String, String> errorResponse = new HashMap<>();
+            errorResponse.put("error", "Error al desbloquear puesto: " + e.getMessage());
+            return ResponseEntity.badRequest().body(errorResponse);
+        }
+    }
+
+    @PostMapping("/api/mantenimiento/{id}")
+    @ResponseBody
+    public ResponseEntity<?> ponerEnMantenimientoApi(@PathVariable String id) {
+        try {
+            boolean exito = puestoService.ponerPuestoEnMantenimiento(id);
+            if (exito) {
+                Map<String, String> successResponse = new HashMap<>();
+                successResponse.put("mensaje", "Puesto puesto en mantenimiento exitosamente");
+                return ResponseEntity.ok(successResponse);
+            } else {
+                Map<String, String> errorResponse = new HashMap<>();
+                errorResponse.put("error", "No se pudo poner en mantenimiento el puesto");
+                return ResponseEntity.badRequest().body(errorResponse);
+            }
+        } catch (Exception e) {
+            Map<String, String> errorResponse = new HashMap<>();
+            errorResponse.put("error", "Error al poner en mantenimiento: " + e.getMessage());
+            return ResponseEntity.badRequest().body(errorResponse);
+        }
+    }
+
+    @GetMapping("/api/estadisticas")
+    @ResponseBody
+    public ResponseEntity<?> obtenerEstadisticasApi() {
+        try {
+            int total = puestoService.obtenerPuestos().size();
+            int disponibles = puestoService.contarPuestosDisponibles();
+            int ocupados = puestoService.contarPuestosOcupados();
+            int bloqueados = puestoService.contarPuestosBloqueados();
+            int mantenimiento = puestoService.obtenerPuestosPorEstado(EstadoPuesto.MANTENIMIENTO).size();
+            
+            Map<String, Object> estadisticas = new HashMap<>();
+            estadisticas.put("total", total);
+            estadisticas.put("disponibles", disponibles);
+            estadisticas.put("ocupados", ocupados);
+            estadisticas.put("bloqueados", bloqueados);
+            estadisticas.put("mantenimiento", mantenimiento);
+            estadisticas.put("porcentajeOcupacion", total > 0 ? (ocupados * 100.0) / total : 0);
+            
+            return ResponseEntity.ok(estadisticas);
+        } catch (Exception e) {
+            Map<String, String> errorResponse = new HashMap<>();
+            errorResponse.put("error", "Error al obtener estadísticas: " + e.getMessage());
+            return ResponseEntity.badRequest().body(errorResponse);
+        }
+    }
+
+    @PostMapping("/api")
+    @ResponseBody
+    public ResponseEntity<?> crearPuestoApi(@RequestBody Puesto puesto) {
+        try {
+            Puesto puestoCreado = puestoService.crearPuesto(puesto);
+            return ResponseEntity.ok(puestoCreado);
+        } catch (IllegalArgumentException e) {
+            Map<String, String> errorResponse = new HashMap<>();
+            errorResponse.put("error", e.getMessage());
+            return ResponseEntity.badRequest().body(errorResponse);
+        } catch (Exception e) {
+            Map<String, String> errorResponse = new HashMap<>();
+            errorResponse.put("error", "Error interno del servidor");
+            return ResponseEntity.internalServerError().body(errorResponse);
+        }
+    }
+
+    @GetMapping("/api/estado")
+    @ResponseBody
+    public ResponseEntity<?> obtenerPuestosPorEstadoApi(@RequestParam String estado) {
+        try {
+            EstadoPuesto estadoPuesto = EstadoPuesto.valueOf(estado.toUpperCase());
+            List<Puesto> puestos = puestoService.obtenerPuestosPorEstado(estadoPuesto);
+            return ResponseEntity.ok(puestos);
+        } catch (IllegalArgumentException e) {
+            Map<String, String> errorResponse = new HashMap<>();
+            errorResponse.put("error", "Estado de puesto no válido: " + estado);
+            return ResponseEntity.badRequest().body(errorResponse);
+        } catch (Exception e) {
+            Map<String, String> errorResponse = new HashMap<>();
+            errorResponse.put("error", "Error al buscar puestos por estado: " + e.getMessage());
+            return ResponseEntity.badRequest().body(errorResponse);
+        }
+    }
+
+    @GetMapping("/api/tipo")
+    @ResponseBody
+    public ResponseEntity<?> obtenerPuestosPorTipoApi(@RequestParam String tipo) {
+        try {
+            TipoPuesto tipoPuesto = TipoPuesto.valueOf(tipo.toUpperCase());
+            List<Puesto> puestos = puestoService.obtenerPuestosPorTipo(tipoPuesto);
+            return ResponseEntity.ok(puestos);
+        } catch (IllegalArgumentException e) {
+            Map<String, String> errorResponse = new HashMap<>();
+            errorResponse.put("error", "Tipo de puesto no válido: " + tipo);
+            return ResponseEntity.badRequest().body(errorResponse);
+        } catch (Exception e) {
+            Map<String, String> errorResponse = new HashMap<>();
+            errorResponse.put("error", "Error al buscar puestos por tipo: " + e.getMessage());
+            return ResponseEntity.badRequest().body(errorResponse);
+        }
+    }
+
+    @GetMapping("/api/json")
+    @ResponseBody
+    public ResponseEntity<?> mostrarArchivoJSONApi() {
+        jsonManagerPuesto.diagnostico();
+        Map<String, String> response = new HashMap<>();
+        response.put("mensaje", "Diagnóstico de puestos mostrado en consola");
+        return ResponseEntity.ok(response);
+    }
+
+    @GetMapping("/api/debug/info")
+    @ResponseBody
+    public ResponseEntity<?> getDebugInfoApi() {
+        // Usar JsonManagerPuesto para obtener información del archivo
+        List<Puesto> puestos = jsonManagerPuesto.obtenerTodosPuestos();
+        
+        Map<String, Object> info = new HashMap<>();
+        info.put("puestosEnArchivo", puestos.size());
+        info.put("puestosEnMemoria", puestoService.obtenerPuestos().size());
+        info.put("disponibles", puestoService.contarPuestosDisponibles());
+        info.put("ocupados", puestoService.contarPuestosOcupados());
+        info.put("bloqueados", puestoService.contarPuestosBloqueados());
+        
+        return ResponseEntity.ok(info);
+    }
+
+    @PostMapping("/api/test-crear")
+    @ResponseBody
+    public ResponseEntity<?> testCrearPuestoApi() {
+        try {
+            System.out.println("🧪 Probando creación de puesto...");
+            
+            Puesto testPuesto = new Puesto();
+            testPuesto.setNumero("TEST-001");
+            testPuesto.setTipoPuesto(TipoPuesto.REGULAR);
+            testPuesto.setEstadoPuesto(EstadoPuesto.DISPONIBLE);
+            testPuesto.setUbicacion("Zona Test");
+            
+            Puesto creado = puestoService.crearPuesto(testPuesto);
+            
+            return ResponseEntity.ok().body("{\"mensaje\": \"Puesto de prueba creado\", \"puesto\": " + 
+                "{\"id\": \"" + creado.getId() + "\", \"numero\": \"" + creado.getNumero() + "\"}}");
+            
+        } catch (Exception e) {
+            System.err.println("❌ Error en test: " + e.getMessage());
+            e.printStackTrace();
+            return ResponseEntity.badRequest().body("{\"error\": \"" + e.getMessage() + "\"}");
+        }
     }
 }
-*/
