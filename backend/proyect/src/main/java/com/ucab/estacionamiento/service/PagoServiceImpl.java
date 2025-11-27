@@ -1,10 +1,11 @@
-package com.ucab.estacionamiento.model.service;
+package com.ucab.estacionamiento.service;
 
 import com.ucab.estacionamiento.model.archivosJson.JsonManagerCliente;
 import com.ucab.estacionamiento.model.archivosJson.JsonManagerPuesto;
 import com.ucab.estacionamiento.model.archivosJson.JsonManagerReservaPago;
 import com.ucab.estacionamiento.model.clases.*;
 import com.ucab.estacionamiento.model.enums.EstadoReserva;
+import com.ucab.estacionamiento.model.enums.MetodoPago;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
@@ -28,7 +29,7 @@ public class PagoServiceImpl {
         System.out.println("🅿️  Puestos cargados: " + jsonManagerPuesto.obtenerTodosPuestos().size());
     }
 
-    public Pago registrarPago(PagoRequest pagoRequest) {
+    public Pago registrarPago(Pago pagoRequest) {
         System.out.println("💰 Registrando pago para reserva: " + pagoRequest.getReservaId());
         
         // Validar que no exista ya un pago para esta reserva
@@ -47,7 +48,7 @@ public class PagoServiceImpl {
             throw new IllegalArgumentException("La reserva especificada no existe");
         }
 
-        // Crear nuevo pago
+        // Crear nuevo pago usando el método de la clase fusionada
         String nuevoId = "PAY" + (jsonManagerReservaPago.obtenerTodosPagos().size() + 1);
         Pago nuevoPago = new Pago(nuevoId, pagoRequest.getReservaId(), 
                                 pagoRequest.getClienteId(), pagoRequest.getMonto(),
@@ -60,6 +61,40 @@ public class PagoServiceImpl {
         System.out.println("✅ Pago registrado exitosamente: " + nuevoId);
         System.out.println("📊 Monto: $" + pagoRequest.getMonto());
         System.out.println("💳 Método: " + pagoRequest.getMetodoPago());
+        return pagoGuardado;
+    }
+
+    // Método simplificado para registrar pago desde parámetros individuales
+    public Pago registrarPagoDesdeParametros(String reservaId, String clienteId, double monto, 
+                                                    MetodoPago metodoPago, String referencia, String descripcion) {
+        System.out.println("💰 Registrando pago simplificado para reserva: " + reservaId);
+        
+        // Validar que no exista ya un pago para esta reserva
+        if (existePagoParaReserva(reservaId)) {
+            throw new IllegalArgumentException("Ya existe un pago registrado para esta reserva");
+        }
+
+        // Validar monto positivo
+        if (monto <= 0) {
+            throw new IllegalArgumentException("El monto debe ser mayor a cero");
+        }
+
+        // Verificar que la reserva existe
+        Optional<Reserva> reservaOpt = jsonManagerReservaPago.buscarReservaPorId(reservaId);
+        if (reservaOpt.isEmpty()) {
+            throw new IllegalArgumentException("La reserva especificada no existe");
+        }
+
+        // Crear nuevo pago usando el método de la clase fusionada
+        String nuevoId = "PAY" + (jsonManagerReservaPago.obtenerTodosPagos().size() + 1);
+        Pago nuevoPago = new Pago(nuevoId, reservaId, clienteId, monto, metodoPago, referencia);
+        nuevoPago.setDescripcion(descripcion);
+
+        Pago pagoGuardado = jsonManagerReservaPago.guardarPago(nuevoPago);
+        
+        System.out.println("✅ Pago registrado exitosamente: " + nuevoId);
+        System.out.println("📊 Monto: $" + monto);
+        System.out.println("💳 Método: " + metodoPago);
         return pagoGuardado;
     }
 

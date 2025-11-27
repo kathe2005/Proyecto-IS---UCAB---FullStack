@@ -1,8 +1,7 @@
-package com.ucab.estacionamiento.model.service;
+package com.ucab.estacionamiento.service;
 
 import com.ucab.estacionamiento.model.archivosJson.JsonManagerPuesto;
 import com.ucab.estacionamiento.model.clases.Puesto;
-import com.ucab.estacionamiento.model.clases.ResultadoOcupacion;
 import com.ucab.estacionamiento.model.enums.EstadoPuesto;
 import com.ucab.estacionamiento.model.enums.TipoPuesto;
 import org.springframework.stereotype.Service;
@@ -134,14 +133,14 @@ public class PuestoServiceImpl {
         return eliminado;
     }
 
-    public ResultadoOcupacion ocuparPuesto(String puestoId, String usuario) {
+    public Puesto ocuparPuesto(String puestoId, String usuario) {
         System.out.println("🚗 Ocupando puesto: " + puestoId + " por usuario: " + usuario);
         
         Optional<Puesto> puestoOpt = jsonManagerPuesto.buscarPuestoPorId(puestoId);
 
         if (puestoOpt.isEmpty()) {
             System.err.println("❌ Puesto no encontrado: " + puestoId);
-            return new ResultadoOcupacion(false, "Puesto no encontrado", null, "PUESTO_NO_ENCONTRADO");
+            throw new IllegalArgumentException("Puesto no encontrado: " + puestoId);
         }
 
         Puesto puesto = puestoOpt.get();
@@ -150,21 +149,16 @@ public class PuestoServiceImpl {
             String mensaje = String.format("Puesto no disponible. Estado actual: %s",
                     puesto.getEstadoPuesto().getDescripcion());
             System.err.println("❌ " + mensaje);
-            return new ResultadoOcupacion(false, mensaje, puesto, "PUESTO_NO_DISPONIBLE");
+            throw new IllegalArgumentException(mensaje);
         }
 
-        puesto.setEstadoPuesto(EstadoPuesto.OCUPADO);
-        puesto.setUsuarioOcupante(usuario);
-        puesto.setFechaOcupacion(LocalDateTime.now());
-
-        String registroHistorial = String.format("Ocupado por %s en %s", usuario, LocalDateTime.now());
-        puesto.agregarRegistroHistorial(registroHistorial);
-
+        // Usar el método de la clase fusionada
+        puesto.ocuparPuesto(usuario, null, null);
         jsonManagerPuesto.guardarPuesto(puesto);
 
         String mensaje = String.format("Puesto %s ocupado por %s", puesto.getNumero(), usuario);
         System.out.println("✅ " + mensaje);
-        return new ResultadoOcupacion(true, mensaje, puesto);
+        return puesto;
     }
 
     public boolean liberarPuesto(String puestoId) {
@@ -174,13 +168,7 @@ public class PuestoServiceImpl {
 
         if (puestoOpt.isPresent() && puestoOpt.get().getEstadoPuesto() == EstadoPuesto.OCUPADO) {
             Puesto puesto = puestoOpt.get();
-            puesto.setEstadoPuesto(EstadoPuesto.DISPONIBLE);
-            puesto.setUsuarioOcupante(null);
-            puesto.setFechaOcupacion(null);
-
-            String registroHistorial = String.format("Liberado en %s", LocalDateTime.now());
-            puesto.agregarRegistroHistorial(registroHistorial);
-
+            puesto.liberarPuesto();
             jsonManagerPuesto.guardarPuesto(puesto);
             System.out.println("✅ Puesto liberado: " + puestoId);
             return true;
@@ -237,7 +225,7 @@ public class PuestoServiceImpl {
         if (puestoOpt.isPresent()) {
             Puesto puesto = puestoOpt.get();
             puesto.setEstadoPuesto(EstadoPuesto.BLOQUEADO);
-            puesto.setUsuarioOcupante(null);
+            puesto.setUsuarioOcupante("SISTEMA");
             
             String registroHistorial = String.format("Bloqueado en %s", LocalDateTime.now());
             puesto.agregarRegistroHistorial(registroHistorial);
@@ -258,6 +246,7 @@ public class PuestoServiceImpl {
         if (puestoOpt.isPresent()) {
             Puesto puesto = puestoOpt.get();
             puesto.setEstadoPuesto(EstadoPuesto.DISPONIBLE);
+            puesto.setUsuarioOcupante(null);
             
             String registroHistorial = String.format("Desbloqueado en %s", LocalDateTime.now());
             puesto.agregarRegistroHistorial(registroHistorial);
@@ -271,13 +260,13 @@ public class PuestoServiceImpl {
         return false;
     }
 
-    public ResultadoOcupacion asignarPuestoManual(String puestoId, String usuario) {
+    public Puesto asignarPuestoManual(String puestoId, String usuario) {
         System.out.println("👨‍💼 Asignando manualmente puesto: " + puestoId + " a: " + usuario);
         
         Optional<Puesto> puestoOpt = jsonManagerPuesto.buscarPuestoPorId(puestoId);
         
         if (puestoOpt.isEmpty()) {
-            return new ResultadoOcupacion(false, "Puesto no encontrado", null, "PUESTO_NO_ENCONTRADO");
+            throw new IllegalArgumentException("Puesto no encontrado: " + puestoId);
         }
         
         Puesto puesto = puestoOpt.get();
@@ -286,22 +275,11 @@ public class PuestoServiceImpl {
             puesto.getEstadoPuesto() == EstadoPuesto.MANTENIMIENTO) {
             String mensaje = String.format("Puesto no disponible para asignación. Estado actual: %s",
                     puesto.getEstadoPuesto().getDescripcion());
-            return new ResultadoOcupacion(false, mensaje, puesto, "PUESTO_NO_DISPONIBLE");
+            throw new IllegalArgumentException(mensaje);
         }
         
-        puesto.setEstadoPuesto(EstadoPuesto.OCUPADO);
-        puesto.setUsuarioOcupante(usuario);
-        puesto.setFechaOcupacion(LocalDateTime.now());
-        
-        String registroHistorial = String.format("Asignado manualmente a %s en %s", 
-                usuario, LocalDateTime.now());
-        puesto.agregarRegistroHistorial(registroHistorial);
-        
-        jsonManagerPuesto.guardarPuesto(puesto);
-        
-        String mensaje = String.format("Puesto %s asignado manualmente a %s", puesto.getNumero(), usuario);
-        System.out.println("✅ " + mensaje);
-        return new ResultadoOcupacion(true, mensaje, puesto);
+        // Usar el método de ocupación normal
+        return ocuparPuesto(puestoId, usuario);
     }
 
     public Puesto reasignarPuesto(String puestoId, String nuevaUbicacion) {
@@ -359,14 +337,14 @@ public class PuestoServiceImpl {
         return new ArrayList<>();
     }
 
-    public ResultadoOcupacion ocuparPuesto(String puestoId, String usuario, String clienteId, String tipoCliente) {
+    public Puesto ocuparPuestoConCliente(String puestoId, String usuario, String clienteId, String tipoCliente) {
         System.out.println("🚗 Ocupando puesto: " + puestoId + " por usuario: " + usuario + " (Cliente: " + clienteId + ", Tipo: " + tipoCliente + ")");
         
         Optional<Puesto> puestoOpt = jsonManagerPuesto.buscarPuestoPorId(puestoId);
 
         if (puestoOpt.isEmpty()) {
             System.err.println("❌ Puesto no encontrado: " + puestoId);
-            return new ResultadoOcupacion(false, "Puesto no encontrado", null, "PUESTO_NO_ENCONTRADO");
+            throw new IllegalArgumentException("Puesto no encontrado: " + puestoId);
         }
 
         Puesto puesto = puestoOpt.get();
@@ -376,14 +354,14 @@ public class PuestoServiceImpl {
             String mensaje = String.format("El tipo de cliente '%s' no puede ocupar un puesto de tipo '%s'", 
                     tipoCliente, puesto.getTipoPuesto().getDescripcion());
             System.err.println("❌ " + mensaje);
-            return new ResultadoOcupacion(false, mensaje, puesto, "TIPO_CLIENTE_NO_VALIDO");
+            throw new IllegalArgumentException(mensaje);
         }
 
         if (puesto.getEstadoPuesto() != EstadoPuesto.DISPONIBLE) {
             String mensaje = String.format("Puesto no disponible. Estado actual: %s",
                     puesto.getEstadoPuesto().getDescripcion());
             System.err.println("❌ " + mensaje);
-            return new ResultadoOcupacion(false, mensaje, puesto, "PUESTO_NO_DISPONIBLE");
+            throw new IllegalArgumentException(mensaje);
         }
 
         // Verificar si el cliente ya tiene un puesto activo
@@ -394,38 +372,31 @@ public class PuestoServiceImpl {
         
         if (clienteConPuesto) {
             System.err.println("❌ Cliente ya tiene puesto activo: " + usuario);
-            return new ResultadoOcupacion(false, "El cliente ya tiene un puesto activo", null, "CLIENTE_CON_PUESTO_ACTIVO");
+            throw new IllegalArgumentException("El cliente ya tiene un puesto activo");
         }
 
-        // Ocupar el puesto
-        puesto.setEstadoPuesto(EstadoPuesto.OCUPADO);
-        puesto.setUsuarioOcupante(usuario);
-        puesto.setFechaOcupacion(LocalDateTime.now());
-
-        String registroHistorial = String.format("Ocupado por %s (Cliente ID: %s, Tipo: %s) en %s", 
-                usuario, clienteId, tipoCliente, LocalDateTime.now());
-        puesto.agregarRegistroHistorial(registroHistorial);
-
+        // Usar el método de ocupación de la clase fusionada
+        puesto.ocuparPuesto(usuario, clienteId, tipoCliente);
         jsonManagerPuesto.guardarPuesto(puesto);
 
-        String mensaje = String.format("Puesto %s ocupado por %s", puesto.getNumero(), usuario);
-        System.out.println("✅ " + mensaje);
+        System.out.println("✅ Puesto ocupado: " + puesto.getNumero());
         System.out.println("👤 Cliente ID: " + clienteId);
         System.out.println("🎯 Tipo Cliente: " + tipoCliente);
-        return new ResultadoOcupacion(true, mensaje, puesto);
+        return puesto;
     }
 
     // Método para validar compatibilidad entre tipo de cliente y tipo de puesto
     private boolean validarTipoClientePuesto(String tipoCliente, TipoPuesto tipoPuesto) {
         if ("UCAB".equalsIgnoreCase(tipoCliente)) {
-            // UCAB puede ocupar REGULAR, DOCENTE, DISCAPACITADO
+            // UCAB puede ocupar REGULAR, DOCENTE, DISCAPACITADO, MOTOCICLETA
             return tipoPuesto == TipoPuesto.REGULAR || 
-                tipoPuesto == TipoPuesto.DOCENTE || 
-                tipoPuesto == TipoPuesto.DISCAPACITADO;
+                   tipoPuesto == TipoPuesto.DOCENTE || 
+                   tipoPuesto == TipoPuesto.DISCAPACITADO ||
+                   tipoPuesto == TipoPuesto.MOTOCICLETA;
         } else if ("VISITANTE".equalsIgnoreCase(tipoCliente)) {
             // Visitante solo puede ocupar REGULAR y VISITANTE
             return tipoPuesto == TipoPuesto.REGULAR || 
-                tipoPuesto == TipoPuesto.VISITANTE;
+                   tipoPuesto == TipoPuesto.VISITANTE;
         }
         return false;
     }
@@ -466,7 +437,6 @@ public class PuestoServiceImpl {
 
     public void diagnostico() {
         System.out.println("🩺 DIAGNÓSTICO DEL SERVICIO PUESTOS");
-        jsonManagerPuesto.diagnostico();
         
         Map<String, Object> estadisticas = obtenerEstadisticasCompletas();
         System.out.println("📊 Estadísticas completas:");

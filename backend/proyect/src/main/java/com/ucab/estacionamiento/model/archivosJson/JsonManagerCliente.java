@@ -12,7 +12,7 @@ import java.util.Optional;
 import java.util.UUID;
 
 public class JsonManagerCliente {
-    private static final String CLIENTES_FILE = "../../data/clientes.json";
+    private static final String CLIENTES_FILE = ConfigurationManager.getDataFilePath("clientes.json");
     private static final ObjectMapper objectMapper = new ObjectMapper();
     
     static {
@@ -62,11 +62,11 @@ public class JsonManagerCliente {
         try {
             File archivo = new File(CLIENTES_FILE);
             System.out.println("📁 Ruta: " + archivo.getAbsolutePath());
+            System.out.println("🔍 Existe: " + archivo.exists());
             
             if (!archivo.exists()) {
                 System.out.println("📝 Archivo no encontrado, creando uno nuevo...");
                 archivo.getParentFile().mkdirs();
-                archivo.createNewFile();
                 guardarClientesEnArchivo(new ArrayList<>());
                 return new ArrayList<>();
             }
@@ -86,6 +86,7 @@ public class JsonManagerCliente {
             
         } catch (Exception e) {
             System.err.println("❌ Error cargando clientes: " + e.getMessage());
+            e.printStackTrace();
             return new ArrayList<>();
         }
     }
@@ -131,9 +132,27 @@ public class JsonManagerCliente {
             File archivo = new File(CLIENTES_FILE);
             archivo.getParentFile().mkdirs();
             objectMapper.writeValue(archivo, clientes);
-            System.out.println("💾 " + clientes.size() + " clientes guardados en archivo");
+            System.out.println("💾 " + clientes.size() + " clientes guardados en archivo: " + archivo.getAbsolutePath());
         } catch (Exception e) {
             System.err.println("❌ Error guardando clientes en archivo: " + e.getMessage());
+            e.printStackTrace();
+        }
+    }
+
+    public boolean eliminarCliente(String usuario) {
+        try {
+            List<Cliente> clientes = cargarClientes();
+            boolean eliminado = clientes.removeIf(c -> c.getUsuario().equalsIgnoreCase(usuario));
+            if (eliminado) {
+                guardarClientesEnArchivo(clientes);
+                System.out.println("✅ Cliente eliminado: " + usuario);
+            } else {
+                System.out.println("❌ Cliente no encontrado: " + usuario);
+            }
+            return eliminado;
+        } catch (Exception e) {
+            System.err.println("❌ Error eliminando cliente: " + e.getMessage());
+            return false;
         }
     }
 

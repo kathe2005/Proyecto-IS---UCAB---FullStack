@@ -1,4 +1,4 @@
-package com.ucab.estacionamiento.model.service;
+package com.ucab.estacionamiento.service;
 
 import com.ucab.estacionamiento.model.archivosJson.JsonManagerCliente;
 import com.ucab.estacionamiento.model.clases.Cliente;

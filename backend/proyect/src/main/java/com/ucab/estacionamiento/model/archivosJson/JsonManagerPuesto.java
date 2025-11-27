@@ -16,7 +16,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 public class JsonManagerPuesto {
-    private static final String PUESTOS_FILE = "../../data/puestos.json";
+    private static final String PUESTOS_FILE = ConfigurationManager.getDataFilePath("puestos.json");
     private static final ObjectMapper objectMapper = new ObjectMapper();
     
     static {
@@ -60,6 +60,7 @@ public class JsonManagerPuesto {
         try {
             File archivo = new File(PUESTOS_FILE);
             System.out.println("📁 Ruta: " + archivo.getAbsolutePath());
+            System.out.println("🔍 Existe: " + archivo.exists());
             
             if (!archivo.exists()) {
                 System.out.println("📝 Archivo no encontrado, creando datos iniciales...");
@@ -127,9 +128,10 @@ public class JsonManagerPuesto {
             File archivo = new File(PUESTOS_FILE);
             archivo.getParentFile().mkdirs();
             objectMapper.writeValue(archivo, puestos);
-            System.out.println("💾 " + puestos.size() + " puestos guardados en archivo");
+            System.out.println("💾 " + puestos.size() + " puestos guardados en archivo: " + archivo.getAbsolutePath());
         } catch (Exception e) {
             System.err.println("❌ Error guardando puestos en archivo: " + e.getMessage());
+            e.printStackTrace();
         }
     }
 

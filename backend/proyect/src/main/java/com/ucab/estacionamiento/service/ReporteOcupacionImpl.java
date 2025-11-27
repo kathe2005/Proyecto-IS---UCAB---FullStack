@@ -1,4 +1,4 @@
-package com.ucab.estacionamiento.model.service;
+package com.ucab.estacionamiento.service;
 
 
 

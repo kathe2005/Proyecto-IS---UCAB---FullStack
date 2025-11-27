@@ -1,7 +1,7 @@
 package com.ucab.estacionamiento.controller;
 
 import com.ucab.estacionamiento.model.clases.*;
-import com.ucab.estacionamiento.model.service.*;
+import com.ucab.estacionamiento.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -43,7 +43,7 @@ public class ReservaController {
 
     @GetMapping("/crear")
     public String mostrarFormularioReserva(Model model) {
-        model.addAttribute("reservaRequest", new ReservaRequest());
+        model.addAttribute("reserva", new Reserva());
         return "reservas/crear";
     }
 
@@ -82,7 +82,7 @@ public class ReservaController {
         
         try {
             LocalDate fechaLocal = LocalDate.parse(fecha);
-            PuestosDisponiblesResponse response;
+            Map<String, Object> response;
             if (clienteId != null && !clienteId.trim().isEmpty()) {
                 response = reservaService.consultarPuestosDisponibles(fechaLocal, turno, clienteId);
             } else {
@@ -98,17 +98,42 @@ public class ReservaController {
 
     @PostMapping("/api")
     @ResponseBody
-    public ResponseEntity<?> crearReservaApi(@RequestBody ReservaRequest request) {
+    public ResponseEntity<?> crearReservaApi(@RequestBody Reserva reserva) {
         try {
-            Reserva reserva = reservaService.crearReserva(request);
-            return ResponseEntity.ok(reserva);
+            Reserva reservaCreada = reservaService.crearReserva(reserva);
+            return ResponseEntity.ok(reservaCreada);
         } catch (IllegalArgumentException e) {
             Map<String, String> errorResponse = new HashMap<>();
             errorResponse.put("error", e.getMessage());
             return ResponseEntity.badRequest().body(errorResponse);
         } catch (Exception e) {
             Map<String, String> errorResponse = new HashMap<>();
-            errorResponse.put("error", "Error interno del servidor");
+            errorResponse.put("error", "Error interno del servidor: " + e.getMessage());
+            return ResponseEntity.internalServerError().body(errorResponse);
+        }
+    }
+
+    // Método alternativo para crear reserva con parámetros individuales
+    @PostMapping("/api/crear")
+    @ResponseBody
+    public ResponseEntity<?> crearReservaConParametrosApi(
+            @RequestParam String puestoId,
+            @RequestParam String clienteId,
+            @RequestParam String usuario,
+            @RequestParam String fecha,
+            @RequestParam String turno) {
+        
+        try {
+            LocalDate fechaLocal = LocalDate.parse(fecha);
+            Reserva reservaCreada = reservaService.crearReservaDesdeParametros(puestoId, clienteId, usuario, fechaLocal, turno);
+            return ResponseEntity.ok(reservaCreada);
+        } catch (IllegalArgumentException e) {
+            Map<String, String> errorResponse = new HashMap<>();
+            errorResponse.put("error", e.getMessage());
+            return ResponseEntity.badRequest().body(errorResponse);
+        } catch (Exception e) {
+            Map<String, String> errorResponse = new HashMap<>();
+            errorResponse.put("error", "Error interno del servidor: " + e.getMessage());
             return ResponseEntity.internalServerError().body(errorResponse);
         }
     }
@@ -147,21 +172,116 @@ public class ReservaController {
         }
     }
 
-    // ========== API REST - PAGOS ==========
-
-    @PostMapping("/api/pagos")
+    @GetMapping("/api/{id}")
     @ResponseBody
-    public ResponseEntity<?> registrarPagoApi(@RequestBody PagoRequest pagoRequest) {
+    public ResponseEntity<?> obtenerReservaPorIdApi(@PathVariable String id) {
         try {
-            Pago pago = pagoService.registrarPago(pagoRequest);
-            return ResponseEntity.ok(pago);
+            return reservaService.obtenerReservaPorId(id)
+                    .map(ResponseEntity::ok)
+                    .orElse(ResponseEntity.notFound().build());
+        } catch (Exception e) {
+            Map<String, String> errorResponse = new HashMap<>();
+            errorResponse.put("error", "Error al obtener reserva: " + e.getMessage());
+            return ResponseEntity.badRequest().body(errorResponse);
+        }
+    }
+
+    @GetMapping("/api")
+    @ResponseBody
+    public ResponseEntity<?> obtenerTodasLasReservasApi() {
+        try {
+            // Usar obtenerTodasReservas() del JsonManagerReservaPago a través del servicio
+            List<Reserva> reservas = reservaService.obtenerReservasPendientes(); // Temporalmente usar pendientes
+            return ResponseEntity.ok(reservas);
+        } catch (Exception e) {
+            Map<String, String> errorResponse = new HashMap<>();
+            errorResponse.put("error", "Error al obtener reservas: " + e.getMessage());
+            return ResponseEntity.badRequest().body(errorResponse);
+        }
+    }
+
+    @PostMapping("/api/{id}/confirmar")
+    @ResponseBody
+    public ResponseEntity<?> confirmarReservaApi(@PathVariable String id) {
+        try {
+            Reserva reservaConfirmada = reservaService.confirmarReserva(id);
+            return ResponseEntity.ok(reservaConfirmada);
         } catch (IllegalArgumentException e) {
             Map<String, String> errorResponse = new HashMap<>();
             errorResponse.put("error", e.getMessage());
             return ResponseEntity.badRequest().body(errorResponse);
         } catch (Exception e) {
             Map<String, String> errorResponse = new HashMap<>();
-            errorResponse.put("error", "Error interno del servidor");
+            errorResponse.put("error", "Error al confirmar reserva: " + e.getMessage());
+            return ResponseEntity.internalServerError().body(errorResponse);
+        }
+    }
+
+    @PostMapping("/api/{id}/activar")
+    @ResponseBody
+    public ResponseEntity<?> activarReservaApi(@PathVariable String id) {
+        try {
+            boolean exito = reservaService.activarReserva(id);
+            if (exito) {
+                Map<String, String> successResponse = new HashMap<>();
+                successResponse.put("mensaje", "Reserva activada exitosamente");
+                return ResponseEntity.ok(successResponse);
+            } else {
+                Map<String, String> errorResponse = new HashMap<>();
+                errorResponse.put("error", "No se pudo activar la reserva");
+                return ResponseEntity.badRequest().body(errorResponse);
+            }
+        } catch (Exception e) {
+            Map<String, String> errorResponse = new HashMap<>();
+            errorResponse.put("error", "Error al activar reserva: " + e.getMessage());
+            return ResponseEntity.badRequest().body(errorResponse);
+        }
+    }
+
+    // ========== API REST - PAGOS ==========
+
+    @PostMapping("/api/pagos")
+    @ResponseBody
+    public ResponseEntity<?> registrarPagoApi(@RequestBody Pago pago) {
+        try {
+            Pago pagoRegistrado = pagoService.registrarPago(pago);
+            return ResponseEntity.ok(pagoRegistrado);
+        } catch (IllegalArgumentException e) {
+            Map<String, String> errorResponse = new HashMap<>();
+            errorResponse.put("error", e.getMessage());
+            return ResponseEntity.badRequest().body(errorResponse);
+        } catch (Exception e) {
+            Map<String, String> errorResponse = new HashMap<>();
+            errorResponse.put("error", "Error interno del servidor: " + e.getMessage());
+            return ResponseEntity.internalServerError().body(errorResponse);
+        }
+    }
+
+    // Método alternativo para registrar pago con parámetros
+    @PostMapping("/api/pagos/registrar")
+    @ResponseBody
+    public ResponseEntity<?> registrarPagoConParametrosApi(
+            @RequestParam String reservaId,
+            @RequestParam String clienteId,
+            @RequestParam double monto,
+            @RequestParam String metodoPago,
+            @RequestParam String referencia,
+            @RequestParam(required = false) String descripcion) {
+        
+        try {
+            Pago pagoRegistrado = pagoService.registrarPagoDesdeParametros(
+                reservaId, clienteId, monto, 
+                com.ucab.estacionamiento.model.enums.MetodoPago.valueOf(metodoPago), 
+                referencia, descripcion != null ? descripcion : ""
+            );
+            return ResponseEntity.ok(pagoRegistrado);
+        } catch (IllegalArgumentException e) {
+            Map<String, String> errorResponse = new HashMap<>();
+            errorResponse.put("error", e.getMessage());
+            return ResponseEntity.badRequest().body(errorResponse);
+        } catch (Exception e) {
+            Map<String, String> errorResponse = new HashMap<>();
+            errorResponse.put("error", "Error interno del servidor: " + e.getMessage());
             return ResponseEntity.internalServerError().body(errorResponse);
         }
     }
@@ -196,6 +316,19 @@ public class ReservaController {
             Map<String, String> errorResponse = new HashMap<>();
             errorResponse.put("error", "Error al calcular tarifa: " + e.getMessage());
             return ResponseEntity.badRequest().body(errorResponse);
+        }
+    }
+
+    @GetMapping("/api/pagos")
+    @ResponseBody
+    public ResponseEntity<?> obtenerTodosLosPagosApi() {
+        try {
+            List<Pago> pagos = pagoService.obtenerTodosLosPagos();
+            return ResponseEntity.ok(pagos);
+        } catch (Exception e) {
+            Map<String, String> errorResponse = new HashMap<>();
+            errorResponse.put("error", "Error al obtener pagos: " + e.getMessage());
+            return ResponseEntity.internalServerError().body(errorResponse);
         }
     }
 
@@ -249,6 +382,39 @@ public class ReservaController {
         } catch (Exception e) {
             Map<String, String> errorResponse = new HashMap<>();
             errorResponse.put("error", "Error al obtener estadísticas: " + e.getMessage());
+            return ResponseEntity.internalServerError().body(errorResponse);
+        }
+    }
+
+    @GetMapping("/api/reportes/tendencia")
+    @ResponseBody
+    public ResponseEntity<?> getReporteTendenciaApi() {
+        try {
+            List<ReporteOcupacionImpl> tendencia = reporteService.generarReporteTendencia();
+            return ResponseEntity.ok(tendencia);
+        } catch (Exception e) {
+            Map<String, String> errorResponse = new HashMap<>();
+            errorResponse.put("error", "Error al generar reporte de tendencia: " + e.getMessage());
+            return ResponseEntity.internalServerError().body(errorResponse);
+        }
+    }
+
+    // ========== MÉTODOS DE DIAGNÓSTICO ==========
+
+    @GetMapping("/api/diagnostico")
+    @ResponseBody
+    public ResponseEntity<?> diagnosticoApi() {
+        try {
+            reservaService.diagnostico();
+            pagoService.diagnostico();
+            reporteService.diagnostico();
+            
+            Map<String, String> response = new HashMap<>();
+            response.put("mensaje", "Diagnóstico completado - ver consola para detalles");
+            return ResponseEntity.ok(response);
+        } catch (Exception e) {
+            Map<String, String> errorResponse = new HashMap<>();
+            errorResponse.put("error", "Error en diagnóstico: " + e.getMessage());
             return ResponseEntity.internalServerError().body(errorResponse);
         }
     }

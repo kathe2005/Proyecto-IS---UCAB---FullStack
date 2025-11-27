@@ -1,7 +1,8 @@
 package com.ucab.estacionamiento.controller;
 
 import com.ucab.estacionamiento.model.clases.Cliente;
-import com.ucab.estacionamiento.model.service.ClienteServiceImpl;
+import com.ucab.estacionamiento.service.ClienteServiceImpl;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -44,9 +45,9 @@ public class ClienteController {
     @PostMapping("/registrar")
     public String registrarCliente(@ModelAttribute Cliente cliente, Model model) {
         try {
-            Cliente creado = clienteService.registrarCliente(cliente);
-            model.addAttribute("mensaje", "Cliente registrado exitosamente");
-            return "redirect:/clientes";
+        clienteService.registrarCliente(cliente); // Eliminar variable 'creado'
+        model.addAttribute("mensaje", "Cliente registrado exitosamente");
+        return "redirect:/clientes";
         } catch (Exception e) {
             model.addAttribute("error", "Error al registrar cliente: " + e.getMessage());
             model.addAttribute("cliente", cliente);

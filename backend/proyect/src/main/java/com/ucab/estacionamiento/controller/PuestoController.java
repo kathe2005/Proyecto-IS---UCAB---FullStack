@@ -1,12 +1,11 @@
 package com.ucab.estacionamiento.controller;
 
 import com.ucab.estacionamiento.model.archivosJson.JsonManagerPuesto;
-import com.ucab.estacionamiento.model.clases.OcuparPuestoRequest;
 import com.ucab.estacionamiento.model.clases.Puesto;
-import com.ucab.estacionamiento.model.clases.ResultadoOcupacion;
 import com.ucab.estacionamiento.model.enums.EstadoPuesto;
 import com.ucab.estacionamiento.model.enums.TipoPuesto;
-import com.ucab.estacionamiento.model.service.PuestoServiceImpl;
+import com.ucab.estacionamiento.service.PuestoServiceImpl;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -72,7 +71,7 @@ public class PuestoController {
     @GetMapping("/bloqueados")
     public String mostrarPuestosBloqueados(Model model) {
         try {
-            List<Puesto> puestos = puestoService.obtenerPuestosPorEstado(EstadoPuesto.BLOQUEADO);
+            List<Puesto> puestos = puestoService.obtenerPuestosBloqueados();
             model.addAttribute("puestos", puestos);
             model.addAttribute("titulo", "Puestos Bloqueados");
             return "puestos/lista";
@@ -85,7 +84,7 @@ public class PuestoController {
     @GetMapping("/mantenimiento")
     public String mostrarPuestosMantenimiento(Model model) {
         try {
-            List<Puesto> puestos = puestoService.obtenerPuestosPorEstado(EstadoPuesto.MANTENIMIENTO);
+            List<Puesto> puestos = puestoService.obtenerPuestosMantenimiento();
             model.addAttribute("puestos", puestos);
             model.addAttribute("titulo", "Puestos en Mantenimiento");
             return "puestos/lista";
@@ -102,7 +101,7 @@ public class PuestoController {
             int disponibles = puestoService.contarPuestosDisponibles();
             int ocupados = puestoService.contarPuestosOcupados();
             int bloqueados = puestoService.contarPuestosBloqueados();
-            int mantenimiento = puestoService.obtenerPuestosPorEstado(EstadoPuesto.MANTENIMIENTO).size();
+            int mantenimiento = puestoService.contarPuestosMantenimiento();
             
             model.addAttribute("total", total);
             model.addAttribute("disponibles", disponibles);
@@ -127,20 +126,23 @@ public class PuestoController {
     public String mostrarFormularioOcupar(Model model) {
         List<Puesto> disponibles = puestoService.obtenerPuestosPorEstado(EstadoPuesto.DISPONIBLE);
         model.addAttribute("puestosDisponibles", disponibles);
-        model.addAttribute("ocuparRequest", new OcuparPuestoRequest());
+        model.addAttribute("ocuparRequest", new Puesto());
         return "puestos/ocupar";
     }
 
     @PostMapping("/ocupar")
-    public String ocuparPuesto(@ModelAttribute OcuparPuestoRequest request, Model model) {
-        ResultadoOcupacion resultado = puestoService.ocuparPuesto(request.getPuestoId(), request.getUsuario());
-        model.addAttribute("resultado", resultado);
-        
-        if (resultado.isExito()) {
+    public String ocuparPuesto(@ModelAttribute Puesto request, Model model) {
+        try {
+            Puesto resultado = puestoService.ocuparPuesto(
+                request.getPuestoIdSolicitud(), 
+                request.getUsuarioSolicitud()
+            );
+            model.addAttribute("resultado", resultado);
             return "redirect:/puestos";
-        } else {
+        } catch (Exception e) {
             List<Puesto> disponibles = puestoService.obtenerPuestosPorEstado(EstadoPuesto.DISPONIBLE);
             model.addAttribute("puestosDisponibles", disponibles);
+            model.addAttribute("error", e.getMessage());
             return "puestos/ocupar";
         }
     }
@@ -222,13 +224,18 @@ public class PuestoController {
 
     @PostMapping("/api/ocupar")
     @ResponseBody
-    public ResponseEntity<?> ocuparPuestoApi(@RequestBody OcuparPuestoRequest request) {
+    public ResponseEntity<?> ocuparPuestoApi(@RequestBody Map<String, String> request) {
         try {
-            ResultadoOcupacion resultado = puestoService.ocuparPuesto(
-                request.getPuestoId(), 
-                request.getUsuario(), 
-                request.getClienteId(), 
-                request.getTipoCliente()
+            String puestoId = request.get("puestoId");
+            String usuario = request.get("usuario");
+            String clienteId = request.get("clienteId");
+            String tipoCliente = request.get("tipoCliente");
+            
+            Puesto resultado = puestoService.ocuparPuestoConCliente(
+                puestoId, 
+                usuario,
+                clienteId,
+                tipoCliente
             );
             return ResponseEntity.ok(resultado);
         } catch (IllegalArgumentException e) {
@@ -237,7 +244,7 @@ public class PuestoController {
             return ResponseEntity.badRequest().body(errorResponse);
         } catch (Exception e) {
             Map<String, String> errorResponse = new HashMap<>();
-            errorResponse.put("error", "Error interno del servidor");
+            errorResponse.put("error", "Error interno del servidor: " + e.getMessage());
             return ResponseEntity.internalServerError().body(errorResponse);
         }
     }
@@ -334,7 +341,7 @@ public class PuestoController {
             int disponibles = puestoService.contarPuestosDisponibles();
             int ocupados = puestoService.contarPuestosOcupados();
             int bloqueados = puestoService.contarPuestosBloqueados();
-            int mantenimiento = puestoService.obtenerPuestosPorEstado(EstadoPuesto.MANTENIMIENTO).size();
+            int mantenimiento = puestoService.contarPuestosMantenimiento();
             
             Map<String, Object> estadisticas = new HashMap<>();
             estadisticas.put("total", total);
@@ -444,13 +451,21 @@ public class PuestoController {
             
             Puesto creado = puestoService.crearPuesto(testPuesto);
             
-            return ResponseEntity.ok().body("{\"mensaje\": \"Puesto de prueba creado\", \"puesto\": " + 
-                "{\"id\": \"" + creado.getId() + "\", \"numero\": \"" + creado.getNumero() + "\"}}");
+            Map<String, Object> response = new HashMap<>();
+            response.put("mensaje", "Puesto de prueba creado");
+            response.put("puesto", Map.of(
+                "id", creado.getId(),
+                "numero", creado.getNumero()
+            ));
+            
+            return ResponseEntity.ok(response);
             
         } catch (Exception e) {
             System.err.println("❌ Error en test: " + e.getMessage());
             e.printStackTrace();
-            return ResponseEntity.badRequest().body("{\"error\": \"" + e.getMessage() + "\"}");
+            Map<String, String> errorResponse = new HashMap<>();
+            errorResponse.put("error", e.getMessage());
+            return ResponseEntity.badRequest().body(errorResponse);
         }
     }
 }

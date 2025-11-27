@@ -1,13 +1,9 @@
-package com.ucab.estacionamiento.model.service;
+package com.ucab.estacionamiento.service;
 
 import com.ucab.estacionamiento.model.archivosJson.JsonManagerCliente;
 import com.ucab.estacionamiento.model.archivosJson.JsonManagerPuesto;
 import com.ucab.estacionamiento.model.archivosJson.JsonManagerReservaPago;
-import com.ucab.estacionamiento.model.clases.Puesto;
-import com.ucab.estacionamiento.model.clases.PuestosDisponiblesResponse;
-import com.ucab.estacionamiento.model.clases.Reserva;
-import com.ucab.estacionamiento.model.clases.ReservaRequest;
-import com.ucab.estacionamiento.model.clases.Cliente;
+import com.ucab.estacionamiento.model.clases.*;
 import com.ucab.estacionamiento.model.enums.*;
 import org.springframework.stereotype.Service;
 
@@ -32,7 +28,7 @@ public class ReservaServiceImpl {
         System.out.println("👥 Clientes cargados: " + jsonManagerCliente.obtenerTodosClientes().size());
     }
 
-    public Reserva crearReserva(ReservaRequest request) {
+    public Reserva crearReserva(Reserva request) {
         System.out.println("📅 Creando reserva para fecha: " + request.getFecha() + ", turno: " + request.getTurno());
         System.out.println("👤 Cliente: " + request.getUsuario() + " (ID: " + request.getClienteId() + ")");
         System.out.println("🅿️  Puesto solicitado: " + request.getPuestoId());
@@ -58,7 +54,7 @@ public class ReservaServiceImpl {
             throw new IllegalArgumentException("El tipo de cliente '" + tipoCliente + "' no puede reservar un puesto de tipo '" + puesto.getTipoPuesto().getDescripcion() + "'");
         }
 
-        // Crear nueva reserva
+        // Crear nueva reserva usando el método de la clase fusionada
         String nuevoId = "R" + (jsonManagerReservaPago.obtenerTodasReservas().size() + 1);
         Reserva nuevaReserva = new Reserva(nuevoId, request.getPuestoId(), 
                                          request.getClienteId(), request.getUsuario(),
@@ -73,47 +69,104 @@ public class ReservaServiceImpl {
         return reservaGuardada;
     }
 
-    public PuestosDisponiblesResponse consultarPuestosDisponibles(LocalDate fecha, String turno) {
-        System.out.println("🔍 Consultando puestos disponibles para: " + fecha + ", turno: " + turno);
-        return consultarPuestosDisponibles(fecha, turno, null);
+    // Método simplificado para crear reserva desde parámetros
+    public Reserva crearReservaDesdeParametros(String puestoId, String clienteId, String usuario, 
+                                                      LocalDate fecha, String turno) {
+        System.out.println("📅 Creando reserva desde parámetros para fecha: " + fecha + ", turno: " + turno);
+        System.out.println("👤 Cliente: " + usuario + " (ID: " + clienteId + ")");
+        System.out.println("🅿️  Puesto solicitado: " + puestoId);
+        
+        // Validar que el puesto existe
+        Optional<Puesto> puestoOpt = jsonManagerPuesto.buscarPuestoPorId(puestoId);
+                
+        if (puestoOpt.isEmpty()) {
+            throw new IllegalArgumentException("Puesto no encontrado: " + puestoId);
+        }
+
+        Puesto puesto = puestoOpt.get();
+        System.out.println("📍 Puesto encontrado: " + puesto.getNumero() + " - " + puesto.getUbicacion());
+
+        // Validar disponibilidad del puesto
+        if (!verificarDisponibilidadPuesto(puestoId, fecha, turno)) {
+            throw new IllegalArgumentException("El puesto no está disponible para la fecha y turno seleccionados");
+        }
+
+        // Validar tipo de cliente vs tipo de puesto
+        String tipoCliente = resolveTipoCliente(clienteId);
+        if (tipoCliente != null && !validarTipoClientePuesto(tipoCliente, puesto.getTipoPuesto())) {
+            throw new IllegalArgumentException("El tipo de cliente '" + tipoCliente + "' no puede reservar un puesto de tipo '" + puesto.getTipoPuesto().getDescripcion() + "'");
+        }
+
+        // Crear nueva reserva usando el método de la clase fusionada
+        String nuevoId = "R" + (jsonManagerReservaPago.obtenerTodasReservas().size() + 1);
+        Reserva nuevaReserva = new Reserva(nuevoId, puestoId, clienteId, usuario, fecha, turno);
+        
+        Reserva reservaGuardada = jsonManagerReservaPago.guardarReserva(nuevaReserva);
+        
+        System.out.println("✅ Reserva creada exitosamente: " + nuevoId);
+        System.out.println("⏰ Horario: " + nuevaReserva.getHoraInicio() + " - " + nuevaReserva.getHoraFin());
+        System.out.println("📊 Estado inicial: " + nuevaReserva.getEstado().getDescripcion());
+        
+        return reservaGuardada;
     }
 
-    public PuestosDisponiblesResponse consultarPuestosDisponibles(LocalDate fecha, String turno, String clienteId) {
-        System.out.println("🔍 Consultando puestos disponibles para: " + fecha + ", turno: " + turno + 
+    public Map<String, Object> consultarPuestosDisponibles(LocalDate fecha, String turno) {
+        System.out.println("🔍 Consultando puestos disponibles para: " + fecha + ", turno: " + turno);
+        return consultarPuestosDisponiblesMap(fecha, turno, null);
+    }
+
+    public Map<String, Object> consultarPuestosDisponibles(LocalDate fecha, String turno, String clienteId) {
+        // Reuse the Map-based implementation; keep logs consistent
+        System.out.println("🔍 Consultando puestos disponibles para: " + fecha + ", turno: " + turno +
+                (clienteId != null ? ", cliente: " + clienteId : ""));
+        Map<String, Object> response = consultarPuestosDisponiblesMap(fecha, turno, clienteId);
+        System.out.println("✅ Consulta completada: " + response.getOrDefault("puestosDisponibles", 0) + " puestos disponibles");
+        return response;
+    }
+
+    // Método para convertir Puesto a Puesto (para compatibilidad)
+    private Puesto convertirPuestoAPuesto(Puesto Puesto) {
+        Puesto puesto = new Puesto();
+        puesto.setId(Puesto.getId());
+        puesto.setNumero(Puesto.getNumero());
+        puesto.setUbicacion(Puesto.getUbicacion());
+        puesto.setTipoPuesto(Puesto.getTipoPuesto());
+        puesto.setEstadoPuesto(Puesto.getEstadoPuesto());
+        puesto.setUsuarioOcupante(Puesto.getUsuarioOcupante());
+        puesto.setFechaOcupacion(Puesto.getFechaOcupacion());
+        puesto.setFechaCreacion(Puesto.getFechaCreacion());
+        puesto.setHistorialOcupacion(Puesto.getHistorialOcupacion());
+        return puesto;
+    }
+
+    // Método alternativo que devuelve un Map en lugar de PuestosDisponiblesResponse
+    public Map<String, Object> consultarPuestosDisponiblesMap(LocalDate fecha, String turno, String clienteId) {
+        System.out.println("🔍 Consultando puestos disponibles (Map) para: " + fecha + ", turno: " + turno + 
                           (clienteId != null ? ", cliente: " + clienteId : ""));
 
         List<Puesto> todosLosPuestos = jsonManagerPuesto.obtenerTodosPuestos();
         List<Puesto> puestosDisponibles = obtenerPuestosDisponiblesParaFecha(fecha, turno);
-
-        System.out.println("📊 Base: " + todosLosPuestos.size() + " puestos totales, " + 
-                          puestosDisponibles.size() + " disponibles inicialmente");
 
         // Si se proporcionó clienteId, filtrar por tipo de cliente
         if (clienteId != null && !clienteId.trim().isEmpty()) {
             String tipoCliente = resolveTipoCliente(clienteId);
             if (tipoCliente != null) {
                 final String tipo = tipoCliente;
-                int antesFiltro = puestosDisponibles.size();
                 puestosDisponibles = puestosDisponibles.stream()
                         .filter(p -> validarTipoClientePuesto(tipo, p.getTipoPuesto()))
                         .collect(Collectors.toList());
-                System.out.println("🎯 Filtrado por tipo '" + tipo + "': " + antesFiltro + " → " + puestosDisponibles.size() + " puestos");
-            } else {
-                System.out.println("⚠️  No se pudo determinar el tipo de cliente para: " + clienteId);
             }
         }
 
-        PuestosDisponiblesResponse response = new PuestosDisponiblesResponse(
-                fecha, turno, todosLosPuestos.size(), puestosDisponibles.size(), puestosDisponibles
-        );
+        Map<String, Object> response = new HashMap<>();
+        response.put("fecha", fecha);
+        response.put("turno", turno);
+        response.put("totalPuestos", todosLosPuestos.size());
+        response.put("puestosDisponibles", puestosDisponibles.size());
+        response.put("puestos", puestosDisponibles);
+        response.put("mensaje", String.format("Se encontraron %d puestos disponibles de %d totales para el %s", 
+                puestosDisponibles.size(), todosLosPuestos.size(), turno));
 
-        System.out.println("✅ Consulta completada: " + puestosDisponibles.size() + " puestos disponibles");
-        
-        // Mostrar distribución por tipo
-        Map<String, Long> distribucion = puestosDisponibles.stream()
-                .collect(Collectors.groupingBy(p -> p.getTipoPuesto().getDescripcion(), Collectors.counting()));
-        System.out.println("📈 Distribución: " + distribucion);
-        
         return response;
     }
 

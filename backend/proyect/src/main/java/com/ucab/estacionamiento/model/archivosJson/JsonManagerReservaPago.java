@@ -15,8 +15,8 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 public class JsonManagerReservaPago {
-    private static final String RESERVAS_FILE = "../../data/reservas.json";
-    private static final String PAGOS_FILE = "../../data/pagos.json";
+    private static final String RESERVAS_FILE = ConfigurationManager.getDataFilePath("reservas.json");
+    private static final String PAGOS_FILE = ConfigurationManager.getDataFilePath("pagos.json");
     private static final ObjectMapper objectMapper = new ObjectMapper();
     
     static {
@@ -60,11 +60,11 @@ public class JsonManagerReservaPago {
         try {
             File archivo = new File(RESERVAS_FILE);
             System.out.println("📁 Ruta: " + archivo.getAbsolutePath());
+            System.out.println("🔍 Existe: " + archivo.exists());
             
             if (!archivo.exists()) {
                 System.out.println("📝 Archivo no encontrado, creando uno nuevo...");
                 archivo.getParentFile().mkdirs();
-                archivo.createNewFile();
                 guardarReservasEnArchivo(new ArrayList<>());
                 return new ArrayList<>();
             }
@@ -84,6 +84,7 @@ public class JsonManagerReservaPago {
             
         } catch (Exception e) {
             System.err.println("❌ Error cargando reservas: " + e.getMessage());
+            e.printStackTrace();
             return new ArrayList<>();
         }
     }
@@ -157,11 +158,11 @@ public class JsonManagerReservaPago {
         try {
             File archivo = new File(PAGOS_FILE);
             System.out.println("📁 Ruta: " + archivo.getAbsolutePath());
+            System.out.println("🔍 Existe: " + archivo.exists());
             
             if (!archivo.exists()) {
                 System.out.println("📝 Archivo no encontrado, creando uno nuevo...");
                 archivo.getParentFile().mkdirs();
-                archivo.createNewFile();
                 guardarPagosEnArchivo(new ArrayList<>());
                 return new ArrayList<>();
             }
@@ -181,6 +182,7 @@ public class JsonManagerReservaPago {
             
         } catch (Exception e) {
             System.err.println("❌ Error cargando pagos: " + e.getMessage());
+            e.printStackTrace();
             return new ArrayList<>();
         }
     }
@@ -225,9 +227,10 @@ public class JsonManagerReservaPago {
             File archivo = new File(RESERVAS_FILE);
             archivo.getParentFile().mkdirs();
             objectMapper.writeValue(archivo, reservas);
-            System.out.println("💾 " + reservas.size() + " reservas guardadas en archivo");
+            System.out.println("💾 " + reservas.size() + " reservas guardadas en archivo: " + archivo.getAbsolutePath());
         } catch (Exception e) {
             System.err.println("❌ Error guardando reservas en archivo: " + e.getMessage());
+            e.printStackTrace();
         }
     }
 
@@ -236,9 +239,10 @@ public class JsonManagerReservaPago {
             File archivo = new File(PAGOS_FILE);
             archivo.getParentFile().mkdirs();
             objectMapper.writeValue(archivo, pagos);
-            System.out.println("💾 " + pagos.size() + " pagos guardados en archivo");
+            System.out.println("💾 " + pagos.size() + " pagos guardados en archivo: " + archivo.getAbsolutePath());
         } catch (Exception e) {
             System.err.println("❌ Error guardando pagos en archivo: " + e.getMessage());
+            e.printStackTrace();
         }
     }
 
