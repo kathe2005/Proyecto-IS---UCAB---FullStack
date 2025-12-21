@@ -3,8 +3,9 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { HttpClient, HttpClientModule } from '@angular/common/http';
+import { ClienteService, Cliente } from '../../service/cliente.service'; // ✅ Importar el servicio
 
-interface Cliente {
+interface ClienteCompleto {
   id: string;
   usuario: string;
   contrasena: string;
@@ -28,10 +29,9 @@ interface Cliente {
   imports: [CommonModule, FormsModule, HttpClientModule]
 })
 export class ConsultarPerfilesComponent implements OnInit {
-
-  clientes: Cliente[] = [];
-  clientesFiltrados: Cliente[] = [];
-  clienteSeleccionado: Cliente | null = null;
+  clientes: ClienteCompleto[] = [];
+  clientesFiltrados: ClienteCompleto[] = [];
+  clienteSeleccionado: ClienteCompleto | null = null;
 
   // Filtros de búsqueda
   filtroTexto: string = '';
@@ -58,7 +58,7 @@ export class ConsultarPerfilesComponent implements OnInit {
 
   constructor(
     private router: Router,
-    private http: HttpClient
+    private clienteService: ClienteService // ✅ Usar el servicio corregido
   ) {}
 
   ngOnInit(): void {
@@ -69,41 +69,45 @@ export class ConsultarPerfilesComponent implements OnInit {
   private cargarClientes(): void {
     this.cargando = true;
 
-    // CORREGIDO: Cambiar endpoint de '/consultar' a '/'
-    this.http.get<Cliente[]>('http://localhost:8080/api/clientes')
-      .subscribe({
-        next: (clientes) => {
-          console.log('Clientes recibidos del backend:', clientes);
-          this.clientes = clientes.map(cliente => ({
-            ...cliente,
-            // Asegurar que todos los campos tengan valores por defecto si son undefined
-            fechaRegistro: cliente.fechaRegistro || new Date().toISOString().split('T')[0],
-            estado: cliente.estado || 'ACTIVO',
-            confirmarContrasena: cliente.confirmarContrasena || '',
-            direccion: cliente.direccion || 'No especificada',
-            telefono: cliente.telefono || 'No especificado'
-          }));
-          this.clientesFiltrados = [...this.clientes];
-          this.cargando = false;
-          console.log('Clientes procesados:', this.clientes.length);
-        },
-        error: (error) => {
-          console.error('Error al cargar clientes:', error);
-          this.cargando = false;
+    console.log('📥 Cargando clientes desde el backend...');
 
-          // Mostrar mensaje más específico
-          if (error.status === 0) {
-            alert('Error de conexión: No se pudo conectar al servidor. Verifica que el backend esté ejecutándose.');
-          } else if (error.status === 404) {
-            alert('Endpoint no encontrado. Verifica la URL del servicio.');
-          } else {
-            alert('Error al cargar los datos de clientes: ' + (error.message || 'Error desconocido'));
-          }
+    // ✅ URL CORRECTA: http://localhost:8080/clientes/api
+    this.clienteService.consultarClientes().subscribe({
+      next: (clientes: Cliente[]) => {
+        console.log('✅ Clientes recibidos del backend:', clientes);
 
-          // Cargar datos de ejemplo si el backend falla (opcional)
-          this.cargarDatosEjemplo();
+        // Mapear los clientes del backend a nuestro formato
+        this.clientes = clientes.map(cliente => ({
+          ...cliente,
+          id: cliente.id || 'sin-id',
+          confirmarContrasena: cliente.confirmarContrasena || '',
+          fechaRegistro: cliente.fechaRegistro || new Date().toISOString().split('T')[0],
+          estado: cliente.estado || 'ACTIVO',
+          direccion: cliente.direccion || 'No especificada',
+          telefono: cliente.telefono || 'No especificado'
+        })) as ClienteCompleto[];
+
+        this.clientesFiltrados = [...this.clientes];
+        this.cargando = false;
+        console.log('✅ Clientes procesados:', this.clientes.length);
+      },
+      error: (error) => {
+        console.error('❌ Error al cargar clientes:', error);
+        this.cargando = false;
+
+        // Mostrar mensaje más específico
+        if (error.status === 0) {
+          alert('Error de conexión: No se pudo conectar al servidor. Verifica que el backend esté ejecutándose.');
+        } else if (error.status === 404) {
+          alert('Endpoint no encontrado. Verifica la URL del servicio.');
+        } else {
+          alert('Error al cargar los datos de clientes: ' + (error.message || 'Error desconocido'));
         }
-      });
+
+        // Cargar datos de ejemplo si el backend falla
+        this.cargarDatosEjemplo();
+      }
+    });
   }
 
   // Datos de ejemplo para pruebas cuando el backend no está disponible
@@ -186,7 +190,7 @@ export class ConsultarPerfilesComponent implements OnInit {
   }
 
   // Ver detalles de un cliente
-  verDetalles(cliente: Cliente): void {
+  verDetalles(cliente: ClienteCompleto): void {
     this.clienteSeleccionado = cliente;
     this.mostrarDetalles = true;
   }
@@ -244,5 +248,10 @@ export class ConsultarPerfilesComponent implements OnInit {
       case 'SUSPENDIDO': return 'estado-suspendido';
       default: return 'estado-desconocido';
     }
+  }
+
+  // Actualizar lista de clientes
+  actualizarLista(): void {
+    this.cargarClientes();
   }
 }

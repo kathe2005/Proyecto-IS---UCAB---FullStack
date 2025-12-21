@@ -113,10 +113,25 @@ public class PuestoServiceImpl {
             throw new IllegalArgumentException("Puesto no encontrado: " + puesto.getId());
         }
 
-        // Agregar al historial
-        puesto.agregarRegistroHistorial("Actualizado en " + LocalDateTime.now());
+        Puesto existente = puestoExistente.get();
         
-        Puesto puestoActualizado = jsonManagerPuesto.guardarPuesto(puesto);
+        // Actualizar campos
+        if (puesto.getNumero() != null) existente.setNumero(puesto.getNumero());
+        if (puesto.getUbicacion() != null) existente.setUbicacion(puesto.getUbicacion());
+        if (puesto.getTipoPuesto() != null) existente.setTipoPuesto(puesto.getTipoPuesto());
+        if (puesto.getEstadoPuesto() != null) existente.setEstadoPuesto(puesto.getEstadoPuesto());
+        if (puesto.getUsuarioOcupante() != null) existente.setUsuarioOcupante(puesto.getUsuarioOcupante());
+        if (puesto.getFechaOcupacion() != null) existente.setFechaOcupacion(puesto.getFechaOcupacion());
+        
+        // Actualizar historial si se proporciona
+        if (puesto.getHistorialOcupacion() != null && !puesto.getHistorialOcupacion().isEmpty()) {
+            existente.setHistorialOcupacion(puesto.getHistorialOcupacion());
+        }
+
+        // Agregar al historial
+        existente.agregarRegistroHistorial("Actualizado en " + LocalDateTime.now());
+        
+        Puesto puestoActualizado = jsonManagerPuesto.guardarPuesto(existente);
         System.out.println("✅ Puesto actualizado: " + puestoActualizado.getId());
         return puestoActualizado;
     }
@@ -134,48 +149,110 @@ public class PuestoServiceImpl {
     }
 
     public Puesto ocuparPuesto(String puestoId, String usuario) {
-        System.out.println("🚗 Ocupando puesto: " + puestoId + " por usuario: " + usuario);
+        System.out.println("🚗 ========== OCUPAR PUESTO SERVICE ==========");
+        System.out.println("🔍 Datos recibidos - PuestoID: " + puestoId + ", Usuario: " + usuario);
         
-        Optional<Puesto> puestoOpt = jsonManagerPuesto.buscarPuestoPorId(puestoId);
-
-        if (puestoOpt.isEmpty()) {
-            System.err.println("❌ Puesto no encontrado: " + puestoId);
-            throw new IllegalArgumentException("Puesto no encontrado: " + puestoId);
+        try {
+            System.out.println("📁 Cargando puestos desde JSON...");
+            List<Puesto> puestos = jsonManagerPuesto.obtenerTodosPuestos();
+            System.out.println("📊 Total puestos en sistema: " + puestos.size());
+            
+            System.out.println("🔎 Buscando puesto con ID: " + puestoId);
+            Optional<Puesto> puestoOpt = jsonManagerPuesto.buscarPuestoPorId(puestoId);
+            
+            if (puestoOpt.isPresent()) {
+                Puesto puesto = puestoOpt.get();
+                System.out.println("✅ Puesto encontrado!");
+                System.out.println("📋 Detalles actuales:");
+                System.out.println("   - Número: " + puesto.getNumero());
+                System.out.println("   - Estado: " + puesto.getEstadoPuesto());
+                System.out.println("   - Ubicación: " + puesto.getUbicacion());
+                System.out.println("   - Tipo: " + puesto.getTipoPuesto());
+                
+                // Verificar que esté disponible
+                if (puesto.getEstadoPuesto() != EstadoPuesto.DISPONIBLE) {
+                    System.out.println("❌ No se puede ocupar - Estado incorrecto: " + puesto.getEstadoPuesto());
+                    throw new IllegalArgumentException("El puesto no está disponible. Estado actual: " + puesto.getEstadoPuesto().getDescripcion());
+                }
+                
+                System.out.println("🔄 Ocupando puesto por usuario: " + usuario);
+                puesto.ocuparPuesto(usuario, null, null);
+                
+                System.out.println("✅ Puesto ocupado exitosamente!");
+                System.out.println("📋 Nuevos detalles:");
+                System.out.println("   - Estado: " + puesto.getEstadoPuesto());
+                System.out.println("   - Usuario ocupante: " + puesto.getUsuarioOcupante());
+                System.out.println("   - Fecha ocupación: " + puesto.getFechaOcupacion());
+                
+                System.out.println("💾 Guardando cambios en JSON...");
+                jsonManagerPuesto.guardarPuesto(puesto);
+                System.out.println("✅ Cambios guardados exitosamente");
+                
+                return puesto;
+                
+            } else {
+                System.out.println("❌ Puesto NO encontrado con ID: " + puestoId);
+                throw new IllegalArgumentException("Puesto no encontrado: " + puestoId);
+            }
+        } catch (IllegalArgumentException e) {
+            System.err.println("⚠️  Error de validación: " + e.getMessage());
+            throw e;
+        } catch (Exception e) {
+            System.err.println("💥 EXCEPCIÓN en ocuparPuesto service: " + e.getMessage());
+            e.printStackTrace();
+            throw new RuntimeException("Error ocupando puesto: " + e.getMessage());
         }
-
-        Puesto puesto = puestoOpt.get();
-
-        if (puesto.getEstadoPuesto() != EstadoPuesto.DISPONIBLE) {
-            String mensaje = String.format("Puesto no disponible. Estado actual: %s",
-                    puesto.getEstadoPuesto().getDescripcion());
-            System.err.println("❌ " + mensaje);
-            throw new IllegalArgumentException(mensaje);
-        }
-
-        // Usar el método de la clase fusionada
-        puesto.ocuparPuesto(usuario, null, null);
-        jsonManagerPuesto.guardarPuesto(puesto);
-
-        String mensaje = String.format("Puesto %s ocupado por %s", puesto.getNumero(), usuario);
-        System.out.println("✅ " + mensaje);
-        return puesto;
     }
 
-    public boolean liberarPuesto(String puestoId) {
-        System.out.println("🔄 Liberando puesto: " + puestoId);
+    public boolean liberarPuesto(String id) {
+        System.out.println("🔧 ========== LIBERAR PUESTO SERVICE ==========");
+        System.out.println("🔍 ID recibido: " + id);
         
-        Optional<Puesto> puestoOpt = jsonManagerPuesto.buscarPuestoPorId(puestoId);
-
-        if (puestoOpt.isPresent() && puestoOpt.get().getEstadoPuesto() == EstadoPuesto.OCUPADO) {
-            Puesto puesto = puestoOpt.get();
-            puesto.liberarPuesto();
-            jsonManagerPuesto.guardarPuesto(puesto);
-            System.out.println("✅ Puesto liberado: " + puestoId);
-            return true;
+        try {
+            System.out.println("📁 Cargando puestos desde JSON...");
+            List<Puesto> puestos = jsonManagerPuesto.obtenerTodosPuestos();
+            System.out.println("📊 Total puestos en sistema: " + puestos.size());
+            
+            System.out.println("🔎 Buscando puesto con ID: " + id);
+            Optional<Puesto> puestoOpt = jsonManagerPuesto.buscarPuestoPorId(id);
+            
+            if (puestoOpt.isPresent()) {
+                Puesto puesto = puestoOpt.get();
+                System.out.println("✅ Puesto encontrado!");
+                System.out.println("📋 Detalles:");
+                System.out.println("   - Número: " + puesto.getNumero());
+                System.out.println("   - Ubicación: " + puesto.getUbicacion());
+                System.out.println("   - Estado actual: " + puesto.getEstadoPuesto());
+                System.out.println("   - Usuario ocupante: " + puesto.getUsuarioOcupante());
+                
+                if (puesto.getEstadoPuesto() == EstadoPuesto.OCUPADO) {
+                    System.out.println("🔄 Cambiando estado de OCUPADO a DISPONIBLE...");
+                    puesto.liberarPuesto();
+                    System.out.println("✅ Estado cambiado a: " + puesto.getEstadoPuesto());
+                    System.out.println("✅ Usuario limpiado: " + puesto.getUsuarioOcupante());
+                    
+                    System.out.println("💾 Guardando cambios en JSON...");
+                    jsonManagerPuesto.guardarPuesto(puesto);
+                    System.out.println("✅ Cambios guardados exitosamente");
+                    return true;
+                } else {
+                    System.out.println("⚠️  No se puede liberar - Estado incorrecto: " + puesto.getEstadoPuesto());
+                    System.out.println("ℹ️  Solo se pueden liberar puestos OCUPADOS");
+                    return false;
+                }
+            } else {
+                System.out.println("❌ Puesto NO encontrado con ID: " + id);
+                System.out.println("📋 IDs disponibles:");
+                for (Puesto p : puestos) {
+                    System.out.println("   - " + p.getId() + " (" + p.getNumero() + ")");
+                }
+                return false;
+            }
+        } catch (Exception e) {
+            System.err.println("💥 EXCEPCIÓN en liberarPuesto service: " + e.getMessage());
+            e.printStackTrace();
+            return false;
         }
-        
-        System.out.println("❌ No se pudo liberar puesto: " + puestoId);
-        return false;
     }
 
     public List<Puesto> obtenerPuestosPorEstado(EstadoPuesto estado) {
@@ -218,46 +295,100 @@ public class PuestoServiceImpl {
         return jsonManagerPuesto.buscarPuestosPorEstado(EstadoPuesto.MANTENIMIENTO);
     }
 
-    public boolean bloquearPuesto(String puestoId) {
-        System.out.println("🔒 Bloqueando puesto: " + puestoId);
+    public boolean bloquearPuesto(String id) {
+        System.out.println("🔒 ========== BLOQUEAR PUESTO SERVICE ==========");
+        System.out.println("🔍 ID recibido: " + id);
         
-        Optional<Puesto> puestoOpt = jsonManagerPuesto.buscarPuestoPorId(puestoId);
-        if (puestoOpt.isPresent()) {
-            Puesto puesto = puestoOpt.get();
-            puesto.setEstadoPuesto(EstadoPuesto.BLOQUEADO);
-            puesto.setUsuarioOcupante("SISTEMA");
+        try {
+            System.out.println("📁 Cargando puestos desde JSON...");
+            List<Puesto> puestos = jsonManagerPuesto.obtenerTodosPuestos();
+            System.out.println("📊 Total puestos en sistema: " + puestos.size());
             
-            String registroHistorial = String.format("Bloqueado en %s", LocalDateTime.now());
-            puesto.agregarRegistroHistorial(registroHistorial);
+            System.out.println("🔎 Buscando puesto con ID: " + id);
+            Optional<Puesto> puestoOpt = jsonManagerPuesto.buscarPuestoPorId(id);
             
-            jsonManagerPuesto.guardarPuesto(puesto);
-            System.out.println("✅ Puesto bloqueado: " + puestoId);
-            return true;
+            if (puestoOpt.isPresent()) {
+                Puesto puesto = puestoOpt.get();
+                System.out.println("✅ Puesto encontrado!");
+                System.out.println("📋 Detalles:");
+                System.out.println("   - Número: " + puesto.getNumero());
+                System.out.println("   - Estado actual: " + puesto.getEstadoPuesto());
+                
+                // Verificar que se pueda bloquear (no ocupado)
+                if (puesto.getEstadoPuesto() == EstadoPuesto.OCUPADO) {
+                    System.out.println("⚠️  No se puede bloquear - Puesto está OCUPADO");
+                    System.out.println("   Usuario ocupante: " + puesto.getUsuarioOcupante());
+                    return false;
+                }
+                
+                System.out.println("🔄 Cambiando estado a BLOQUEADO...");
+                puesto.setEstadoPuesto(EstadoPuesto.BLOQUEADO);
+                puesto.agregarRegistroHistorial("Bloqueado - " + LocalDateTime.now());
+                
+                System.out.println("✅ Estado cambiado a: " + puesto.getEstadoPuesto());
+                
+                System.out.println("💾 Guardando cambios en JSON...");
+                jsonManagerPuesto.guardarPuesto(puesto);
+                System.out.println("✅ Cambios guardados exitosamente");
+                return true;
+                
+            } else {
+                System.out.println("❌ Puesto NO encontrado con ID: " + id);
+                return false;
+            }
+        } catch (Exception e) {
+            System.err.println("💥 EXCEPCIÓN en bloquearPuesto service: " + e.getMessage());
+            e.printStackTrace();
+            return false;
         }
-        
-        System.out.println("❌ No se pudo bloquear puesto: " + puestoId);
-        return false;
     }
 
-    public boolean desbloquearPuesto(String puestoId) {
-        System.out.println("🔓 Desbloqueando puesto: " + puestoId);
+    public boolean desbloquearPuesto(String id) {
+        System.out.println("🔓 ========== DESBLOQUEAR PUESTO SERVICE ==========");
+        System.out.println("🔍 ID recibido: " + id);
         
-        Optional<Puesto> puestoOpt = jsonManagerPuesto.buscarPuestoPorId(puestoId);
-        if (puestoOpt.isPresent()) {
-            Puesto puesto = puestoOpt.get();
-            puesto.setEstadoPuesto(EstadoPuesto.DISPONIBLE);
-            puesto.setUsuarioOcupante(null);
+        try {
+            System.out.println("📁 Cargando puestos desde JSON...");
+            List<Puesto> puestos = jsonManagerPuesto.obtenerTodosPuestos();
+            System.out.println("📊 Total puestos en sistema: " + puestos.size());
             
-            String registroHistorial = String.format("Desbloqueado en %s", LocalDateTime.now());
-            puesto.agregarRegistroHistorial(registroHistorial);
+            System.out.println("🔎 Buscando puesto con ID: " + id);
+            Optional<Puesto> puestoOpt = jsonManagerPuesto.buscarPuestoPorId(id);
             
-            jsonManagerPuesto.guardarPuesto(puesto);
-            System.out.println("✅ Puesto desbloqueado: " + puestoId);
-            return true;
+            if (puestoOpt.isPresent()) {
+                Puesto puesto = puestoOpt.get();
+                System.out.println("✅ Puesto encontrado!");
+                System.out.println("📋 Detalles:");
+                System.out.println("   - Número: " + puesto.getNumero());
+                System.out.println("   - Estado actual: " + puesto.getEstadoPuesto());
+                
+                // Verificar que esté bloqueado
+                if (puesto.getEstadoPuesto() == EstadoPuesto.BLOQUEADO) {
+                    System.out.println("🔄 Cambiando estado BLOQUEADO a DISPONIBLE...");
+                    puesto.setEstadoPuesto(EstadoPuesto.DISPONIBLE);
+                    puesto.agregarRegistroHistorial("Desbloqueado - " + LocalDateTime.now());
+                    
+                    System.out.println("✅ Estado cambiado a: " + puesto.getEstadoPuesto());
+                    
+                    System.out.println("💾 Guardando cambios en JSON...");
+                    jsonManagerPuesto.guardarPuesto(puesto);
+                    System.out.println("✅ Cambios guardados exitosamente");
+                    return true;
+                } else {
+                    System.out.println("⚠️  No se puede desbloquear - Estado incorrecto: " + puesto.getEstadoPuesto());
+                    System.out.println("ℹ️  Solo se pueden desbloquear puestos BLOQUEADOS");
+                    return false;
+                }
+                
+            } else {
+                System.out.println("❌ Puesto NO encontrado con ID: " + id);
+                return false;
+            }
+        } catch (Exception e) {
+            System.err.println("💥 EXCEPCIÓN en desbloquearPuesto service: " + e.getMessage());
+            e.printStackTrace();
+            return false;
         }
-        
-        System.out.println("❌ No se pudo desbloquear puesto: " + puestoId);
-        return false;
     }
 
     public Puesto asignarPuestoManual(String puestoId, String usuario) {
@@ -303,28 +434,52 @@ public class PuestoServiceImpl {
         throw new IllegalArgumentException("Puesto no encontrado: " + puestoId);
     }
 
-    public boolean ponerPuestoEnMantenimiento(String puestoId) {
-        System.out.println("🔧 Poniendo en mantenimiento puesto: " + puestoId);
+    public boolean ponerPuestoEnMantenimiento(String id) {
+        System.out.println("🔧 ========== MANTENIMIENTO PUESTO SERVICE ==========");
+        System.out.println("🔍 ID recibido: " + id);
         
-        Optional<Puesto> puestoOpt = jsonManagerPuesto.buscarPuestoPorId(puestoId);
-        
-        if (puestoOpt.isPresent()) {
-            Puesto puesto = puestoOpt.get();
-            puesto.setEstadoPuesto(EstadoPuesto.MANTENIMIENTO);
-            puesto.setUsuarioOcupante(null);
-            puesto.setFechaOcupacion(null);
+        try {
+            System.out.println("📁 Cargando puestos desde JSON...");
+            List<Puesto> puestos = jsonManagerPuesto.obtenerTodosPuestos();
+            System.out.println("📊 Total puestos en sistema: " + puestos.size());
             
-            String registroHistorial = String.format("Puesto en mantenimiento en %s", 
-                    LocalDateTime.now());
-            puesto.agregarRegistroHistorial(registroHistorial);
+            System.out.println("🔎 Buscando puesto con ID: " + id);
+            Optional<Puesto> puestoOpt = jsonManagerPuesto.buscarPuestoPorId(id);
             
-            jsonManagerPuesto.guardarPuesto(puesto);
-            System.out.println("✅ Puesto en mantenimiento: " + puestoId);
-            return true;
+            if (puestoOpt.isPresent()) {
+                Puesto puesto = puestoOpt.get();
+                System.out.println("✅ Puesto encontrado!");
+                System.out.println("📋 Detalles:");
+                System.out.println("   - Número: " + puesto.getNumero());
+                System.out.println("   - Estado actual: " + puesto.getEstadoPuesto());
+                
+                // Verificar que no esté ocupado
+                if (puesto.getEstadoPuesto() == EstadoPuesto.OCUPADO) {
+                    System.out.println("⚠️  No se puede poner en mantenimiento - Puesto está OCUPADO");
+                    System.out.println("   Usuario ocupante: " + puesto.getUsuarioOcupante());
+                    return false;
+                }
+                
+                System.out.println("🔄 Cambiando estado a MANTENIMIENTO...");
+                puesto.setEstadoPuesto(EstadoPuesto.MANTENIMIENTO);
+                puesto.agregarRegistroHistorial("Puesto en mantenimiento - " + LocalDateTime.now());
+                
+                System.out.println("✅ Estado cambiado a: " + puesto.getEstadoPuesto());
+                
+                System.out.println("💾 Guardando cambios en JSON...");
+                jsonManagerPuesto.guardarPuesto(puesto);
+                System.out.println("✅ Cambios guardados exitosamente");
+                return true;
+                
+            } else {
+                System.out.println("❌ Puesto NO encontrado con ID: " + id);
+                return false;
+            }
+        } catch (Exception e) {
+            System.err.println("💥 EXCEPCIÓN en ponerPuestoEnMantenimiento service: " + e.getMessage());
+            e.printStackTrace();
+            return false;
         }
-        
-        System.out.println("❌ No se pudo poner en mantenimiento: " + puestoId);
-        return false;
     }
 
     public List<String> obtenerHistorial(String puestoId) {
@@ -443,5 +598,24 @@ public class PuestoServiceImpl {
         System.out.println("   Total puestos: " + estadisticas.get("totalPuestos"));
         System.out.println("   Por estado: " + estadisticas.get("puestosPorEstado"));
         System.out.println("   Por tipo: " + estadisticas.get("puestosPorTipo"));
+    }
+
+    // Métodos CRUD adicionales para compatibilidad
+
+    public Puesto guardarPuesto(Puesto puesto) {
+        return jsonManagerPuesto.guardarPuesto(puesto);
+    }
+
+    public List<Puesto> obtenerTodosPuestos() {
+        return jsonManagerPuesto.obtenerTodosPuestos();
+    }
+
+    public boolean existePuestoPorId(String id) {
+        return jsonManagerPuesto.buscarPuestoPorId(id).isPresent();
+    }
+
+    public boolean existePuestoPorNumero(String numero) {
+        return jsonManagerPuesto.obtenerTodosPuestos().stream()
+                .anyMatch(p -> p.getNumero().equals(numero));
     }
 }

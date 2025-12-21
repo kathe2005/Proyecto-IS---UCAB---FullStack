@@ -12,6 +12,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -26,6 +27,8 @@ public class PuestoController {
 
     // Inyectar JsonManagerPuesto para operaciones directas con JSON
     private final JsonManagerPuesto jsonManagerPuesto = new JsonManagerPuesto();
+
+    
 
     // ========== VISTAS THYMELEAF ==========
 
@@ -196,17 +199,20 @@ public class PuestoController {
     // ========== API REST ==========
 
     @GetMapping("/api")
-    @ResponseBody
-    public ResponseEntity<?> obtenerTodosLosPuestosApi() {
-        try {
-            List<Puesto> puestos = puestoService.obtenerPuestos();
-            return ResponseEntity.ok(puestos);
-        } catch (Exception e) {
-            Map<String, String> errorResponse = new HashMap<>();
-            errorResponse.put("error", "Error al obtener puestos: " + e.getMessage());
-            return ResponseEntity.badRequest().body(errorResponse);
+        @ResponseBody
+        public ResponseEntity<?> obtenerTodosLosPuestosApi() {
+            try {
+                System.out.println("📥 GET /puestos/api recibido");
+                List<Puesto> puestos = puestoService.obtenerPuestos();
+                System.out.println("✅ Puestos encontrados: " + puestos.size());
+                return ResponseEntity.ok(puestos);
+            } catch (Exception e) {
+                System.err.println("❌ Error en /puestos/api: " + e.getMessage());
+                Map<String, String> errorResponse = new HashMap<>();
+                errorResponse.put("error", "Error al obtener puestos: " + e.getMessage());
+                return ResponseEntity.badRequest().body(errorResponse);
+            }
         }
-    }
 
     @GetMapping("/api/{id}")
     @ResponseBody
@@ -225,111 +231,162 @@ public class PuestoController {
     @PostMapping("/api/ocupar")
     @ResponseBody
     public ResponseEntity<?> ocuparPuestoApi(@RequestBody Map<String, String> request) {
+        System.out.println("========== OCUPAR PUESTO API ==========");
+        System.out.println("📦 Request body recibido: " + request);
+        
         try {
             String puestoId = request.get("puestoId");
             String usuario = request.get("usuario");
-            String clienteId = request.get("clienteId");
-            String tipoCliente = request.get("tipoCliente");
             
-            Puesto resultado = puestoService.ocuparPuestoConCliente(
-                puestoId, 
-                usuario,
-                clienteId,
-                tipoCliente
-            );
+            System.out.println("🚗 Datos extraídos - PuestoID: " + puestoId + ", Usuario: " + usuario);
+            
+            if (puestoId == null || puestoId.trim().isEmpty()) {
+                throw new IllegalArgumentException("El ID del puesto es requerido");
+            }
+            if (usuario == null || usuario.trim().isEmpty()) {
+                throw new IllegalArgumentException("El usuario es requerido");
+            }
+            
+            Puesto resultado = puestoService.ocuparPuesto(puestoId, usuario);
+            System.out.println("✅ Puesto ocupado exitosamente: " + resultado.getId());
+            
             return ResponseEntity.ok(resultado);
+            
         } catch (IllegalArgumentException e) {
-            Map<String, String> errorResponse = new HashMap<>();
-            errorResponse.put("error", e.getMessage());
-            return ResponseEntity.badRequest().body(errorResponse);
+            System.err.println("⚠️  Error de validación: " + e.getMessage());
+            Map<String, Object> error = new HashMap<>();
+            error.put("exito", false);
+            error.put("error", e.getMessage());
+            error.put("timestamp", LocalDateTime.now().toString());
+            return ResponseEntity.badRequest().body(error);
         } catch (Exception e) {
-            Map<String, String> errorResponse = new HashMap<>();
-            errorResponse.put("error", "Error interno del servidor: " + e.getMessage());
-            return ResponseEntity.internalServerError().body(errorResponse);
+            System.err.println("💥 EXCEPCIÓN en ocuparPuestoApi: " + e.getMessage());
+            Map<String, Object> error = new HashMap<>();
+            error.put("exito", false);
+            error.put("error", "Error ocupando puesto: " + e.getMessage());
+            return ResponseEntity.internalServerError().body(error);
         }
     }
 
     @PostMapping("/api/liberar/{id}")
     @ResponseBody
     public ResponseEntity<?> liberarPuestoApi(@PathVariable String id) {
+        System.out.println("========== LIBERAR PUESTO API ==========");
+        System.out.println("🔍 ID recibido: " + id);
+        
         try {
             boolean exito = puestoService.liberarPuesto(id);
+            
             if (exito) {
-                Map<String, String> successResponse = new HashMap<>();
-                successResponse.put("mensaje", "Puesto liberado exitosamente");
-                return ResponseEntity.ok(successResponse);
+                Map<String, Object> response = new HashMap<>();
+                response.put("exito", true);
+                response.put("mensaje", "Puesto liberado exitosamente");
+                response.put("puestoId", id);
+                response.put("timestamp", LocalDateTime.now().toString());
+                return ResponseEntity.ok(response);
             } else {
-                Map<String, String> errorResponse = new HashMap<>();
-                errorResponse.put("error", "No se pudo liberar el puesto");
-                return ResponseEntity.badRequest().body(errorResponse);
+                Map<String, Object> error = new HashMap<>();
+                error.put("exito", false);
+                error.put("error", "No se pudo liberar el puesto");
+                error.put("timestamp", LocalDateTime.now().toString());
+                return ResponseEntity.badRequest().body(error);
             }
         } catch (Exception e) {
-            Map<String, String> errorResponse = new HashMap<>();
-            errorResponse.put("error", "Error al liberar puesto: " + e.getMessage());
-            return ResponseEntity.badRequest().body(errorResponse);
+            System.err.println("💥 EXCEPCIÓN en liberarPuestoApi: " + e.getMessage());
+            Map<String, Object> error = new HashMap<>();
+            error.put("exito", false);
+            error.put("error", "Error liberando puesto: " + e.getMessage());
+            return ResponseEntity.internalServerError().body(error);
         }
     }
 
     @PostMapping("/api/bloquear/{id}")
     @ResponseBody
     public ResponseEntity<?> bloquearPuestoApi(@PathVariable String id) {
+        System.out.println("========== BLOQUEAR PUESTO API ==========");
+        
         try {
             boolean exito = puestoService.bloquearPuesto(id);
+            
             if (exito) {
-                Map<String, String> successResponse = new HashMap<>();
-                successResponse.put("mensaje", "Puesto bloqueado exitosamente");
-                return ResponseEntity.ok(successResponse);
+                Map<String, Object> response = new HashMap<>();
+                response.put("exito", true);
+                response.put("mensaje", "Puesto bloqueado exitosamente");
+                response.put("puestoId", id);
+                response.put("timestamp", LocalDateTime.now().toString());
+                return ResponseEntity.ok(response);
             } else {
-                Map<String, String> errorResponse = new HashMap<>();
-                errorResponse.put("error", "No se pudo bloquear el puesto");
-                return ResponseEntity.badRequest().body(errorResponse);
+                Map<String, Object> error = new HashMap<>();
+                error.put("exito", false);
+                error.put("error", "No se pudo bloquear el puesto");
+                return ResponseEntity.badRequest().body(error);
             }
         } catch (Exception e) {
-            Map<String, String> errorResponse = new HashMap<>();
-            errorResponse.put("error", "Error al bloquear puesto: " + e.getMessage());
-            return ResponseEntity.badRequest().body(errorResponse);
+            System.err.println("💥 EXCEPCIÓN en bloquearPuestoApi: " + e.getMessage());
+            Map<String, Object> error = new HashMap<>();
+            error.put("exito", false);
+            error.put("error", "Error bloqueando puesto: " + e.getMessage());
+            return ResponseEntity.internalServerError().body(error);
         }
     }
 
     @PostMapping("/api/desbloquear/{id}")
     @ResponseBody
     public ResponseEntity<?> desbloquearPuestoApi(@PathVariable String id) {
+        System.out.println("========== DESBLOQUEAR PUESTO API ==========");
+        
         try {
             boolean exito = puestoService.desbloquearPuesto(id);
+            
             if (exito) {
-                Map<String, String> successResponse = new HashMap<>();
-                successResponse.put("mensaje", "Puesto desbloqueado exitosamente");
-                return ResponseEntity.ok(successResponse);
+                Map<String, Object> response = new HashMap<>();
+                response.put("exito", true);
+                response.put("mensaje", "Puesto desbloqueado exitosamente");
+                response.put("puestoId", id);
+                response.put("timestamp", LocalDateTime.now().toString());
+                return ResponseEntity.ok(response);
             } else {
-                Map<String, String> errorResponse = new HashMap<>();
-                errorResponse.put("error", "No se pudo desbloquear el puesto");
-                return ResponseEntity.badRequest().body(errorResponse);
+                Map<String, Object> error = new HashMap<>();
+                error.put("exito", false);
+                error.put("error", "No se pudo desbloquear el puesto");
+                return ResponseEntity.badRequest().body(error);
             }
         } catch (Exception e) {
-            Map<String, String> errorResponse = new HashMap<>();
-            errorResponse.put("error", "Error al desbloquear puesto: " + e.getMessage());
-            return ResponseEntity.badRequest().body(errorResponse);
+            System.err.println("💥 EXCEPCIÓN en desbloquearPuestoApi: " + e.getMessage());
+            Map<String, Object> error = new HashMap<>();
+            error.put("exito", false);
+            error.put("error", "Error desbloqueando puesto: " + e.getMessage());
+            return ResponseEntity.internalServerError().body(error);
         }
     }
 
     @PostMapping("/api/mantenimiento/{id}")
     @ResponseBody
     public ResponseEntity<?> ponerEnMantenimientoApi(@PathVariable String id) {
+        System.out.println("========== MANTENIMIENTO PUESTO API ==========");
+        
         try {
             boolean exito = puestoService.ponerPuestoEnMantenimiento(id);
+            
             if (exito) {
-                Map<String, String> successResponse = new HashMap<>();
-                successResponse.put("mensaje", "Puesto puesto en mantenimiento exitosamente");
-                return ResponseEntity.ok(successResponse);
+                Map<String, Object> response = new HashMap<>();
+                response.put("exito", true);
+                response.put("mensaje", "Puesto puesto en mantenimiento exitosamente");
+                response.put("puestoId", id);
+                response.put("timestamp", LocalDateTime.now().toString());
+                return ResponseEntity.ok(response);
             } else {
-                Map<String, String> errorResponse = new HashMap<>();
-                errorResponse.put("error", "No se pudo poner en mantenimiento el puesto");
-                return ResponseEntity.badRequest().body(errorResponse);
+                Map<String, Object> error = new HashMap<>();
+                error.put("exito", false);
+                error.put("error", "No se pudo poner en mantenimiento el puesto");
+                return ResponseEntity.badRequest().body(error);
             }
         } catch (Exception e) {
-            Map<String, String> errorResponse = new HashMap<>();
-            errorResponse.put("error", "Error al poner en mantenimiento: " + e.getMessage());
-            return ResponseEntity.badRequest().body(errorResponse);
+            System.err.println("💥 EXCEPCIÓN en ponerEnMantenimientoApi: " + e.getMessage());
+            Map<String, Object> error = new HashMap<>();
+            error.put("exito", false);
+            error.put("error", "Error poniendo en mantenimiento: " + e.getMessage());
+            return ResponseEntity.internalServerError().body(error);
         }
     }
 
@@ -363,13 +420,46 @@ public class PuestoController {
     @ResponseBody
     public ResponseEntity<?> crearPuestoApi(@RequestBody Puesto puesto) {
         try {
+            System.out.println("📝 Creando nuevo puesto: " + puesto.getNumero());
+            
+            // Validar datos requeridos
+            if (puesto.getNumero() == null || puesto.getNumero().trim().isEmpty()) {
+                throw new IllegalArgumentException("El número de puesto es requerido");
+            }
+            
+            if (puesto.getUbicacion() == null || puesto.getUbicacion().trim().isEmpty()) {
+                throw new IllegalArgumentException("La ubicación es requerida");
+            }
+            
+            if (puesto.getTipoPuesto() == null) {
+                puesto.setTipoPuesto(TipoPuesto.REGULAR);
+            }
+            
+            if (puesto.getEstadoPuesto() == null) {
+                puesto.setEstadoPuesto(EstadoPuesto.DISPONIBLE);
+            }
+            
+            // Generar ID automático si no viene
+            if (puesto.getId() == null || puesto.getId().trim().isEmpty()) {
+                String nuevoId = "P" + (puestoService.obtenerPuestos().size() + 1);
+                puesto.setId(nuevoId);
+            }
+            
+            // Crear el puesto usando el servicio
             Puesto puestoCreado = puestoService.crearPuesto(puesto);
+            
+            System.out.println("✅ Puesto creado exitosamente: " + puestoCreado.getId());
             return ResponseEntity.ok(puestoCreado);
+            
         } catch (IllegalArgumentException e) {
             Map<String, String> errorResponse = new HashMap<>();
             errorResponse.put("error", e.getMessage());
             return ResponseEntity.badRequest().body(errorResponse);
+            
         } catch (Exception e) {
+            System.err.println("❌ Error creando puesto: " + e.getMessage());
+            e.printStackTrace();
+            
             Map<String, String> errorResponse = new HashMap<>();
             errorResponse.put("error", "Error interno del servidor");
             return ResponseEntity.internalServerError().body(errorResponse);

@@ -1,1 +1,33 @@
-[ ]
+[ {
+  "id" : "R2",
+  "puestoId" : "P5",
+  "clienteId" : "e58428ef-4dc5-454b-aeb9-ca5b000a0421",
+  "usuario" : "Cris",
+  "fecha" : "2025-12-21",
+  "horaInicio" : "14:00:00",
+  "horaFin" : "22:00:00",
+  "turno" : "TARDE",
+  "estado" : "PENDIENTE",
+  "fechaCreacion" : "2025-12-21",
+  "puestoIdSolicitud" : "P5",
+  "clienteIdSolicitud" : "e58428ef-4dc5-454b-aeb9-ca5b000a0421",
+  "usuarioSolicitud" : "Cris",
+  "fechaSolicitud" : "2025-12-21",
+  "turnoSolicitud" : "TARDE"
+}, {
+  "id" : "R1",
+  "puestoId" : "P3",
+  "clienteId" : "e58428ef-4dc5-454b-aeb9-ca5b000a0421",
+  "usuario" : "Cris",
+  "fecha" : "2025-12-21",
+  "horaInicio" : "06:00:00",
+  "horaFin" : "14:00:00",
+  "turno" : "MAÑANA",
+  "estado" : "CONFIRMADA",
+  "fechaCreacion" : "2025-12-21",
+  "puestoIdSolicitud" : "P3",
+  "clienteIdSolicitud" : "e58428ef-4dc5-454b-aeb9-ca5b000a0421",
+  "usuarioSolicitud" : "Cris",
+  "fechaSolicitud" : "2025-12-21",
+  "turnoSolicitud" : "MAÑANA"
+} ]

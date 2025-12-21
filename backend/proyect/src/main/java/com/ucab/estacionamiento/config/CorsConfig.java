@@ -1,5 +1,3 @@
-
-
 package com.ucab.estacionamiento.config;
 
 import org.springframework.context.annotation.Bean;
@@ -10,7 +8,7 @@ import org.springframework.lang.NonNull;
 
 @Configuration
 public class CorsConfig {
-
+    
     @Bean
     public WebMvcConfigurer corsConfigurer() {
         return new WebMvcConfigurer() {

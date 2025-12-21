@@ -1,1 +1,15 @@
-[ ]
+[ {
+  "id" : "e58428ef-4dc5-454b-aeb9-ca5b000a0421",
+  "usuario" : "Cris",
+  "contrasena" : "Cristian123",
+  "confirmarContrasena" : "Cristian123",
+  "nombre" : "cristian",
+  "apellido" : "Terán",
+  "cedula" : "30678699",
+  "direccion" : "Antimano",
+  "telefono" : "0426-1434531",
+  "email" : "cristian.23@est.ucab.edu.ve",
+  "tipoPersona" : "UCAB",
+  "fechaRegistro" : null,
+  "estado" : null
+} ]

@@ -56,33 +56,43 @@ export class CrearPuestoComponent implements OnInit {
     this.mensaje = '';
     this.errores = [];
 
+    console.log('📤 Enviando datos al backend:', {
+      url: 'http://localhost:8080/puestos/api',
+      datos: this.puestoRequest
+    });
+
     this.crearPuestoService.crearPuesto(this.puestoRequest).subscribe({
       next: (response: any) => {
         this.procesando = false;
+        console.log('✅ Respuesta del backend:', response);
 
-        // Manejar respuesta del backend
-        if (response.id) { // Si tiene ID, fue exitoso
-          this.mostrarMensaje('✅ Puesto creado exitosamente', 'success');
+        if (response.id) {
+          this.mostrarMensaje(`✅ Puesto creado exitosamente: ${response.numero} (ID: ${response.id})`, 'success');
 
-          // Limpiar formulario después de éxito
           setTimeout(() => {
             this.limpiarFormulario();
             this.router.navigate(['/puestos']);
           }, 2000);
+
         } else if (response.error) {
+          console.error('❌ Error del backend:', response.error);
           this.mostrarMensaje('❌ ' + response.error, 'danger');
-          this.errores = [response.error];
         }
       },
       error: (error) => {
         this.procesando = false;
-        console.error('Error creando puesto:', error);
+        console.error('❌ Error HTTP:', error);
 
-        if (error.error?.error) {
+        if (error.status === 0) {
+          this.mostrarMensaje('❌ No se puede conectar con el servidor', 'danger');
+        } else if (error.error?.error) {
           this.mostrarMensaje('❌ ' + error.error.error, 'danger');
         } else {
-          this.mostrarMensaje('Error al crear el puesto. Intente nuevamente.', 'danger');
+          this.mostrarMensaje('❌ Error al crear el puesto. Intente nuevamente.', 'danger');
         }
+      },
+      complete: () => {
+        console.log('✅ Petición completada');
       }
     });
   }

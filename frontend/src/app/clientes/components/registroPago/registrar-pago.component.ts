@@ -4,8 +4,33 @@ import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { HttpClientModule } from '@angular/common/http';
 import { PagoService } from '../../service/pago.service';
+import { ReservaService } from '../../service/reserva.service';
 import { ClienteService, Cliente } from '../../service/cliente.service';
-import { PagoRequest, ReservaConCliente, MetodoPago, EstadoPago } from '../../models/pago.model';
+
+interface ReservaParaPago {
+  id: string;
+  puestoId: string;
+  clienteId: string;
+  usuario: string;
+  fecha: string;
+  turno: string;
+  estado: string;
+  tarifaCalculada: number;
+  cliente: {  // ← CAMBIA: quita el opcional (?)
+    nombre: string;
+    apellido: string;
+    cedula: string;
+    email: string;
+    tipoPersona: string;
+    id: string;
+  };
+  puesto: {  // ← CAMBIA: quita el opcional (?)
+    numero: string;
+    ubicacion: string;
+    tipoPuesto: string;
+    estadoPuesto: string;
+  };
+}
 
 @Component({
   selector: 'app-registrar-pago',
@@ -17,227 +42,274 @@ import { PagoRequest, ReservaConCliente, MetodoPago, EstadoPago } from '../../mo
 export class RegistrarPagoComponent implements OnInit {
 
   // Datos del formulario
-  reservaId: string = '';
   clienteId: string = '';
+  reservaId: string = '';
   monto: number = 0;
-  metodoPago: MetodoPago = MetodoPago.EFECTIVO;
+  metodoPago: string = 'EFECTIVO';
   referencia: string = '';
   descripcion: string = '';
 
   // Listas de datos
-  reservasPendientes: ReservaConCliente[] = [];
   clientes: Cliente[] = [];
-  reservasFiltradas: ReservaConCliente[] = [];
+  reservasPendientes: ReservaParaPago[] = [];
+  reservasFiltradas: ReservaParaPago[] = [];
 
   // Estados
-  procesando: boolean = false;
   cargando: boolean = false;
+  procesando: boolean = false;
   error: string = '';
   exito: string = '';
 
   // Opciones
-  metodosPago: { value: MetodoPago; label: string }[] = [];
+  metodosPago = [
+    { value: 'EFECTIVO', label: 'Efectivo' },
+    { value: 'TARJETA_CREDITO', label: 'Tarjeta de Crédito' },
+    { value: 'TARJETA_DEBITO', label: 'Tarjeta de Débito' },
+    { value: 'TRANSFERENCIA', label: 'Transferencia Bancaria' },
+    { value: 'PAGO_MOVIL', label: 'Pago Móvil' }
+  ];
 
   constructor(
     private pagoService: PagoService,
     private clienteService: ClienteService,
+    private reservaService: ReservaService,
     private router: Router
   ) {}
 
   ngOnInit(): void {
     this.cargarDatosIniciales();
-    this.metodosPago = this.pagoService.obtenerMetodosPago();
   }
 
   cargarDatosIniciales(): void {
     this.cargando = true;
-
-    // Cargar reservas pendientes de pago
-    this.pagoService.obtenerReservasPendientesPago().subscribe({
-      next: (reservas) => {
-        this.reservasPendientes = reservas;
-        this.reservasFiltradas = reservas;
-        this.cargando = false;
-      },
-      error: (error) => {
-        console.error('Error al cargar reservas pendientes:', error);
-        this.error = 'Error al cargar las reservas pendientes de pago.';
-        this.cargando = false;
-
-        // Datos de ejemplo para desarrollo
-        this.cargarDatosEjemplo();
-      }
-    });
+    this.error = '';
 
     // Cargar clientes
     this.clienteService.consultarClientes().subscribe({
       next: (clientes) => {
         this.clientes = clientes;
+        console.log('✅ Clientes cargados:', clientes.length);
+
+        // Cargar reservas pendientes
+        this.cargarReservasPendientes();
       },
       error: (error) => {
-        console.error('Error al cargar clientes:', error);
+        console.error('❌ Error al cargar clientes:', error);
+        this.error = 'Error al cargar la lista de clientes';
+        this.cargando = false;
       }
     });
   }
 
-  // Datos de ejemplo para desarrollo
-  private cargarDatosEjemplo(): void {
-    this.reservasPendientes = [
-      {
-        id: 'R1',
-        puestoId: 'P1',
-        clienteId: '1',
-        usuario: 'juan.perez',
-        fecha: new Date().toISOString().split('T')[0],
-        turno: 'MAÑANA',
-        estado: 'CONFIRMADA',
-        cliente: {
-          nombre: 'Juan',
-          apellido: 'Pérez',
-          cedula: 'V-12345678'
-        },
-        puesto: {
-          numero: 'A-01',
-          ubicacion: 'Zona A',
-          tipoPuesto: 'REGULAR'
+  cargarReservasPendientes(): void {
+    console.log('📥 Cargando reservas pendientes de pago...');
+
+    this.pagoService.obtenerReservasPendientesPago().subscribe({
+      next: (reservas: any[]) => {
+        console.log('✅ Reservas recibidas del backend:', reservas);
+        this.reservasPendientes = reservas;
+        this.reservasFiltradas = [...reservas]; // Copia inicial
+
+        console.log(`📊 ${reservas.length} reservas pendientes cargadas`);
+
+        // Mostrar detalles en consola
+        reservas.forEach(reserva => {
+          console.log(`   • ${reserva.id} - ${reserva.cliente?.nombre} ${reserva.cliente?.apellido} - $${reserva.tarifaCalculada}`);
+        });
+
+        this.cargando = false;
+
+        if (reservas.length === 0) {
+          this.error = 'No hay reservas pendientes de pago en el sistema.';
         }
       },
-      {
-        id: 'R2',
-        puestoId: 'P2',
-        clienteId: '2',
-        usuario: 'maria.gonzalez',
-        fecha: new Date().toISOString().split('T')[0],
-        turno: 'TARDE',
-        estado: 'CONFIRMADA',
-        cliente: {
-          nombre: 'María',
-          apellido: 'González',
-          cedula: 'V-87654321'
-        },
-        puesto: {
-          numero: 'B-01',
-          ubicacion: 'Zona B',
-          tipoPuesto: 'DOCENTE'
+      error: (error) => {
+        console.error('❌ Error al cargar reservas pendientes:', error);
+        this.error = 'Error al cargar las reservas pendientes de pago: ' +
+                    (error.error?.error || error.message || 'Error desconocido');
+        this.cargando = false;
+      }
+    });
+  }
+
+  filtrarReservasPorCliente(): void {
+    console.log('🔍 Filtrando reservas por cliente:', this.clienteId);
+
+    if (!this.clienteId) {
+      // Mostrar todas las reservas
+      this.reservasFiltradas = [...this.reservasPendientes];
+    } else {
+      // Filtrar por cliente
+      this.reservasFiltradas = this.reservasPendientes.filter(reserva =>
+        reserva.clienteId === this.clienteId ||
+        reserva.cliente?.id === this.clienteId
+      );
+    }
+
+    console.log(`📋 ${this.reservasFiltradas.length} reservas después del filtro`);
+
+    // Si se cambió el filtro y había una reserva seleccionada, limpiarla
+    if (this.reservaId) {
+      const reservaActual = this.reservasFiltradas.find(r => r.id === this.reservaId);
+      if (!reservaActual) {
+        this.reservaId = '';
+        this.monto = 0;
+      }
+    }
+  }
+
+  onReservaSeleccionada(): void {
+    console.log('🎯 Reserva seleccionada:', this.reservaId);
+
+    if (this.reservaId) {
+      const reserva = this.getReservaSeleccionada();
+      if (reserva) {
+        // Establecer el monto automáticamente
+        this.monto = reserva.tarifaCalculada;
+        console.log(`💰 Monto establecido automáticamente: $${this.monto}`);
+
+        // Generar referencia automática
+        this.referencia = `PAGO-${this.reservaId}-${Date.now().toString().slice(-6)}`;
+        console.log(`🔢 Referencia generada: ${this.referencia}`);
+
+        // Auto-seleccionar cliente si no está seleccionado
+        if (!this.clienteId && reserva.cliente?.id) {
+          this.clienteId = reserva.cliente.id;
+          console.log(`👤 Cliente auto-seleccionado: ${reserva.cliente.nombre}`);
         }
       }
-    ];
-    this.reservasFiltradas = [...this.reservasPendientes];
-    this.cargando = false;
-  }
-
-  // Cuando se selecciona una reserva
-  onReservaSeleccionada(): void {
-    const reservaSeleccionada = this.reservasPendientes.find(r => r.id === this.reservaId);
-    if (reservaSeleccionada) {
-      this.clienteId = reservaSeleccionada.clienteId;
-      this.monto = this.pagoService.calcularMonto(
-        reservaSeleccionada.puesto.tipoPuesto,
-        reservaSeleccionada.turno
-      );
-      this.descripcion = `Pago reserva puesto ${reservaSeleccionada.puesto.numero} - ${reservaSeleccionada.fecha} ${reservaSeleccionada.turno}`;
-    }
-  }
-
-  // Filtrar reservas por cliente
-  filtrarReservasPorCliente(): void {
-    if (this.clienteId) {
-      this.reservasFiltradas = this.reservasPendientes.filter(
-        r => r.clienteId === this.clienteId
-      );
     } else {
-      this.reservasFiltradas = [...this.reservasPendientes];
-    }
-
-    // Resetear reserva seleccionada si no está en la lista filtrada
-    if (this.reservaId && !this.reservasFiltradas.find(r => r.id === this.reservaId)) {
-      this.reservaId = '';
       this.monto = 0;
-      this.descripcion = '';
+      this.referencia = '';
     }
   }
 
-  // Registrar el pago
+  getReservaSeleccionada(): ReservaParaPago | null {
+    if (!this.reservaId) return null;
+
+    const reserva = this.reservasFiltradas.find(r => r.id === this.reservaId);
+    if (!reserva) {
+      console.warn('⚠️ Reserva seleccionada no encontrada en lista filtrada');
+      return null;
+    }
+
+    return reserva;
+  }
+
   registrarPago(): void {
-    if (!this.reservaId || !this.clienteId || !this.monto || !this.metodoPago || !this.referencia) {
-      this.error = 'Por favor, complete todos los campos obligatorios.';
+    console.log('💰 Iniciando registro de pago...');
+
+    // Validaciones
+    if (!this.reservaId) {
+      this.error = 'Por favor, seleccione una reserva.';
       return;
     }
 
-    if (this.monto <= 0) {
-      this.error = 'El monto debe ser mayor a cero.';
+    if (!this.monto || this.monto <= 0) {
+      this.error = 'Por favor, ingrese un monto válido mayor a cero.';
       return;
     }
+
+    if (!this.metodoPago) {
+      this.error = 'Por favor, seleccione un método de pago.';
+      return;
+    }
+
+    if (!this.referencia || this.referencia.trim() === '') {
+      this.error = 'Por favor, ingrese una referencia de pago.';
+      return;
+    }
+
+    const reserva = this.getReservaSeleccionada();
+    if (!reserva) {
+      this.error = 'Reserva no válida. Por favor, seleccione otra reserva.';
+      return;
+    }
+
+    // Preparar datos del pago
+    const pagoRequest = {
+      reservaId: this.reservaId,
+      clienteId: reserva.clienteId || reserva.cliente?.id,
+      monto: this.monto,
+      metodoPago: this.metodoPago,
+      referencia: this.referencia,
+      descripcion: this.descripcion || `Pago de reserva ${this.reservaId}`
+    };
+
+    console.log('📤 Enviando pago al backend:', pagoRequest);
 
     this.procesando = true;
     this.error = '';
     this.exito = '';
 
-    const pagoRequest: PagoRequest = {
-      reservaId: this.reservaId,
-      clienteId: this.clienteId,
-      monto: this.monto,
-      metodoPago: this.metodoPago,
-      referencia: this.referencia,
-      descripcion: this.descripcion
-    };
-
     this.pagoService.registrarPago(pagoRequest).subscribe({
-      next: (pago) => {
+      next: (response: any) => {
+        console.log('✅ Pago registrado exitosamente:', response);
+
+        this.exito = `✅ PAGO REGISTRADO EXITOSAMENTE\n\n` +
+                    `ID del Pago: ${response.id || 'N/A'}\n` +
+                    `Reserva: ${this.reservaId}\n` +
+                    `Cliente: ${reserva.cliente?.nombre} ${reserva.cliente?.apellido}\n` +
+                    `Monto: ${this.formatearMonto(this.monto)}\n` +
+                    `Método: ${this.getMetodoPagoLabel(this.metodoPago)}\n` +
+                    `Referencia: ${this.referencia}\n` +
+                    `Fecha: ${new Date().toLocaleString()}`;
+
         this.procesando = false;
-        this.exito = `✅ Pago registrado exitosamente!\nID: ${pago.id}\nMonto: $${pago.monto}\nMétodo: ${this.getMetodoPagoLabel(pago.metodoPago)}\nReferencia: ${pago.referencia}`;
 
-        // Limpiar formulario después de éxito
-        this.limpiarFormulario();
-
-        // Recargar lista de reservas pendientes
+        // Recargar lista de reservas pendientes después de 2 segundos
         setTimeout(() => {
-          this.cargarDatosIniciales();
+          this.cargarReservasPendientes();
+          this.limpiarFormulario();
         }, 2000);
       },
       error: (error) => {
-        console.error('Error al registrar pago:', error);
-        this.error = error.error?.error || 'Error al registrar el pago. Por favor, intente nuevamente.';
+        console.error('❌ Error al registrar pago:', error);
+
+        let mensajeError = 'Error al registrar el pago: ';
+        if (error.error?.error) {
+          mensajeError += error.error.error;
+        } else if (error.message) {
+          mensajeError += error.message;
+        } else {
+          mensajeError += 'Error desconocido';
+        }
+
+        this.error = mensajeError;
         this.procesando = false;
       }
     });
   }
 
-  // Obtener label del método de pago
-  getMetodoPagoLabel(metodo: MetodoPago): string {
-    const metodoObj = this.metodosPago.find(m => m.value === metodo);
-    return metodoObj ? metodoObj.label : metodo;
+  getMetodoPagoLabel(value: string): string {
+    const metodo = this.metodosPago.find(m => m.value === value);
+    return metodo ? metodo.label : value;
   }
 
-  // Obtener nombre completo del cliente
-  getNombreCliente(clienteId: string): string {
-    const cliente = this.clientes.find(c => c.id === clienteId);
-    return cliente ? `${cliente.nombre} ${cliente.apellido}` : '';
+  formatearMonto(monto: number): string {
+    return `$${monto.toFixed(2)}`;
   }
 
-  // Limpiar formulario
   limpiarFormulario(): void {
+    console.log('🧹 Limpiando formulario...');
     this.reservaId = '';
-    this.clienteId = '';
     this.monto = 0;
-    this.metodoPago = MetodoPago.EFECTIVO;
+    this.metodoPago = 'EFECTIVO';
     this.referencia = '';
     this.descripcion = '';
+    this.clienteId = '';
     this.reservasFiltradas = [...this.reservasPendientes];
+    this.error = '';
+    this.exito = '';
   }
 
-  // Volver a gestión de reservas
   volverAGestion(): void {
     this.router.navigate(['/gestion-reservas']);
   }
 
-  // Obtener información de la reserva seleccionada
-  getReservaSeleccionada(): ReservaConCliente | null {
-    return this.reservasPendientes.find(r => r.id === this.reservaId) || null;
-  }
-
-  // Formatear monto como moneda
-  formatearMonto(monto: number): string {
-    return `$${monto.toFixed(2)}`;
+  recargarReservas(): void {
+    console.log('🔄 Recargando reservas...');
+    this.cargando = true;
+    this.cargarReservasPendientes();
   }
 }

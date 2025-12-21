@@ -33,6 +33,12 @@ public class JsonManagerReservaPago {
         try {
             List<Reserva> reservas = cargarReservas();
             
+            // Asignar ID si no existe
+            if (reserva.getId() == null || reserva.getId().trim().isEmpty()) {
+                String nuevoId = "R" + (reservas.size() + 1);
+                reserva.setId(nuevoId);
+            }
+            
             // Verificar si ya existe
             Optional<Reserva> reservaExistente = reservas.stream()
                     .filter(r -> r.getId().equals(reserva.getId()))
@@ -123,6 +129,23 @@ public class JsonManagerReservaPago {
         return cargarReservas();
     }
 
+    public boolean eliminarReserva(String id) {
+        try {
+            List<Reserva> reservas = cargarReservas();
+            boolean eliminado = reservas.removeIf(r -> r.getId().equals(id));
+            if (eliminado) {
+                guardarReservasEnArchivo(reservas);
+                System.out.println("✅ Reserva eliminada: " + id);
+            } else {
+                System.out.println("❌ Reserva no encontrada: " + id);
+            }
+            return eliminado;
+        } catch (Exception e) {
+            System.err.println("❌ Error eliminando reserva: " + e.getMessage());
+            return false;
+        }
+    }
+
     // ========== OPERACIONES PAGOS ==========
 
     public Pago guardarPago(Pago pago) {
@@ -130,6 +153,12 @@ public class JsonManagerReservaPago {
         
         try {
             List<Pago> pagos = cargarPagos();
+            
+            // Asignar ID si no existe
+            if (pago.getId() == null || pago.getId().trim().isEmpty()) {
+                String nuevoId = "PAY" + (pagos.size() + 1);
+                pago.setId(nuevoId);
+            }
             
             // Verificar si ya existe
             Optional<Pago> pagoExistente = pagos.stream()
@@ -212,6 +241,23 @@ public class JsonManagerReservaPago {
 
     public List<Pago> obtenerTodosPagos() {
         return cargarPagos();
+    }
+
+    public boolean eliminarPago(String id) {
+        try {
+            List<Pago> pagos = cargarPagos();
+            boolean eliminado = pagos.removeIf(p -> p.getId().equals(id));
+            if (eliminado) {
+                guardarPagosEnArchivo(pagos);
+                System.out.println("✅ Pago eliminado: " + id);
+            } else {
+                System.out.println("❌ Pago no encontrado: " + id);
+            }
+            return eliminado;
+        } catch (Exception e) {
+            System.err.println("❌ Error eliminando pago: " + e.getMessage());
+            return false;
+        }
     }
 
     public boolean existePagoParaReserva(String reservaId) {

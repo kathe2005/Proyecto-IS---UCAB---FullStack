@@ -4,7 +4,6 @@ import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { PuestoService } from '../../service/puesto.service';
 import { ClienteService, Cliente } from '../../service/cliente.service';
-import { EstadoPuesto } from '../../models/puestos.model';
 
 interface Puesto {
   id: string;
@@ -58,8 +57,9 @@ export class OcuparPuestoComponent implements OnInit {
   cargarPuestosDisponibles() {
     this.procesando = true;
 
-    this.puestoService.obtenerPuestosPorEstado(EstadoPuesto.DISPONIBLE).subscribe({
-      next: (data: any) => {
+    // Usar string 'DISPONIBLE' en lugar del enum EstadoPuesto
+    this.puestoService.obtenerPuestosPorEstado('DISPONIBLE').subscribe({
+      next: (data: Puesto[]) => {  // Cambiado de any a Puesto[]
         this.puestosDisponibles = data;
         this.procesando = false;
 
@@ -91,12 +91,13 @@ export class OcuparPuestoComponent implements OnInit {
     this.buscandoCliente = true;
     this.clienteEncontrado = null;
 
+    // CORRECCIÓN: obtenerClientePorCedula devuelve un Cliente, no un array
     this.clienteService.obtenerClientePorCedula(this.ocuparRequest.cedula).subscribe({
-      next: (clientes: Cliente[]) => {
+      next: (cliente: Cliente) => {  // Cambiado de Cliente[] a Cliente
         this.buscandoCliente = false;
 
-        if (clientes.length > 0) {
-          this.clienteEncontrado = clientes[0];
+        if (cliente) {
+          this.clienteEncontrado = cliente;
           this.ocuparRequest.clienteId = this.clienteEncontrado.id;
           this.mostrarMensaje(`✅ Cliente encontrado: ${this.clienteEncontrado.nombre} ${this.clienteEncontrado.apellido}`, 'success');
         } else {
@@ -106,7 +107,12 @@ export class OcuparPuestoComponent implements OnInit {
       error: (error) => {
         this.buscandoCliente = false;
         console.error('Error buscando cliente:', error);
-        this.mostrarMensaje('Error al buscar el cliente', 'danger');
+
+        if (error.status === 404) {
+          this.mostrarMensaje('❌ No se encontró ningún cliente con esta cédula', 'warning');
+        } else {
+          this.mostrarMensaje('Error al buscar el cliente', 'danger');
+        }
       }
     });
   }
@@ -162,11 +168,12 @@ export class OcuparPuestoComponent implements OnInit {
         this.procesando = false;
         console.log('Respuesta del servidor:', resultado);
 
-        if (resultado.exito || resultado.success) {
+        if (resultado.exito || resultado.id) {
           this.mostrarMensaje('✅ Puesto ocupado exitosamente', 'success');
 
           // Actualizar lista local
           this.puestosDisponibles = this.puestosDisponibles.filter(p => p.id !== this.ocuparRequest.puestoId);
+          this.puestoSeleccionado = null;
 
           // Redirigir después de 2 segundos
           setTimeout(() => {
@@ -225,5 +232,22 @@ export class OcuparPuestoComponent implements OnInit {
     setTimeout(() => {
       this.mensaje = '';
     }, 5000);
+  }
+
+  // Método para limpiar el formulario
+  limpiarFormulario() {
+    this.ocuparRequest = {
+      puestoId: '',
+      cedula: ''
+    };
+    this.clienteEncontrado = null;
+    this.puestoSeleccionado = null;
+    this.mensaje = '';
+  }
+
+  // Método para volver a cargar la lista
+  recargarLista() {
+    this.cargarPuestosDisponibles();
+    this.limpiarFormulario();
   }
 }

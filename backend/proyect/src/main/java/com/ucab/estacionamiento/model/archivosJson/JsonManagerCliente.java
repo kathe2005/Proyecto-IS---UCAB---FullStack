@@ -37,7 +37,7 @@ public class JsonManagerCliente {
 
             // Verificar si ya existe por usuario
             Optional<Cliente> clienteExistente = clientes.stream()
-                    .filter(c -> c.getUsuario().equalsIgnoreCase(cliente.getUsuario()))
+                    .filter(c -> c.getId().equals(cliente.getId()))
                     .findFirst();
             
             if (clienteExistente.isPresent()) {
@@ -121,6 +121,13 @@ public class JsonManagerCliente {
                 .findFirst();
     }
 
+    public Optional<Cliente> buscarPorId(String id) {
+        List<Cliente> clientes = cargarClientes();
+        return clientes.stream()
+                .filter(c -> c.getId().toString().equals(id))
+                .findFirst();
+    }
+
     public List<Cliente> obtenerTodosClientes() {
         return cargarClientes();
     }
@@ -139,15 +146,15 @@ public class JsonManagerCliente {
         }
     }
 
-    public boolean eliminarCliente(String usuario) {
+    public boolean eliminarCliente(String id) {
         try {
             List<Cliente> clientes = cargarClientes();
-            boolean eliminado = clientes.removeIf(c -> c.getUsuario().equalsIgnoreCase(usuario));
+            boolean eliminado = clientes.removeIf(c -> c.getId().toString().equals(id));
             if (eliminado) {
                 guardarClientesEnArchivo(clientes);
-                System.out.println("✅ Cliente eliminado: " + usuario);
+                System.out.println("✅ Cliente eliminado: " + id);
             } else {
-                System.out.println("❌ Cliente no encontrado: " + usuario);
+                System.out.println("❌ Cliente no encontrado: " + id);
             }
             return eliminado;
         } catch (Exception e) {

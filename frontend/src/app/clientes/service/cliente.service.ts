@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpParams } from '@angular/common/http';
+import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 
 export interface Cliente {
@@ -12,49 +12,78 @@ export interface Cliente {
   apellido: string;
   email: string;
   telefono?: string;
-  tipoPersona?: string;
+  tipoPersona?: string;  // 'UCAB' | 'VISITANTE'
   direccion?: string;
   fechaRegistro?: string;
   estado?: string;
 }
 
 @Injectable({
-  providedIn: 'root',
+  providedIn: 'root'
 })
 export class ClienteService {
-  // Base URL del backend (ajustar si es necesario)
-  private baseUrl = 'http://localhost:8080/api/clientes';
+  // ✅ CORREGIDO: URL correcta para clientes
+  private baseUrl = 'http://localhost:8080/clientes/api';
 
   constructor(private http: HttpClient) {}
 
-  // Registrar nuevo cliente
-  registrarCliente(cliente: Cliente): Observable<Cliente> {
-    return this.http.post<Cliente>(`${this.baseUrl}`, cliente);
+  // ✅ REGISTRAR CLIENTE - CORREGIDO
+  registrarCliente(cliente: Cliente): Observable<any> {
+    return this.http.post(`${this.baseUrl}`, cliente);
   }
 
-  // Obtener todos los clientes
+  // ✅ OBTENER TODOS LOS CLIENTES - CORREGIDO
   consultarClientes(): Observable<Cliente[]> {
     return this.http.get<Cliente[]>(`${this.baseUrl}`);
   }
 
-  // Obtener cliente(s) por cédula (query param 'cedula')
-  obtenerClientePorCedula(cedula: string): Observable<Cliente[]> {
-    const params = new HttpParams().set('cedula', cedula);
-    return this.http.get<Cliente[]>(`${this.baseUrl}`, { params });
+  // ✅ OBTENER CLIENTE POR USUARIO - CORREGIDO
+  obtenerClientePorUsuario(usuario: string): Observable<Cliente> {
+    return this.http.get<Cliente>(`${this.baseUrl}/usuario/${usuario}`);
   }
 
-  // Obtener cliente por usuario
-  obtenerClientePorUsuario(usuario: string): Observable<Cliente | null> {
-    return this.http.get<Cliente | null>(`${this.baseUrl}/usuario/${encodeURIComponent(usuario)}`);
+  // ✅ OBTENER CLIENTE POR CÉDULA - CORREGIDO
+  obtenerClientePorCedula(cedula: string): Observable<Cliente> {
+    return this.http.get<Cliente>(`${this.baseUrl}/cedula/${cedula}`);
   }
 
-  // Actualizar cliente por usuario
-  actualizarCliente(usuario: string, cliente: Cliente): Observable<Cliente> {
-    return this.http.put<Cliente>(`${this.baseUrl}/actualizar/${encodeURIComponent(usuario)}`, cliente);
+  // ✅ OBTENER CLIENTE POR EMAIL - CORREGIDO
+  obtenerClientePorEmail(email: string): Observable<Cliente> {
+    return this.http.get<Cliente>(`${this.baseUrl}/email/${email}`);
   }
 
-  // Login (si el backend expone /login o /auth/login)
-  login(creds: { usuario: string; contrasena: string }): Observable<any> {
-    return this.http.post<any>(`${this.baseUrl}/login`, creds);
+  // ✅ VERIFICAR EXISTENCIA DE USUARIO - CORREGIDO
+  existeUsuario(usuario: string): Observable<{existe: boolean}> {
+    return this.http.get<{existe: boolean}>(`${this.baseUrl}/existe/usuario/${usuario}`);
+  }
+
+  // ✅ VERIFICAR EXISTENCIA DE EMAIL - CORREGIDO
+  existeEmail(email: string): Observable<{existe: boolean}> {
+    return this.http.get<{existe: boolean}>(`${this.baseUrl}/existe/email/${email}`);
+  }
+
+  // ✅ VERIFICAR EXISTENCIA DE CÉDULA - CORREGIDO
+  existeCedula(cedula: string): Observable<{existe: boolean}> {
+    return this.http.get<{existe: boolean}>(`${this.baseUrl}/existe/cedula/${cedula}`);
+  }
+
+  // ✅ ACTUALIZAR CLIENTE - CORREGIDO
+  actualizarCliente(id: string, cliente: Cliente): Observable<Cliente> {
+    return this.http.put<Cliente>(`${this.baseUrl}/${id}`, cliente);
+  }
+
+  // ✅ ELIMINAR CLIENTE - CORREGIDO
+  eliminarCliente(id: string): Observable<any> {
+    return this.http.delete(`${this.baseUrl}/${id}`);
+  }
+
+  // ✅ VALIDAR EMAIL - NUEVO MÉTODO
+  validarEmail(email: string): Observable<any> {
+    return this.http.get(`${this.baseUrl}/validar/email/${email}`);
+  }
+
+  // ✅ VALIDAR USUARIO - NUEVO MÉTODO
+  validarUsuario(usuario: string): Observable<any> {
+    return this.http.get(`${this.baseUrl}/validar/usuario/${usuario}`);
   }
 }

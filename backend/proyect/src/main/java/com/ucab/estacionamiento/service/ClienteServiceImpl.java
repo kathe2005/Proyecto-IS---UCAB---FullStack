@@ -6,6 +6,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 @Service
 public class ClienteServiceImpl {
@@ -67,6 +68,11 @@ public class ClienteServiceImpl {
             throw new IllegalArgumentException("El telefono se encuentra registrado ingrese otro para continuar");
         }
 
+        // Asignar ID si no existe
+        if (nuevoCliente.getId() == null) {
+            nuevoCliente.setId(UUID.randomUUID());
+        }
+
         //Simulacion del proceso lento (3 Segundos)
         try {
             System.out.println("⏳ Procesando el registro...");
@@ -107,21 +113,21 @@ public class ClienteServiceImpl {
 
         // Validar duplicados en actualización
         jsonManagerCliente.buscarPorEmail(clienteActualizado.getEmail()).ifPresent(duplicado -> {
-            if (!clienteExistente.getUsuario().equals(duplicado.getUsuario())) {
+            if (!clienteExistente.getId().equals(duplicado.getId())) {
                 System.err.println("!!! CONFLICTO EMAIL !!!: El email '" + clienteActualizado.getEmail() + "' ya pertenece al usuario: " + duplicado.getUsuario());
                 throw new IllegalArgumentException("El nuevo correo ingresado ya está registrado por otro usuario.");
             }
         });
 
         jsonManagerCliente.buscarPorCedula(clienteActualizado.getCedula()).ifPresent(duplicado -> {
-            if (!clienteExistente.getUsuario().equals(duplicado.getUsuario())) {
+            if (!clienteExistente.getId().equals(duplicado.getId())) {
                 System.err.println("!!! CONFLICTO CÉDULA !!!: La cédula '" + clienteActualizado.getCedula() + "' ya pertenece al usuario: " + duplicado.getUsuario());
                 throw new IllegalArgumentException("La nueva cédula ingresada ya está registrada por otro usuario.");
             }
         });
 
         jsonManagerCliente.buscarPorTelefono(clienteActualizado.getTelefono()).ifPresent(duplicado -> {
-            if (!clienteExistente.getUsuario().equals(duplicado.getUsuario())) {
+            if (!clienteExistente.getId().equals(duplicado.getId())) {
                 System.err.println("!!! CONFLICTO TELÉFONO !!!: El teléfono '" + clienteActualizado.getTelefono() + "' ya pertenece al usuario: " + duplicado.getUsuario());
                 throw new IllegalArgumentException("El nuevo teléfono ya está registrado por otro usuario.");
             }
@@ -140,6 +146,10 @@ public class ClienteServiceImpl {
         obtenerTodos(); 
         System.out.println("✅ Cliente actualizado exitosamente: " + clienteActualizado.getUsuario());
         return clienteGuardado;
+    }
+
+    public boolean eliminarCliente(String id) {
+        return jsonManagerCliente.eliminarCliente(id);
     }
 
     // ------------------------- MÉTODOS DE VALIDACIÓN -------------------------
@@ -303,6 +313,10 @@ public class ClienteServiceImpl {
 
     public Optional<Cliente> obtenerPorTelefono(String telefono) {
         return jsonManagerCliente.buscarPorTelefono(telefono);
+    }
+
+    public Optional<Cliente> obtenerPorId(String id) {
+        return jsonManagerCliente.buscarPorId(id);
     }
 
     // ------------------------- MÉTODOS ADICIONALES -------------------------

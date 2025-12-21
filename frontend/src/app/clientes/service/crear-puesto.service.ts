@@ -9,7 +9,7 @@ import { TipoPuesto, EstadoPuesto } from '../models/puestos.model';
   providedIn: 'root'
 })
 export class CrearPuestoService {
-  private apiUrl = 'http://localhost:8080/api/puestos';
+  private apiUrl = 'http://localhost:8080/puestos/api';
 
   constructor(private http: HttpClient) {}
 

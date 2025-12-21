@@ -41,9 +41,9 @@
             required>
             <option value="">Seleccione una reserva</option>
             <option *ngFor="let reserva of reservasFiltradas" [value]="reserva.id">
-              {{ reserva.cliente.nombre }} {{ reserva.cliente.apellido }} -
-              Puesto {{ reserva.puesto.numero }} -
-              {{ reserva.fecha }} {{ reserva.turno }}
+              {{ reserva.cliente.nombre || 'Cliente' }} {{ reserva.cliente.apellido || 'No encontrado' }} -
+              Puesto {{ reserva.puesto.numero || 'N/A' }} -
+              {{ reserva.fecha || '' }} {{ reserva.turno || '' }}
             </option>
           </select>
           <div *ngIf="reservasFiltradas.length === 0" class="warning-text">
@@ -110,33 +110,39 @@
           [disabled]="procesando || !reservaId || !monto || !metodoPago || !referencia">
           {{ procesando ? 'Registrando Pago...' : 'Registrar Pago' }}
         </button>
+        <button
+          class="btn btn-secondary"
+          (click)="recargarReservas()"
+          [disabled]="cargando">
+          {{ cargando ? 'Cargando...' : 'Recargar Reservas' }}
+        </button>
       </div>
     </div>
 
     <!-- Información de la reserva seleccionada -->
-    <div *ngIf="getReservaSeleccionada()" class="reserva-info">
+    <div *ngIf="reservaId && getReservaSeleccionada()" class="reserva-info">
       <h3>Información de la Reserva</h3>
       <div class="info-grid">
         <div class="info-item">
-          <strong>Cliente:</strong> {{ getReservaSeleccionada()!.cliente.nombre }} {{ getReservaSeleccionada()!.cliente.apellido }}
+          <strong>Cliente:</strong> {{ getReservaSeleccionada()?.cliente?.nombre || 'No disponible' }} {{ getReservaSeleccionada()?.cliente?.apellido || '' }}
         </div>
         <div class="info-item">
-          <strong>Cédula:</strong> {{ getReservaSeleccionada()!.cliente.cedula }}
+          <strong>Cédula:</strong> {{ getReservaSeleccionada()?.cliente?.cedula || 'No disponible' }}
         </div>
         <div class="info-item">
-          <strong>Puesto:</strong> {{ getReservaSeleccionada()!.puesto.numero }}
+          <strong>Puesto:</strong> {{ getReservaSeleccionada()?.puesto?.numero || 'No disponible' }}
         </div>
         <div class="info-item">
-          <strong>Ubicación:</strong> {{ getReservaSeleccionada()!.puesto.ubicacion }}
+          <strong>Ubicación:</strong> {{ getReservaSeleccionada()?.puesto?.ubicacion || 'No disponible' }}
         </div>
         <div class="info-item">
-          <strong>Tipo:</strong> {{ getReservaSeleccionada()!.puesto.tipoPuesto }}
+          <strong>Tipo:</strong> {{ getReservaSeleccionada()?.puesto?.tipoPuesto || 'No disponible' }}
         </div>
         <div class="info-item">
-          <strong>Fecha:</strong> {{ getReservaSeleccionada()!.fecha }}
+          <strong>Fecha:</strong> {{ getReservaSeleccionada()?.fecha || 'No disponible' }}
         </div>
         <div class="info-item">
-          <strong>Turno:</strong> {{ getReservaSeleccionada()!.turno }}
+          <strong>Turno:</strong> {{ getReservaSeleccionada()?.turno || 'No disponible' }}
         </div>
         <div class="info-item">
           <strong>Tarifa Calculada:</strong> {{ formatearMonto(monto) }}

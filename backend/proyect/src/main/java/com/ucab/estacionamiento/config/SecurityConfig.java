@@ -15,16 +15,27 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
-            .csrf(csrf -> csrf.disable())
+            .csrf(csrf -> csrf.disable()) // IMPORTANTE: Deshabilitar CSRF para APIs REST
             .authorizeHttpRequests(authorize -> authorize
-                .requestMatchers("/api/**").permitAll() // Permitir todas las rutas de API
-                .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll() // Permitir preflight requests
+                // ✅ PERMITIR TODAS LAS RUTAS NECESARIAS
+                .requestMatchers("/reservas/api/**").permitAll()  // ✅ RESERVAS
+                .requestMatchers("/clientes/api/**").permitAll()   // ✅ CLIENTES AGREGADO
+                .requestMatchers("/puestos/api/**").permitAll()    // ✅ PUESTOS
+                
+                // Permisos para archivos estáticos si los tienes
+                .requestMatchers("/css/**", "/js/**", "/images/**").permitAll()
+                
+                // Permisos para operaciones HTTP comunes
+                .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
+                .requestMatchers(HttpMethod.GET, "/**").permitAll()    // ✅ GET para todo
+                .requestMatchers(HttpMethod.POST, "/**").permitAll()   // ✅ POST para todo
+                .requestMatchers(HttpMethod.PUT, "/**").permitAll()    // ✅ PUT para todo
+                .requestMatchers(HttpMethod.DELETE, "/**").permitAll() // ✅ DELETE para todo
+                
                 .anyRequest().authenticated()
             )
-            .cors(withDefaults()); // Use Spring's default CORS support (reads `CorsConfig`)
+            .cors(withDefaults());
         
         return http.build();
     }
-
-    // CORS está configurado globalmente en `CorsConfig`.
 }
