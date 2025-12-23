@@ -1,5 +1,3 @@
-
-/*
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
@@ -17,7 +15,7 @@ export class ModificarPerfilesComponent implements OnInit {
   clientes: Cliente[] = [];
   clientesFiltrados: Cliente[] = [];
   clienteSeleccionado: Cliente | null = null;
-  clienteEditado: Cliente | null = null;
+  clienteEditado: any = {};
 
   // Propiedades para filtros
   filtroTexto: string = '';
@@ -54,13 +52,16 @@ export class ModificarPerfilesComponent implements OnInit {
     this.cargando = true;
     this.clienteService.consultarClientes().subscribe({
       next: (clientes: Cliente[]) => {
+        console.log('Clientes cargados:', clientes);
         this.clientes = clientes;
-        this.clientesFiltrados = clientes;
+        this.clientesFiltrados = [...clientes];
         this.cargando = false;
       },
       error: (error: any) => {
         console.error('Error cargando clientes:', error);
-        this.errorMensaje = 'Error al cargar los clientes';
+        this.errorMensaje = 'Error al cargar los clientes: ' + error.message;
+        this.mensajeTipo = 'danger';
+        this.mensaje = this.errorMensaje;
         this.cargando = false;
       }
     });
@@ -69,20 +70,22 @@ export class ModificarPerfilesComponent implements OnInit {
   aplicarFiltros() {
     let filtrados = this.clientes;
 
-    // Filtrar por texto (búsqueda en cédula, nombre, apellido)
+    // Filtrar por texto (búsqueda en cédula, nombre, apellido, usuario)
     if (this.filtroTexto) {
       const texto = this.filtroTexto.toLowerCase();
       filtrados = filtrados.filter(cliente =>
-        cliente.cedula.toLowerCase().includes(texto) ||
-        cliente.nombre.toLowerCase().includes(texto) ||
-        cliente.apellido.toLowerCase().includes(texto)
+        (cliente.cedula?.toLowerCase().includes(texto) || false) ||
+        (cliente.nombre?.toLowerCase().includes(texto) || false) ||
+        (cliente.apellido?.toLowerCase().includes(texto) || false) ||
+        (cliente.usuario?.toLowerCase().includes(texto) || false) ||
+        (cliente.email?.toLowerCase().includes(texto) || false)
       );
     }
 
     // Filtrar por tipo
     if (this.filtroTipo) {
       filtrados = filtrados.filter(cliente =>
-        cliente.tipoCliente === this.filtroTipo
+        cliente.tipoPersona === this.filtroTipo
       );
     }
 
@@ -92,12 +95,28 @@ export class ModificarPerfilesComponent implements OnInit {
   limpiarFiltros() {
     this.filtroTexto = '';
     this.filtroTipo = '';
-    this.clientesFiltrados = this.clientes;
+    this.clientesFiltrados = [...this.clientes];
   }
 
   seleccionarCliente(cliente: Cliente) {
+    console.log('Cliente seleccionado:', cliente);
     this.clienteSeleccionado = cliente;
-    this.clienteEditado = { ...cliente };
+
+    // Crear copia del cliente para editar
+    this.clienteEditado = {
+      id: cliente.id,
+      usuario: cliente.usuario,
+      cedula: cliente.cedula,
+      nombre: cliente.nombre,
+      apellido: cliente.apellido,
+      email: cliente.email,
+      telefono: cliente.telefono || '',
+      tipoPersona: cliente.tipoPersona || 'VISITANTE',
+      direccion: cliente.direccion || '',
+      contrasena: '', // Dejar vacío para no cambiar
+      confirmarContrasena: ''
+    };
+
     this.mostrarFormulario = true;
     this.mensaje = '';
     this.errorMensaje = '';
@@ -106,12 +125,14 @@ export class ModificarPerfilesComponent implements OnInit {
 
   modificarCliente(cliente: Cliente) {
     this.seleccionarCliente(cliente);
+    // Abrir modal programáticamente (necesitamos agregar el modal al HTML)
+    this.mostrarFormulario = true;
   }
 
   cerrarFormulario() {
     this.mostrarFormulario = false;
     this.clienteSeleccionado = null;
-    this.clienteEditado = null;
+    this.clienteEditado = {};
     this.errorMensaje = '';
     this.mensajeExito = '';
   }
@@ -121,23 +142,63 @@ export class ModificarPerfilesComponent implements OnInit {
   }
 
   guardarCambios() {
-    if (!this.clienteEditado) {
+    if (!this.clienteEditado || !this.clienteEditado.id) {
       this.errorMensaje = 'No hay cliente seleccionado para modificar';
+      this.mensajeTipo = 'danger';
+      this.mensaje = this.errorMensaje;
       return;
     }
 
     // Validaciones básicas
-    if (!this.clienteEditado.cedula || !this.clienteEditado.nombre || !this.clienteEditado.apellido) {
+    if (!this.clienteEditado.cedula || !this.clienteEditado.nombre ||
+        !this.clienteEditado.apellido || !this.clienteEditado.email) {
       this.errorMensaje = 'Por favor complete todos los campos obligatorios';
+      this.mensajeTipo = 'warning';
+      this.mensaje = this.errorMensaje;
       return;
     }
 
-    this.guardando = true;
+    // Validar formato de email
+    if (!this.clienteEditado.email.includes('@')) {
+      this.errorMensaje = 'El email debe tener un formato válido (ejemplo@dominio.com)';
+      this.mensajeTipo = 'warning';
+      this.mensaje = this.errorMensaje;
+      return;
+    }
 
+    // Validar contraseña si se quiere cambiar
+    if (this.clienteEditado.contrasena) {
+      if (this.clienteEditado.contrasena.length < 8) {
+        this.errorMensaje = 'La contraseña debe tener al menos 8 caracteres';
+        this.mensajeTipo = 'warning';
+        this.mensaje = this.errorMensaje;
+        return;
+      }
+      if (this.clienteEditado.contrasena !== this.clienteEditado.confirmarContrasena) {
+        this.errorMensaje = 'Las contraseñas no coinciden';
+        this.mensajeTipo = 'warning';
+        this.mensaje = this.errorMensaje;
+        return;
+      }
+    } else {
+      // Si no se quiere cambiar la contraseña, eliminarla del objeto
+      delete this.clienteEditado.contrasena;
+      delete this.clienteEditado.confirmarContrasena;
+    }
+
+    this.guardando = true;
+    this.errorMensaje = '';
+
+    console.log('Enviando datos para modificar:', this.clienteEditado);
+
+    // Usar el método modificarCliente
     this.clienteService.modificarCliente(this.clienteEditado).subscribe({
       next: (clienteActualizado: Cliente) => {
+        console.log('Cliente modificado exitosamente:', clienteActualizado);
         this.guardando = false;
         this.mensajeExito = '✅ Cliente modificado exitosamente';
+        this.mensajeTipo = 'success';
+        this.mensaje = this.mensajeExito;
 
         // Actualizar la lista local
         const index = this.clientes.findIndex(c => c.id === clienteActualizado.id);
@@ -148,9 +209,11 @@ export class ModificarPerfilesComponent implements OnInit {
         // Actualizar lista filtrada
         this.aplicarFiltros();
 
+        // Cerrar formulario después de 2 segundos
         setTimeout(() => {
           this.cerrarFormulario();
           this.mensajeExito = '';
+          this.mensaje = 'Cliente actualizado correctamente';
         }, 2000);
       },
       error: (error: any) => {
@@ -158,17 +221,25 @@ export class ModificarPerfilesComponent implements OnInit {
         console.error('Error modificando cliente:', error);
 
         let mensajeError = 'Error al modificar el cliente';
-        if (error.error?.message) {
+        if (error.error?.error) {
+          mensajeError = error.error.error;
+        } else if (error.error?.message) {
           mensajeError = error.error.message;
+        } else if (error.message) {
+          mensajeError = error.message;
         }
 
         this.errorMensaje = '❌ ' + mensajeError;
+        this.mensajeTipo = 'danger';
+        this.mensaje = this.errorMensaje;
       }
     });
   }
 
   confirmarModificacion() {
-    this.guardarCambios();
+    if (confirm('¿Está seguro de que desea guardar los cambios?')) {
+      this.guardarCambios();
+    }
   }
 
   volverAGestion() {
@@ -178,10 +249,4 @@ export class ModificarPerfilesComponent implements OnInit {
   volverAGestionPerfiles() {
     this.volverAGestion();
   }
-
-  private mostrarMensaje(mensaje: string, tipo: 'success' | 'danger' | 'warning' | 'info') {
-    this.mensaje = mensaje;
-    this.mensajeTipo = tipo;
-  }
 }
-*/

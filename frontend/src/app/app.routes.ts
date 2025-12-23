@@ -51,6 +51,11 @@ export const routes: Routes = [
         loadComponent: () => import('./clientes/components/consultarPerfiles/consultar-perfiles.component').then(m => m.ConsultarPerfilesComponent)
     },
 
+    {
+        path: 'perfiles/modificar',
+        loadComponent: () => import('./clientes/components/modificarPerfiles/modificar-perfil.component').then(m => m.ModificarPerfilesComponent)
+    },
+
     // NUEVAS RUTAS: Gestión de reservas
     {
         path: 'reservas/consultar-disponibilidad',

@@ -22,67 +22,76 @@ export interface Cliente {
   providedIn: 'root'
 })
 export class ClienteService {
-  // ✅ CORREGIDO: URL correcta para clientes
   private baseUrl = 'http://localhost:8080/clientes/api';
 
   constructor(private http: HttpClient) {}
 
-  // ✅ REGISTRAR CLIENTE - CORREGIDO
+  // ✅ REGISTRAR CLIENTE
   registrarCliente(cliente: Cliente): Observable<any> {
     return this.http.post(`${this.baseUrl}`, cliente);
   }
 
-  // ✅ OBTENER TODOS LOS CLIENTES - CORREGIDO
+  // ✅ OBTENER TODOS LOS CLIENTES
   consultarClientes(): Observable<Cliente[]> {
     return this.http.get<Cliente[]>(`${this.baseUrl}`);
   }
 
-  // ✅ OBTENER CLIENTE POR USUARIO - CORREGIDO
+  // ✅ OBTENER CLIENTE POR ID
+  obtenerClientePorId(id: string): Observable<Cliente> {
+    return this.http.get<Cliente>(`${this.baseUrl}/${id}`);
+  }
+
+  // ✅ OBTENER CLIENTE POR USUARIO
   obtenerClientePorUsuario(usuario: string): Observable<Cliente> {
     return this.http.get<Cliente>(`${this.baseUrl}/usuario/${usuario}`);
   }
 
-  // ✅ OBTENER CLIENTE POR CÉDULA - CORREGIDO
+  // ✅ OBTENER CLIENTE POR CÉDULA
   obtenerClientePorCedula(cedula: string): Observable<Cliente> {
     return this.http.get<Cliente>(`${this.baseUrl}/cedula/${cedula}`);
   }
 
-  // ✅ OBTENER CLIENTE POR EMAIL - CORREGIDO
+  // ✅ OBTENER CLIENTE POR EMAIL
   obtenerClientePorEmail(email: string): Observable<Cliente> {
     return this.http.get<Cliente>(`${this.baseUrl}/email/${email}`);
   }
 
-  // ✅ VERIFICAR EXISTENCIA DE USUARIO - CORREGIDO
+  // ✅ VERIFICAR EXISTENCIA DE USUARIO
   existeUsuario(usuario: string): Observable<{existe: boolean}> {
     return this.http.get<{existe: boolean}>(`${this.baseUrl}/existe/usuario/${usuario}`);
   }
 
-  // ✅ VERIFICAR EXISTENCIA DE EMAIL - CORREGIDO
+  // ✅ VERIFICAR EXISTENCIA DE EMAIL
   existeEmail(email: string): Observable<{existe: boolean}> {
     return this.http.get<{existe: boolean}>(`${this.baseUrl}/existe/email/${email}`);
   }
 
-  // ✅ VERIFICAR EXISTENCIA DE CÉDULA - CORREGIDO
+  // ✅ VERIFICAR EXISTENCIA DE CÉDULA
   existeCedula(cedula: string): Observable<{existe: boolean}> {
     return this.http.get<{existe: boolean}>(`${this.baseUrl}/existe/cedula/${cedula}`);
   }
 
-  // ✅ ACTUALIZAR CLIENTE - CORREGIDO
+  // ✅ ACTUALIZAR CLIENTE (PUT tradicional)
   actualizarCliente(id: string, cliente: Cliente): Observable<Cliente> {
     return this.http.put<Cliente>(`${this.baseUrl}/${id}`, cliente);
   }
 
-  // ✅ ELIMINAR CLIENTE - CORREGIDO
+  // ✅ MODIFICAR CLIENTE (PATCH para modificación parcial)
+  modificarCliente(cliente: Cliente): Observable<Cliente> {
+    return this.http.patch<Cliente>(`${this.baseUrl}/modificar`, cliente);
+  }
+
+  // ✅ ELIMINAR CLIENTE
   eliminarCliente(id: string): Observable<any> {
     return this.http.delete(`${this.baseUrl}/${id}`);
   }
 
-  // ✅ VALIDAR EMAIL - NUEVO MÉTODO
+  // ✅ VALIDAR EMAIL
   validarEmail(email: string): Observable<any> {
     return this.http.get(`${this.baseUrl}/validar/email/${email}`);
   }
 
-  // ✅ VALIDAR USUARIO - NUEVO MÉTODO
+  // ✅ VALIDAR USUARIO
   validarUsuario(usuario: string): Observable<any> {
     return this.http.get(`${this.baseUrl}/validar/usuario/${usuario}`);
   }

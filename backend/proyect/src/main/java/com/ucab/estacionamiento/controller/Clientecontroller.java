@@ -389,4 +389,49 @@ public class Clientecontroller {
             return ResponseEntity.internalServerError().body(errorResponse);
         }
     }
+
+    @PatchMapping("/api/modificar")
+    @ResponseBody
+    public ResponseEntity<?> modificarClienteApi(@RequestBody Cliente clienteModificado) {
+        try {
+            System.out.println("🔄 Iniciando modificación de cliente...");
+            
+            // Validar que el cliente exista
+            if (clienteModificado.getId() == null) {
+                throw new IllegalArgumentException("El ID del cliente es requerido para modificar");
+            }
+            
+            Cliente clienteExistente = clienteService.obtenerPorId(clienteModificado.getId().toString())
+                    .orElseThrow(() -> new IllegalArgumentException("Cliente no encontrado con ID: " + clienteModificado.getId()));
+            
+            // Mantener datos que no deben cambiar
+            clienteModificado.setId(clienteExistente.getId());
+            
+            // Si no se envía usuario, mantener el existente
+            if (clienteModificado.getUsuario() == null || clienteModificado.getUsuario().trim().isEmpty()) {
+                clienteModificado.setUsuario(clienteExistente.getUsuario());
+            }
+            
+            // Si no se envía contraseña, mantener la existente
+            if (clienteModificado.getContrasena() == null || clienteModificado.getContrasena().trim().isEmpty()) {
+                clienteModificado.setContrasena(clienteExistente.getContrasena());
+            }
+            
+            // Llamar al servicio para modificar
+            Cliente clienteActualizado = clienteService.actualizarCliente(clienteModificado);
+            
+            System.out.println("✅ Cliente modificado exitosamente: " + clienteActualizado.getUsuario());
+            
+            return ResponseEntity.ok(clienteActualizado);
+            
+        } catch (IllegalArgumentException e) {
+            Map<String, String> errorResponse = new HashMap<>();
+            errorResponse.put("error", e.getMessage());
+            return ResponseEntity.badRequest().body(errorResponse);
+        } catch (Exception e) {
+            Map<String, String> errorResponse = new HashMap<>();
+            errorResponse.put("error", "Error interno al modificar cliente: " + e.getMessage());
+            return ResponseEntity.internalServerError().body(errorResponse);
+        }
+    }
 }
