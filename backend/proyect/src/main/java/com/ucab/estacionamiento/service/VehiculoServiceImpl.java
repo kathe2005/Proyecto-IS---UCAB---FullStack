@@ -20,7 +20,57 @@ public class VehiculoServiceImpl
     public Vehiculo registrarVehiculo(Vehiculo vehiculo) throws Exception
     {
 
+        validarFormatoVehiculo(vehiculo);
 
+
+        //--------    GUARDAR VEHICULO    --------
+        return jsonManagerVehiculo.guardarVehiculo(vehiculo);
+
+    }
+
+    //--------    METODO PARA LISTAR LOS VEHICULOS    --------
+    public List<Vehiculo>obtenerTodosVehiculos()
+    {
+        try {
+
+            List<Vehiculo> lista = jsonManagerVehiculo.cargarVehiculos();
+
+            if (lista == null)
+            {
+                return new ArrayList<>();
+            }
+
+            return lista;
+        }
+        catch (Exception e) {
+
+            System.out.println("⚠️ Error en el búnker: " + e.getMessage());
+            return new ArrayList<>();
+        }
+    }
+
+    //--------    METODO DE MODIFICAR LOS DATOS DE UN VEHICULO    --------
+    public void modificar(Vehiculo vehiculoActualizado) throws Exception
+    {
+        validarFormatoVehiculo(vehiculoActualizado);
+
+        jsonManagerVehiculo.modificar(vehiculoActualizado);
+    }
+
+    //--------    METODO DE ELIMINAR UN VEHICULO DEL PERFIL DE USUARIO    --------
+    public void eliminar(String placa) throws Exception
+    {
+        if(placa == null || placa.isBlank())
+        {
+            throw new Exception("ERROR: No se puede eliminar un vehículo sin placa.");
+        }
+
+        jsonManagerVehiculo.eliminar(placa);
+    }
+
+    //--------    METODO PRIVADO DE SEGURIDAD    --------
+    public void validarFormatoVehiculo(Vehiculo vehiculo) throws Exception
+    {
         //--------    VALIDACIONES DE CAMPOS    --------
 
         //IdCliente
@@ -115,12 +165,16 @@ public class VehiculoServiceImpl
 
         List<Vehiculo>todosLosVehiculos = jsonManagerVehiculo.cargarVehiculos();
 
-        if (todosLosVehiculos == null) {
-            todosLosVehiculos = new ArrayList<>();
-        }
+        if (todosLosVehiculos == null) todosLosVehiculos = new ArrayList<>();
+
 
         for(Vehiculo v:todosLosVehiculos)
         {
+            if (v.getIdVehiculo() != null && vehiculo.getIdVehiculo() != null
+                    && v.getIdVehiculo().equals(vehiculo.getIdVehiculo())) {
+                continue;
+            }
+
             //--------    VERIFICACIÓN DE IdCliente (Un cliente, un vehículo)    --------
             if(v.getIdCliente().equals(vehiculo.getIdCliente()))
             {
@@ -134,30 +188,6 @@ public class VehiculoServiceImpl
             }
         }
 
-        //--------    GUARDAR VEHICULO    --------
-        return jsonManagerVehiculo.guardarVehiculo(vehiculo);
-
-    }
-
-    //--------    METODO PARA LISTAR LOS VEHICULOS    --------
-    public List<Vehiculo>obtenerTodosVehiculos()
-    {
-        try {
-
-            List<Vehiculo> lista = jsonManagerVehiculo.cargarVehiculos();
-
-            if (lista == null)
-            {
-                return new ArrayList<>();
-            }
-
-            return lista;
-        }
-        catch (Exception e) {
-
-            System.out.println("⚠️ Error en el búnker: " + e.getMessage());
-            return new ArrayList<>();
-        }
     }
 
 }

@@ -74,6 +74,56 @@ public class JsonManagerVehiculo
         }
     }
 
+
+
+    //--------    MODIFICAR LOS DATOS DE UN VEHICULO  --------
+    public void modificar(Vehiculo actualizado)
+    {
+        List<Vehiculo> lista = cargarVehiculos();
+        boolean encontrado = false;
+
+
+        for(int i = 0; i < lista.size(); i++)
+        {
+            if(lista.get(i).getPlaca().equalsIgnoreCase(actualizado.getPlaca()))
+            {
+                lista.set(i, actualizado);
+                encontrado = true;
+                break;
+            }
+        }
+
+        if(encontrado)
+        {
+            guardarVehiculosEnArchivo(lista);
+            System.out.println("✅ Vehículo con placa " + actualizado.getPlaca() + " actualizado.");
+        }
+        else
+        {
+            System.out.println("⚠️ No se encontró el vehículo para modificar.");
+        }
+    }
+
+    //--------    ELIMINAR UN VEHICULO DEL PERFIL DE USUARIO  --------
+    public void eliminar(String placa)
+    {
+        List<Vehiculo> lista = cargarVehiculos();
+        boolean eliminado = lista.removeIf(v -> v.getPlaca().equalsIgnoreCase(placa));
+
+        if(eliminado)
+        {
+            guardarVehiculosEnArchivo(lista);
+            System.out.println("🗑️ Activo con placa " + placa + " eliminado.");
+        }
+        else
+        {
+            System.out.println("❌ Error: Placa " + placa + " no existe en los registros.");
+        }
+    }
+
+
+
+
     //-------    METODO DE BUSQUEDA  Y DIAGNOSTICO  --------
     //Placa
     public Optional<Vehiculo> buscarPorPlaca(String placa)

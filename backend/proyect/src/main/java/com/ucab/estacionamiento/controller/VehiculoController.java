@@ -64,4 +64,41 @@ public class VehiculoController
         return ResponseEntity.ok(listaReal);
     }
 
+    //--------    MODIFICAR LOS DATOS DE UN VEHICULO    --------
+    @PutMapping("/modificar")
+    public ResponseEntity<?> modificarVehiculo(@RequestBody Vehiculo vehiculo)
+    {
+        try{
+            System.out.println("🔄 ACTUALIZACIÓN : " + vehiculo.getPlaca());
+
+            vehiculoService.modificar(vehiculo);
+
+            return ResponseEntity.ok("✅ El vehículo " + vehiculo.getPlaca() + " ha sido actualizado con éxito.");
+
+        } catch (Exception e) {
+
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("❌ Error al modificar el vehículo: " + e.getMessage());
+
+        }
+    }
+
+    //--------    ELIMINAR VEHICULO POR PLACA    --------
+    @DeleteMapping("/eliminar/{placa}")
+    public ResponseEntity<?> eliminarVehiculo(@PathVariable String placa)
+    {
+        try{
+            System.out.println("🧨 ORDEN DE ELIMINACIÓN RECIBIDA: " + placa);
+
+            vehiculoService.eliminar(placa);
+
+            return ResponseEntity.ok("🗑️ El vehículo con placa [" + placa + "] fue removido.");
+
+        } catch (Exception e) {
+
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("❌ Fallo en la extracción: " + e.getMessage());
+        }
+
+    }
+
+
 }

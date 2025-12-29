@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="SELECTIVE" />
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="186098c5-729d-46cf-84f3-7f10360d10da" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/backend/proyect/src/main/java/com/ucab/estacionamiento/controller/VehiculoController.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/backend/proyect/src/main/java/com/ucab/estacionamiento/model/archivosJson/JsonManagerVehiculo.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/backend/proyect/src/main/java/com/ucab/estacionamiento/model/clases/Vehiculo.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/backend/proyect/src/main/java/com/ucab/estacionamiento/model/enums/ColorVehiculo.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/backend/proyect/src/main/java/com/ucab/estacionamiento/service/VehiculoServiceImpl.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/backend/proyect/src/test/java/com/proyectIS/proyect/Pruebas/vehiculo/VehiculoControllerTest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/.gitignore" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/modules.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/vcs.xml" beforeDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="Enum" />
+        <option value="Class" />
+      </list>
+    </option>
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_BRANCH_BY_REPOSITORY">
+      <map>
+        <entry key="$PROJECT_DIR$" value="main" />
+      </map>
+    </option>
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="GitHubPullRequestSearchHistory">{
+  &quot;lastFilter&quot;: {
+    &quot;state&quot;: &quot;OPEN&quot;,
+    &quot;assignee&quot;: &quot;kathe2005&quot;
+  }
+}</component>
+  <component name="GithubPullRequestsUISettings">{
+  &quot;selectedUrlAndAccountId&quot;: {
+    &quot;url&quot;: &quot;https://github.com/kathe2005/Proyecto-IS---UCAB---FullStack.git&quot;,
+    &quot;accountId&quot;: &quot;ce27077a-89ad-48c3-b951-8d127662a65e&quot;
+  }
+}</component>
+  <component name="ProjectColorInfo">{
+  &quot;associatedIndex&quot;: 0
+}</component>
+  <component name="ProjectId" id="37SEfrgf4aZ4W7aPCkbNMwc7nfR" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "Downloaded.Files.Path.Enabled": "false",
+    "JUnit.VehiculoControllerTest.executor": "Run",
+    "Repository.Attach.Annotations": "false",
+    "Repository.Attach.JavaDocs": "false",
+    "Repository.Attach.Sources": "false",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "git-widget-placeholder": "feature/gestion-vehiculos",
+    "kotlin-language-version-configured": "true",
+    "last_opened_file_path": "C:/Users/KATHE/Proyecto-IS---UCAB---FullStack/backend/proyect",
+    "project.structure.last.edited": "Modules",
+    "project.structure.proportion": "0.15",
+    "project.structure.side.proportion": "0.2"
+  }
+}]]></component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="186098c5-729d-46cf-84f3-7f10360d10da" name="Changes" comment="" />
+      <created>1766888178961</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1766888178961</updated>
+    </task>
+    <servers />
+  </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State>
+              <option name="FILTERS">
+                <map>
+                  <entry key="branch">
+                    <value>
+                      <list>
+                        <option value="feature/gestion-vehiculos" />
+                      </list>
+                    </value>
+                  </entry>
+                </map>
+              </option>
+            </State>
+          </value>
+        </entry>
+      </map>
+    </option>
+  </component>
+</project>
