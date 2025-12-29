@@ -25,9 +25,9 @@ export class VehiculoService
     }
 
     //--------    VERIFICAR SI EXISTE PLACA    --------
-    existePlaca(placa:String): Observable<{existe:Boolean}>
+    existePlaca(placa:String): Observable<{existe:boolean}>
     {
-        return this.http.get<{existe:Boolean}>(`${this.baseUrl}/existe/${placa}`); 
+        return this.http.get<{existe:boolean}>(`${this.baseUrl}/existe/${placa}`); 
     }
 
 
@@ -43,5 +43,25 @@ export class VehiculoService
     obtenerVehiculos(): Observable<Vehiculo[]> 
     {
         return this.http.get<Vehiculo[]>(`${this.baseUrl}/listar`);
+    }
+
+
+
+    //--------    MODIFICAR LOS DATOS DE UN VEHICULO    --------
+    actualizarVehiculo(vehiculo: Vehiculo): Observable<any>
+    {
+
+        return this.http.put(`${this.baseUrl}/modificar`, vehiculo, {responseType: 'text'}); 
+
+    }
+
+
+
+    //--------    ELIMINAR UN VEHICULO DEL PERFIL DE USUARIO    --------
+    eliminarVehiculo(placa:string): Observable<any>
+    {
+
+        return this.http.delete(`${this.baseUrl}/eliminar/${placa}`, {responseType: 'text'});
+
     }
 }

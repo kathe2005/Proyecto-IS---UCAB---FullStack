@@ -21,6 +21,7 @@ export class CrearVehiculoComponent
     filtroPlaca: string = ''; 
     listaVehiculosFiltrados: Vehiculo [] = []; 
     idClienteConsulta= ""; 
+    editando: boolean = false; 
 
 
 
@@ -45,7 +46,6 @@ export class CrearVehiculoComponent
     //--------    REGISTRAR VEHICULO    --------
     registrar(): void 
     {
-        
         this.mensajeError = null;
 
         console.log("📡 Reporte de datos:", this.nuevoVehiculo);
@@ -174,4 +174,70 @@ export class CrearVehiculoComponent
         const coincidencia = texto.substring(index, index + this.filtroPlaca.length);
         return texto.replace(coincidencia, `<span class="highlight-search">${coincidencia}</span>`);
     }
+
+
+    //--------    MODIFICAR LOS DATOS DE UN VEHICULO    --------
+    prepararEdicion(vehiculo: Vehiculo) : void
+    {
+        console.log("Vehiculo seleccionado:", vehiculo); 
+        this.editando = true; 
+        this.nuevoVehiculo = {...vehiculo}; 
+        this.cambiarVista('formulario'); 
+    }
+
+    guardar(): void
+    {
+        if (this.editando)
+        {
+            this.ejecutarActualizacion(); 
+        }
+        else
+        {
+            this.registrar(); 
+        }
+    }
+
+    private ejecutarActualizacion(): void
+    {
+        this.mensajeError = null; 
+        this.vehiculoService.actualizarVehiculo(this.nuevoVehiculo).subscribe({
+            
+            next: () => 
+            {
+                alert('¡Vehículo actualizado!');
+                this.finalizarMision();
+            },
+            error: (err) => this.manejarError(err)
+        })
+    }
+
+    //--------    ELIMINAR UN VEHICULO DEL PERFIL DE USUARIO    --------
+    eliminar(placa: string): void
+    {
+        if (confirm(`¿Estás seguro de eliminar el vehículo ${placa}?`)) 
+        {
+            this.vehiculoService.eliminarVehiculo(placa).subscribe({
+                next: () => {
+                    alert('Vehículo eliminado.');
+                    this.listarVehiculos(); 
+                },
+                error: (err) => console.error("Fallo", err)
+            });
+        }
+    }
+
+    finalizarMision(): void 
+    {
+        this.editando = false;
+        this.limpiarFormulario();
+        this.listarVehiculos();
+        this.cambiarVista('menu');
+    }
+
+    private manejarError(err: any): void 
+    { 
+
+        this.mensajeError = `❌ Error: ${err.message || 'Fallo en la misión'}`;
+    }
+
 }   

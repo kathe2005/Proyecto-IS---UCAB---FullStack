@@ -2,14 +2,14 @@
     @if (vistaActual === 'menu') {
         <div id="contenedor">
             <h1 class="titulo-principal">Gestión de Vehículos</h1>
-            <p class="subtitulo">Administre el despliegue táctico del parque móvil</p>
+            <p class="subtitulo">Administre los Vehiculos dentro del estacionamiento</p>
 
             <div class="card" id="card3" (click)="cambiarVista('formulario')">
                 <div class="card-content">
                     <div class="icono"><i class="fas fa-plus-circle"></i></div>
                     <div class="texto">
                         <h3>Registrar Vehículo</h3>
-                        <p>Añadir nuevo vehículo al búnker</p>
+                        <p>Añadir nuevo vehículo </p>
                     </div>
                 </div>
             </div>
@@ -20,6 +20,27 @@
                     <div class="texto">
                         <h3>Consultar </h3>
                         <p>Ver vehículos existentes</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card" id="card2" (click)="cambiarVista('modificar')">
+                <div class="card-content">
+                    <div class="icono"><i class="fas fa-list"></i></div>
+                    <div class="texto">
+                        <h3>Modificar </h3>
+                        <p>Actualizar vehículos existentes</p>
+                    </div>
+                </div>
+            </div>
+
+
+            <div class="card" id="card4" (click)="cambiarVista('eliminar')">
+                <div class="card-content">
+                    <div class="icono"><i class="fas fa-list"></i></div>
+                    <div class="texto">
+                        <h3>Eliminar </h3>
+                        <p>Eliminacion de vehículo existente</p>
                     </div>
                 </div>
             </div>
@@ -57,7 +78,7 @@
             <p>Complete el registro del vehiculo </p>
         </header>
 
-        <form (ngSubmit)="registrar()" #vehiculoForm="ngForm" class="form-modern">
+        <form (ngSubmit)="guardar()" #vehiculoForm="ngForm" class="form-modern">
             <div class="form-grid-modern">
                 <div class="input-group-modern">
                     <label>Asignar a Cliente</label>
@@ -104,10 +125,12 @@
                 Confirmar Registro en Búnker
             </button>
         </form>
+
     </div>
 }
 
-@if (vistaActual === 'lista') {
+@if (vistaActual === 'lista') 
+{
     <div class="registration-card-modern">
         <div class="accent-bar-modern" style="background: #2196F3;"></div>
         
@@ -135,7 +158,6 @@
                         <th>Placa</th>
                         <th>Marca / Modelo</th>
                         <th>Color</th>
-                        <th>Estado</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -145,7 +167,6 @@
                             <td><span class="badge-placa" [innerHTML]="resaltarTexto(vehiculo.placa.toString())"></span></td>
                             <td>{{ vehiculo.marca }} - {{ vehiculo.modelo }}</td>
                             <td>{{ vehiculo.color }}</td>
-                            <td><span class="status-pill">Activo</span></td>
                         </tr>
                     } @empty {
                         <tr>
@@ -159,5 +180,46 @@
             </table>
         </div>
     </div>
+}
+
+@if (vistaActual === 'modificar' || vistaActual === 'eliminar') 
+{
+        <div class="registration-card-modern">
+            <button (click)="cambiarVista('menu')" class="btn-back-modern"> <i class="fas fa-chevron-left"></i> Volver</button>
+            
+            <header class="card-header-modern">
+                <h2>Seleccione el <span class="highlight-orange">Vehículo</span></h2>
+                <p>Busque la placa del vehículo para {{ vistaActual === 'modificar' ? 'editar' : 'eliminar' }}</p>
+            </header>
+
+            <table class="tabla-tactica">
+                <thead>
+                    <tr>
+                        <th>Propietario</th>
+                        <th>Placa</th>
+                        <th>Marca/Modelo</th>
+                        <th>Color</th>
+                        <th>Acción</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @for (v of listaVehiculos; track v.placa) {
+                        <tr>
+                            <td><strong>{{ obtenerNombreCliente(v.idCliente) }}</strong></td>
+                            <td><strong>{{ v.placa }}</strong></td>
+                            <td>{{ v.marca }} {{ v.modelo }}</td>
+                            <td>{{ v.color }}</td>
+                            <td>
+                                @if (vistaActual === 'modificar') {
+                                    <button class="btn-back" (click)="prepararEdicion(v)">Seleccionar para Editar</button>
+                                } @else {
+                                    <button class="btn-back" (click)="eliminar(v.placa.toString())">Confirmar Eliminación</button>
+                                }
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
 }
 </div>
