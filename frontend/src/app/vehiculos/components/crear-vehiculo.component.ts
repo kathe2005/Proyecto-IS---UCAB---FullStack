@@ -17,8 +17,12 @@ export class CrearVehiculoComponent
     nuevoVehiculo: any = { placa: '', marca: '', modelo: '', color: '', idCliente: null  };
     listaVehiculos: Vehiculo[] = []; 
     listaClientes: any[] = [];
-    editando: boolean = false;
     mensajeError: string | null = null;
+    filtroPlaca: string = ''; 
+    listaVehiculosFiltrados: Vehiculo [] = []; 
+    idClienteConsulta= ""; 
+
+
 
     ngOnInit(): void 
     {
@@ -131,8 +135,43 @@ export class CrearVehiculoComponent
     listarVehiculos() 
     {
         this.vehiculoService.consultarVehiculos().subscribe({
-            next: (data) => this.listaVehiculos = data, 
+            next: (data) => 
+            {
+                this.listaVehiculos = data;
+                this.listaVehiculosFiltrados = data; 
+            },
             error: (e) => console.error('Error al listar vehículos', e)
         });
+    }
+
+    //--------    CONSULTAR LOS VEHICULOS POR USUARIO     --------
+    obtenerNombreCliente(id: any): string 
+    {
+        const cliente = this.listaClientes.find(c => c.id === id);
+        return cliente ? `${cliente.nombre} ${cliente.apellido}` : 'Desconocido';
+    }
+
+    //--------    BUSCADOR POR PLACA    --------
+    aplicarFiltroMaestro(): void
+    {
+        this.listaVehiculosFiltrados = this.listaVehiculos.filter(
+            v => {
+                const matchCliente = this.idClienteConsulta ? (v.idCliente == this.idClienteConsulta) : true;
+                const matchPlaca = v.placa.toLowerCase().includes(this.filtroPlaca.toLowerCase());
+                return matchCliente && matchPlaca;
+            }
+        );
+    }
+
+    //--------    RESALTAR EL CLIENTE CON LA COINCIDENCIA DE PLACAS    --------
+    resaltarTexto(texto: string): string 
+    {
+        if (!this.filtroPlaca) return texto;
+    
+        const index = texto.toLowerCase().indexOf(this.filtroPlaca.toLowerCase());
+        if (index === -1) return texto;
+
+        const coincidencia = texto.substring(index, index + this.filtroPlaca.length);
+        return texto.replace(coincidencia, `<span class="highlight-search">${coincidencia}</span>`);
     }
 }   

@@ -106,4 +106,58 @@
         </form>
     </div>
 }
+
+@if (vistaActual === 'lista') {
+    <div class="registration-card-modern">
+        <div class="accent-bar-modern" style="background: #2196F3;"></div>
+        
+        <button type="button" (click)="cambiarVista('menu')" class="btn-back-modern">
+            <i class="fas fa-chevron-left"></i> Volver a Gestión
+        </button>
+
+        <header class="card-header-modern">
+            <h2> Inventario <span class="highlight-orange"> Lista de Vehiculos </span></h2>
+            <p style="color: #666; margin-bottom: 20px;">Reporte de vehículos activos en el sistema</p>
+        </header>
+
+        <div class="buscador-container-modern">
+            <div class="search-box">
+                <i class="fas fa-search"></i>
+                <input type="text" [(ngModel)]="filtroPlaca" (input)="aplicarFiltroMaestro()" placeholder="Escanear placa (Ej: AF048)...">
+            </div>
+        </div>
+
+        <div class="table-container">
+            <table class="tabla-tactica">
+                <thead>
+                    <tr>
+                        <th>Propietario</th>
+                        <th>Placa</th>
+                        <th>Marca / Modelo</th>
+                        <th>Color</th>
+                        <th>Estado</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @for (vehiculo of listaVehiculosFiltrados; track vehiculo.placa) {
+                        <tr>
+                            <td><strong>{{ obtenerNombreCliente(vehiculo.idCliente) }}</strong></td>
+                            <td><span class="badge-placa" [innerHTML]="resaltarTexto(vehiculo.placa.toString())"></span></td>
+                            <td>{{ vehiculo.marca }} - {{ vehiculo.modelo }}</td>
+                            <td>{{ vehiculo.color }}</td>
+                            <td><span class="status-pill">Activo</span></td>
+                        </tr>
+                    } @empty {
+                        <tr>
+                            <td colspan="5" style="text-align: center; padding: 40px; color: #999;">
+                                <i class="fas fa-ghost" style="font-size: 2rem; display: block; margin-bottom: 10px;"></i>
+                                No se encontraron vehículos con esa placa.
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+}
 </div>
