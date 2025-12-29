@@ -15,8 +15,6 @@ import java.lang.Throwable;
 public class JsonManagerVehiculo
 {
     private static final String VEHICULOS_FILE = ConfigurationManager.getDataFilePath("vehiculos.json");
-    private static final String VEHICULOS_FILE_EXTERNAL = "../../data/vehiculos.json";
-    private static final String VEHICULOS_FILE_EXTERNAL2 = "../../../data/vehiculos.json";
     private static final ObjectMapper objectMapper = new ObjectMapper();
 
     static
@@ -105,24 +103,6 @@ public class JsonManagerVehiculo
 
 
             objectMapper.writeValue(new File(VEHICULOS_FILE),vehiculos);
-
-            File archivoExterno = new File(VEHICULOS_FILE_EXTERNAL);
-
-            if (!archivoExterno.getParentFile().exists())
-            {
-                archivoExterno.getParentFile().mkdirs();
-            }
-            objectMapper.writeValue(archivoExterno,vehiculos);
-
-            File archivoExterno2 = new File(VEHICULOS_FILE_EXTERNAL2);
-
-            if (!archivoExterno2.getParentFile().exists())
-            {
-                archivoExterno2.getParentFile().mkdirs();
-            }
-            objectMapper.writeValue(archivoExterno2,vehiculos);
-
-
 
             System.out.println("✅ Sincronización Dual exitosa.");
             diagnostico();

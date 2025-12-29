@@ -16,11 +16,6 @@ public class Vehiculo
     //--------    ATRIBUTO CLAVE PARA RELACIÓN CON EL USUARIO    --------
     private UUID idCliente;
 
-    public Vehiculo()
-    {
-        //--------    AL CREAR UN VEHICULO, SE GENERA UN ID    --------
-        this.idVehiculo = UUID.randomUUID();
-    }
 
     //--------    GETTERS Y SETTERS    --------
     //idVehiculo

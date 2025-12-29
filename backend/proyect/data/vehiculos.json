@@ -1,8 +1,15 @@
 [ {
-  "idVehiculo" : "2c9c6021-d2cd-4b06-b7e0-1c7cd18b03ef",
+  "idVehiculo" : "1e6398aa-65d0-40d3-a74d-dc36102a9284",
   "placa" : "AF048SG",
-  "marca" : "Toyota",
+  "marca" : "Ford",
+  "modelo" : "Sierra",
+  "color" : "BLANCO",
+  "idCliente" : "0bcff271-437f-4951-810f-3108bfc280f4"
+}, {
+  "idVehiculo" : "6e16773d-0ad4-4ffa-9f6a-3a50701b0d73",
+  "placa" : "DAO085",
+  "marca" : "Chery",
   "modelo" : "Corolla",
-  "color" : "ROJO",
-  "idCliente" : "e58428ef-4dc5-454b-aeb9-ca5b000a0421"
+  "color" : "VERDE",
+  "idCliente" : "2b840894-315d-4c09-9981-54ac71db86d9"
 } ]

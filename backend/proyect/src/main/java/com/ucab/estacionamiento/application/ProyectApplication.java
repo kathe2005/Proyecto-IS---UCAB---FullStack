@@ -128,6 +128,20 @@ public class ProyectApplication {
             System.out.println("\n💰 PAGOS:");
             System.out.println("   ❌ Error: " + e.getMessage());
         }
+
+
+        // 5. Vehiculos
+        try {
+            JsonManagerVehiculo vehiculoManager = new JsonManagerVehiculo();
+            int totalVehiculos = vehiculoManager.cargarVehiculos().size();
+            System.out.println("\n🚗 VEHÍCULOS:");
+            System.out.println("   📄 Archivo: " + ConfigurationManager.getDataFilePath("vehiculos.json"));
+            System.out.println("   📊 Registros: " + totalVehiculos);
+            System.out.println("   ✅ Estado: " + (totalVehiculos > 0 ? "CARGADO ✓" : "VACIO (lista para usar)"));
+        } catch (Exception e) {
+            System.out.println("\n🚗 VEHÍCULOS:");
+            System.out.println("   ❌ Error: " + e.getMessage());
+        }
     }
 
     private static void mostrarInfoSistema() {
@@ -153,15 +167,18 @@ public class ProyectApplication {
         System.out.println("   🔗 API Reservas:     http://localhost:8080/reservas/api");
         System.out.println("   🔗 API Pagos:        http://localhost:8080/reservas/api/pagos");
         System.out.println("   🔗 API Reportes:     http://localhost:8080/reservas/api/reportes");
+        System.out.println("   🔗 API Vehículos:    http://localhost:8080/vehiculos/listar");
         System.out.println("\n   📱 Web Clientes:     http://localhost:8080/clientes");
         System.out.println("   📱 Web Puestos:      http://localhost:8080/puestos");
         System.out.println("   📱 Web Reservas:     http://localhost:8080/reservas");
+        System.out.println("   📱 Web Vehiculos:     http://localhost:8080/vehiculos");
         
         System.out.println("\n🔍 HERRAMIENTAS DE DIAGNÓSTICO:");
         System.out.println("─".repeat(80));
         System.out.println("   📊 Clientes:         http://localhost:8080/clientes/api/diagnostico");
         System.out.println("   🅿️  Puestos:          http://localhost:8080/puestos/api/debug/info");
         System.out.println("   📅 Reservas/Pagos:   http://localhost:8080/reservas/api/diagnostico");
+        System.out.println("   🚗 Vehículos:        http://localhost:8080/vehiculos/diagnostico");
         
         System.out.println("\n" + "=".repeat(80));
         System.out.println("🚀 SISTEMA LISTO PARA USAR - ESPERANDO SOLICITUDES");

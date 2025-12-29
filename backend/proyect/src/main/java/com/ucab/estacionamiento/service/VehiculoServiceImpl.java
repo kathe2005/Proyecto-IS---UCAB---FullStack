@@ -5,6 +5,7 @@ import com.ucab.estacionamiento.model.clases.Vehiculo;
 import com.ucab.estacionamiento.model.enums.ColorVehiculo;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -114,6 +115,10 @@ public class VehiculoServiceImpl
 
         List<Vehiculo>todosLosVehiculos = jsonManagerVehiculo.cargarVehiculos();
 
+        if (todosLosVehiculos == null) {
+            todosLosVehiculos = new ArrayList<>();
+        }
+
         for(Vehiculo v:todosLosVehiculos)
         {
             //--------    VERIFICACIÓN DE IdCliente (Un cliente, un vehículo)    --------
@@ -137,7 +142,22 @@ public class VehiculoServiceImpl
     //--------    METODO PARA LISTAR LOS VEHICULOS    --------
     public List<Vehiculo>obtenerTodosVehiculos()
     {
-        return jsonManagerVehiculo.cargarVehiculos();
+        try {
+
+            List<Vehiculo> lista = jsonManagerVehiculo.cargarVehiculos();
+
+            if (lista == null)
+            {
+                return new ArrayList<>();
+            }
+
+            return lista;
+        }
+        catch (Exception e) {
+
+            System.out.println("⚠️ Error en el búnker: " + e.getMessage());
+            return new ArrayList<>();
+        }
     }
 
 }
