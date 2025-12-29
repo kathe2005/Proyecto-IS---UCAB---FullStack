@@ -39,8 +39,8 @@ export class GestionEstacionamientoComponent {
     {
       id: 'card5',
       titulo: 'Gestión de Vehiculos',
-      ruta: '/puestos/buscar',
-      color: 'secondary'
+      ruta: '/gestion-vehiculos',
+      color: 'danger'
     },
     {
       id: 'card6',

@@ -1,0 +1,109 @@
+<div id="ContenedorMain">
+    @if (vistaActual === 'menu') {
+        <div id="contenedor">
+            <h1 class="titulo-principal">Gestión de Vehículos</h1>
+            <p class="subtitulo">Administre el despliegue táctico del parque móvil</p>
+
+            <div class="card" id="card3" (click)="cambiarVista('formulario')">
+                <div class="card-content">
+                    <div class="icono"><i class="fas fa-plus-circle"></i></div>
+                    <div class="texto">
+                        <h3>Registrar Vehículo</h3>
+                        <p>Añadir nuevo vehículo al búnker</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card" id="card5" (click)="cambiarVista('lista')">
+                <div class="card-content">
+                    <div class="icono"><i class="fas fa-list"></i></div>
+                    <div class="texto">
+                        <h3>Consultar </h3>
+                        <p>Ver vehículos existentes</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card card-volver" routerLink="/">
+                <div class="card-content">
+                    <div class="icono"><i class="fas fa-arrow-left"></i></div>
+                    <div class="texto">
+                        <h3>Volver al Inicio</h3>
+                        <p>Regresar al menú principal</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+
+    @if (vistaActual === 'formulario') {
+    <div class="registration-card-modern">
+        <div class="accent-bar-modern"></div>
+        
+        <button type="button" (click)="cambiarVista('menu')" class="btn-back-modern">
+            <i class="fas fa-chevron-left"></i> Volver a Gestión
+        </button>
+
+        @if (mensajeError) 
+        {
+            <div class="alerta-tactica-roja">
+                <div class="icono-alerta"><i class="fas fa-exclamation-triangle"></i></div>
+                <div class="texto-alerta">{{ mensajeError }}</div>
+            </div>
+        }
+
+        <header class="card-header-modern">
+            <h2>Rapido y Facil <span class="highlight-orange">Registro de Vehiculo</span></h2>
+            <p>Complete el registro del vehiculo </p>
+        </header>
+
+        <form (ngSubmit)="registrar()" #vehiculoForm="ngForm" class="form-modern">
+            <div class="form-grid-modern">
+                <div class="input-group-modern">
+                    <label>Asignar a Cliente</label>
+                    <select [(ngModel)]="nuevoVehiculo.idCliente" name="idCliente" class="form-control" required>
+                        <option [ngValue]="null" disabled selected>-- Seleccione el Propietario --</option>
+                        @for (c of listaClientes; track c.id) {
+                            <option [ngValue]="c.id">{{ c.nombre }}</option>
+                        }
+                    </select>
+                </div>
+
+                <div class="input-group-modern">
+                    <label>Número de Placa</label>
+                    <input type="text" [(ngModel)]="nuevoVehiculo.placa" name="placa" placeholder="Ej: AF048SG" required>
+                </div>
+
+                <div class="input-group-modern">
+                    <label>Marca del Vehículo</label>
+                    <input type="text" [(ngModel)]="nuevoVehiculo.marca" name="marca" placeholder="Ej: Ford" required>
+                </div>
+
+                <div class="input-group-modern">
+                    <label>Modelo Específico</label>
+                    <input type="text" [(ngModel)]="nuevoVehiculo.modelo" name="modelo" placeholder="Ej: Focus" required>
+                </div>
+
+                <div class="input-group-modern">
+                    <label>Color Institucional</label>
+                    <select [(ngModel)]="nuevoVehiculo.color" name="color" required>
+                        <option value="" disabled selected>-- Elija un color --</option>
+                        <option value="BLANCO">Blanco</option>
+                        <option value="NEGRO">Negro</option>
+                        <option value="GRIS">Gris</option>
+                        <option value="ROJO">Rojo</option>
+                        <option value="AZUL">Azul</option>
+                        <option value="PLATA">Plata</option>
+                        <option value="VERDE">Verde</option>
+                        <option value="AMARILLO">Amarillo</option>
+                    </select>
+                </div>
+            </div>
+
+            <button type="submit" class="btn-submit-orange" [disabled]="vehiculoForm.invalid">
+                Confirmar Registro en Búnker
+            </button>
+        </form>
+    </div>
+}
+</div>

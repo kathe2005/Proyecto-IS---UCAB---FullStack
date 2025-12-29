@@ -1,6 +1,7 @@
 import { Routes } from '@angular/router';
 import { RegistroClienteComponent } from './clientes/components/registroCliente/registro-cliente.component';
 import { GestionEstacionamientoComponent } from './clientes/components/gestionEstacionamiento/gestion-estacionamiento.component';
+import { CrearVehiculoComponent } from './vehiculos/components/crear-vehiculo.component';
 
 export const routes: Routes = [
     // Página principal: Menú de gestión de estacionamiento
@@ -26,6 +27,13 @@ export const routes: Routes = [
         path: 'gestion-perfiles',
         loadComponent: () => import('./clientes/components/gestionPerfiles/gestion-perfiles.component').then(m => m.GestionPerfilesComponent)
     },
+
+    //Gestion de Vehiculos - Menú principal de vehiculos 
+    {
+        path: 'gestion-vehiculos', 
+        component: CrearVehiculoComponent
+    },
+
 
     // NUEVA RUTA: Gestión de reservas - Menú principal de reservas
     {
@@ -56,6 +64,7 @@ export const routes: Routes = [
         loadComponent: () => import('./clientes/components/modificarPerfiles/modificar-perfil.component').then(m => m.ModificarPerfilesComponent)
     },
 
+
     // NUEVAS RUTAS: Gestión de reservas
     {
         path: 'reservas/consultar-disponibilidad',
@@ -67,9 +76,10 @@ export const routes: Routes = [
         loadComponent: () => import('./clientes/components/reservaPuesto/reservar-puesto.component').then(m => m.ReservarPuestoComponent)
     },
 
+
     {
-      path: 'reservas/pagos',
-      loadComponent: () => import('./clientes/components/registroPago/registrar-pago.component').then(m => m.RegistrarPagoComponent)
+        path: 'reservas/pagos',
+        loadComponent: () => import('./clientes/components/registroPago/registrar-pago.component').then(m => m.RegistrarPagoComponent)
     },
     /*
     {
@@ -85,6 +95,8 @@ export const routes: Routes = [
         loadComponent: () => import('./clientes/components/listaReservas/lista-reservas.component').then(m => m.ListaReservasComponent)
     },
     */
+
+
 
     // Ocupar puestos
     {
@@ -215,7 +227,7 @@ export const routes: Routes = [
         pathMatch: 'full'
     },
 
-    // Ruta comodín (si no encuentra ninguna ruta)
+    // Ruta comodín 
     {
         path: '**',
         redirectTo: ''

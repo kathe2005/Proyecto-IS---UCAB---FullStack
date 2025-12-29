@@ -1,0 +1,271 @@
+/* Menu Gestion de Vehiculo */
+#ContenedorMain{
+    width: 100%;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: aliceblue;
+}
+
+#contenedor {
+    width: 900px;
+    height: 700px;
+    padding: 40px;
+    border-radius: 15px;
+    box-shadow: 0 0 20px rgba(173, 173, 247, 0.5);
+    background-color: rgb(255, 255, 255);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.titulo-principal {
+    color: #1c55ff;
+    font-size: 2.5rem;
+    margin-bottom: 10px;
+    text-align: center;
+}
+
+.subtitulo {
+    color: #666;
+    font-size: 1.2rem;
+    margin-bottom: 40px;
+    text-align: center;
+}
+
+.card {
+    width: 100%;
+    height: 80px;
+    background-color: aliceblue;
+    border-radius: 10px;
+    border: solid 3px rgb(218, 226, 232);
+    margin: 8px 0;
+    padding: 0 20px;
+    transition: all 0.3s ease;
+    cursor: pointer;
+}
+
+.card:hover {
+    transform: translateX(10px);
+    box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+}
+
+.card-content {
+    display: flex;
+    align-items: center;
+    height: 100%;
+}
+
+.icono {
+    width: 40px;
+    text-align: center;
+    margin-right: 15px;
+}
+
+.icono i {
+    font-size: 1.5rem;
+    color: #666;
+}
+
+.texto h3 {
+    font-size: 1.3rem;
+    margin: 0;
+    color: #333;
+}
+
+.texto p {
+    margin: 5px 0 0 0;
+    color: #666;
+    font-size: 0.9rem;
+}
+
+/* Colores específicos para cada card */
+#card1:hover {
+    border-color: green;
+    background-color: rgba(0, 128, 0, 0.1);
+}
+
+#card2:hover {
+    border-color: yellow;
+    background-color: rgba(255, 255, 0, 0.1);
+}
+
+#card3:hover {
+    border-color: blue;
+    background-color: rgba(0, 0, 255, 0.1);
+}
+
+#card4:hover {
+    border-color: orange;
+    background-color: rgba(255, 165, 0, 0.1);
+}
+
+#card5:hover {
+    border-color: magenta;
+    background-color: rgba(255, 0, 255, 0.1);
+}
+
+#card6:hover {
+    border-color: red;
+    background-color: rgba(255, 0, 0, 0.1);
+}
+
+.card-volver:hover {
+    border-color: #666;
+    background-color: rgba(102, 102, 102, 0.1);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    #contenedor {
+    width: 95%;
+    height: auto;
+    padding: 20px;
+    }
+
+    .titulo-principal {
+    font-size: 2rem;
+    }
+
+    .card {
+    height: auto;
+    padding: 15px;
+    }
+
+    .texto h3 {
+    font-size: 1.1rem;
+    }
+
+    .icono i {
+    font-size: 1.2rem;
+    }
+}
+
+
+/* CONTENEDOR PRINCIPAL GIGANTE */
+.registration-card-modern {
+    background: white;
+    width: 900px; 
+    min-height: 650px; 
+    border-radius: 20px;
+    box-shadow: 0 20px 40px rgba(9, 94, 93, 0.2);
+    overflow: hidden;
+    padding: 50px; 
+    margin: auto;
+}
+
+/* DECORACIÓN SUPERIOR */
+.accent-bar-modern {
+    height: 12px;
+    background: #095e5d; 
+    margin: -50px -50px 40px -50px;
+}
+
+/* BOTÓN VOLVER */
+.btn-back-modern {
+    background-color: #f4f7f6;
+    color: #095e5d;
+    border: 1px solid #e1e8e7;
+    padding: 12px 25px; 
+    border-radius: 10px;
+    font-weight: bold;
+    font-size: 1rem;
+    cursor: pointer;
+    margin-bottom: 30px;
+    transition: 0.3s;
+}
+
+.btn-back-modern:hover {
+    background-color: #e2e8e7;
+}
+
+/* TÍTULOS IMPACTANTES */
+.card-header-modern h2 {
+    font-size: 2.5rem; 
+    color: #333d45;
+    margin-bottom: 10px;
+}
+
+.highlight-orange {
+    color: #f0834c; 
+}
+
+/* GRILLA ESPACIOSA */
+.form-grid-modern {
+    display: grid;
+    grid-template-columns: 1fr 1fr; 
+    gap: 25px 35px; 
+    margin-top: 25px;
+    margin-bottom: 30px;
+}
+
+.input-group-modern label {
+    display: block;
+    font-weight: 400px;
+    color: #095e5d; 
+    margin-bottom: 10px; 
+    font-size: 0.95rem;
+}
+
+.input-group-modern input, 
+.input-group-modern select {
+    width: 100%;
+    padding: 14px;
+    border-radius: 12px;
+    border: 1px solid #e1e8e7;
+    background-color: #f4f7f6;
+    transition: all 0.3s ease;
+}
+
+/* BOTÓN DE ACCIÓN FINAL */
+.btn-submit-orange {
+    width: 100%;
+    max-width: 500px;
+    display: block;
+    margin: 40px auto 0;
+    padding: 20px;
+    background-color: #f0834c;
+    color: white;
+    font-size: 1.3rem; 
+    font-weight: 800;
+    border-radius: 15px;
+    border: none;
+    cursor: pointer;
+    transition: transform 0.2s;
+}
+
+.btn-submit-orange:hover {
+    transform: scale(1.02);
+    background-color: #d66d3a;
+}
+
+.alerta-tactica-roja {
+    display: flex;
+    align-items: center;
+    background-color: #fff5f5;
+    border-left: 5px solid #e53e3e;
+    padding: 15px 20px;
+    border-radius: 8px;
+    margin-bottom: 25px;
+    box-shadow: 0 4px 12px rgba(229, 62, 62, 0.15);
+    animation: slideIn 0.3s ease-out;
+}
+
+.icono-alerta {
+    color: #e53e3e;
+    font-size: 1.5rem;
+    margin-right: 15px;
+}
+
+.texto-alerta {
+    color: #c53030;
+    font-weight: 700;
+    font-size: 1rem;
+}
+
+
+@keyframes slideIn {
+    from { opacity: 0; transform: translateY(-10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
