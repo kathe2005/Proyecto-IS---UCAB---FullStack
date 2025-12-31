@@ -162,6 +162,19 @@ export const routes: Routes = [
         loadComponent: () => import('./clientes/components/home/home.component').then(m => m.HomeComponent)
     },
 
+    // GESTIÓN DE INCIDENCIAS
+    {
+        path: 'incidencias',
+        loadComponent: () => import('./clientes/components/listarIncidencias/listar-incidencias.component').then(m => m.ListarIncidenciasComponent)
+    },
+    {
+        path: 'incidencias/crear',
+        loadComponent: () => import('./clientes/components/crearIncidencia/crear-incidencias.component').then(m => m.CrearIncidenciasComponent)
+    },
+    {
+        path: 'incidencias/editar/:id',
+        loadComponent: () => import('./clientes/components/editarIncidencia/editar-incidencias.component').then(m => m.EditarIncidenciasComponent)
+    },
     // Redirecciones
     {
         path: 'clientes',
@@ -224,6 +237,12 @@ export const routes: Routes = [
     {
         path: 'disponibilidad',
         redirectTo: 'reservas/consultar-disponibilidad',
+        pathMatch: 'full'
+    },
+    // Redirección para gestión de incidencias
+    {
+        path: 'gestion-incidencias',
+        redirectTo: 'incidencias',
         pathMatch: 'full'
     },
 

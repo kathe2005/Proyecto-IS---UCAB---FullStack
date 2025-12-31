@@ -142,6 +142,19 @@ public class ProyectApplication {
             System.out.println("\n🚗 VEHÍCULOS:");
             System.out.println("   ❌ Error: " + e.getMessage());
         }
+
+        // 6. Incidencias
+        try {
+            JsonManagerIncidencias incidenciasManager = new JsonManagerIncidencias();
+            int totalIncidencias = incidenciasManager.cargarIncidencias().size();
+            System.out.println("\nIncidencias:");
+            System.out.println("   📄 Archivo: " + ConfigurationManager.getDataFilePath("incidencias.json"));
+            System.out.println("   📊 Registros: " + totalIncidencias);
+            System.out.println("   ✅ Estado: " + (totalIncidencias > 0 ? "CARGADO ✓" : "VACIO (lista para usar)"));
+        } catch (Exception e) {
+            System.out.println("\nIncidencias:");
+            System.out.println("   ❌ Error: " + e.getMessage());
+        }
     }
 
     private static void mostrarInfoSistema() {

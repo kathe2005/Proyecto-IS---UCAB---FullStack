@@ -33,7 +33,7 @@ export class GestionEstacionamientoComponent {
     {
       id: 'card4',
       titulo: 'Gestión de Incidencias',
-      ruta: '/puestos/estadisticas',
+      ruta: 'incidencias',
       color: 'info'
     },
     {

@@ -1,0 +1,144 @@
+/* Heredamos estilos base para consistencia */
+:host {
+  display: block;
+  min-height: 100vh;
+  background-color: aliceblue;
+  font-family: 'Arial', sans-serif;
+  padding-bottom: 80px;
+}
+
+.main-container {
+  min-height: 100vh;
+  padding: 20px;
+}
+
+.container-custom {
+  max-width: 1200px;
+  margin: 0 auto;
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 10px 30px rgba(18, 59, 103, 0.1);
+  padding: 30px;
+  min-height: calc(100vh - 160px);
+}
+
+/* Header */
+.page-header {
+  text-align: center;
+  margin-bottom: 30px;
+  border-bottom: 2px solid #f0f2f5;
+  padding-bottom: 20px;
+}
+
+.page-title {
+  color: #123B67; /* Azul UCAB */
+  font-size: 28px;
+  font-weight: bold;
+  margin-bottom: 10px;
+}
+
+.page-subtitle {
+  color: #666;
+  font-size: 16px;
+}
+
+/* Tarjetas de Estadísticas */
+.stats-section {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 20px;
+  margin-bottom: 30px;
+}
+
+.stat-card-small {
+  background: white;
+  border: 1px solid #e0e0e0;
+  border-radius: 10px;
+  padding: 20px;
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.stat-card-small:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+}
+
+.stat-card-small i {
+  font-size: 2rem;
+  color: #1c55ff;
+}
+
+.stat-card-small.warning i { color: #ffc107; } /* Para pendientes */
+.stat-card-small.success i { color: #28a745; } /* Para resueltas */
+
+.stat-card-small h4 {
+  margin: 0;
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: #333;
+}
+
+.stat-card-small small {
+  color: #666;
+  font-size: 0.9rem;
+}
+
+/* Tabla */
+.table-container {
+  background: white;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.icon-circle {
+  width: 30px;
+  height: 30px;
+  background-color: #f0f2f5;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #123B67;
+}
+
+.status-badge {
+  font-size: 0.85em;
+  padding: 6px 12px;
+  border-radius: 20px;
+  font-weight: 500;
+}
+
+/* Estados Vacíos y Carga */
+.empty-state, .loading-state {
+  text-align: center;
+  padding: 50px 20px;
+  color: #666;
+}
+
+.empty-state i {
+  font-size: 4rem;
+  color: #ddd;
+  margin-bottom: 20px;
+}
+
+/* Botones de Navegación */
+.navigation-buttons {
+  max-width: 1200px;
+  margin: 30px auto 0;
+  display: flex;
+  justify-content: space-between;
+  gap: 20px;
+}
+
+/* Footer */
+.footer {
+  background-color: #123B67;
+  color: white;
+  text-align: center;
+  padding: 20px;
+  margin-top: 40px;
+  border-radius: 12px 12px 0 0;
+}
