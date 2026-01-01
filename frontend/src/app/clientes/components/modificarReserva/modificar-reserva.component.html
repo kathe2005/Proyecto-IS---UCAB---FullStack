@@ -1,0 +1,111 @@
+<div class="main-container">
+  <div class="modificar-card">
+
+    <div class="card-header">
+      <div>
+        <h1>Modificar Reserva</h1>
+        <p class="lead">Actualice fecha, turno o puesto conservando el cliente asignado.</p>
+      </div>
+      <button class="btn btn-secondary" (click)="volverAGestion()">Volver a Gestión</button>
+    </div>
+
+    <div class="grid-summary">
+      <div class="summary-item">
+        <span>Total reservas</span>
+        <strong>{{ totalReservas }}</strong>
+      </div>
+      <div class="summary-item" *ngIf="seleccionada">
+        <span>Seleccionada</span>
+        <strong>{{ seleccionada.id }}</strong>
+      </div>
+    </div>
+
+    <div *ngIf="cargando" class="alert muted">Cargando información...</div>
+    <div *ngIf="error && !cargando" class="alert error">{{ error }}</div>
+    <div *ngIf="exito" class="alert success">{{ exito }}</div>
+
+    <div class="content-grid" *ngIf="!cargando">
+      <div class="panel-left">
+        <div class="panel-head">
+          <h3>Reservas registradas</h3>
+          <span class="pill" *ngIf="totalReservas">{{ totalReservas }} en total</span>
+        </div>
+
+        <div *ngIf="totalReservas === 0" class="muted">No hay reservas para mostrar.</div>
+
+        <div class="reservas-list" *ngIf="totalReservas">
+          <div class="reserva-card" *ngFor="let reserva of reservas" [class.active]="seleccionada?.id === reserva.id">
+            <div class="reserva-top">
+              <div>
+                <p class="reserva-id">ID {{ reserva.id }}</p>
+                <h4>{{ getNombreCliente(reserva.clienteId) }}</h4>
+              </div>
+              <span class="estado-pill">{{ reserva.estado }}</span>
+            </div>
+            <div class="reserva-body">
+              <div>
+                <small>Puesto</small>
+                <p>{{ getNumeroPuesto(reserva.puestoId) }}</p>
+              </div>
+              <div>
+                <small>Fecha</small>
+                <p>{{ reserva.fecha }}</p>
+              </div>
+              <div>
+                <small>Turno</small>
+                <p>{{ reserva.turno }}</p>
+              </div>
+            </div>
+            <button class="btn btn-primary full" (click)="seleccionarReserva(reserva)">Editar</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="panel-right" *ngIf="seleccionada">
+        <div class="panel-head">
+          <h3>Editar reserva {{ seleccionada.id }}</h3>
+        </div>
+
+        <div class="form-grid">
+          <div class="field">
+            <label>Cliente</label>
+            <div class="readonly">{{ getNombreCliente(seleccionada!.clienteId || '') }}</div>
+          </div>
+          <div class="field">
+            <label>Usuario</label>
+            <div class="readonly">{{ seleccionada!.usuario }}</div>
+          </div>
+          <div class="field">
+            <label>Fecha</label>
+            <input type="date" [(ngModel)]="form.fecha" (change)="onFechaOTurnoCambio()">
+          </div>
+          <div class="field">
+            <label>Turno</label>
+            <select [(ngModel)]="form.turno" (change)="onFechaOTurnoCambio()">
+              <option *ngFor="let t of turnos" [value]="t.value">{{ t.label }}</option>
+            </select>
+          </div>
+          <div class="field full">
+            <label>Puesto disponible</label>
+            <select [(ngModel)]="form.puestoId">
+              <option value="" disabled>Seleccione un puesto</option>
+              <option *ngFor="let puesto of puestosDisponibles" [value]="puesto.id">
+                {{ puesto.numero }} — {{ puesto.ubicacion }} ({{ puesto.tipoPuesto }})
+              </option>
+            </select>
+          </div>
+        </div>
+
+        <div class="actions">
+          <button class="btn btn-primary" (click)="guardarCambios()" [disabled]="guardando">
+            {{ guardando ? 'Guardando...' : 'Guardar cambios' }}
+          </button>
+        </div>
+      </div>
+
+      <div class="panel-right muted" *ngIf="!seleccionada && reservas.length">
+        Seleccione una reserva para modificar sus datos.
+      </div>
+    </div>
+  </div>
+</div>
