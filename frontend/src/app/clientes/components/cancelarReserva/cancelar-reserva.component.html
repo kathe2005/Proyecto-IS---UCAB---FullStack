@@ -1,0 +1,12 @@
+<div class="container">
+  <h2>Cancelar Reserva</h2>
+  <form (ngSubmit)="cancelarReserva()">
+    <div class="form-group">
+      <label for="reservaId">ID de la Reserva:</label>
+      <input type="text" id="reservaId" [(ngModel)]="reservaId" name="reservaId" required>
+    </div>
+    <button type="submit" class="btn btn-danger">Cancelar Reserva</button>
+  </form>
+  <p *ngIf="mensaje">{{ mensaje }}</p>
+  <button (click)="volver()" class="btn btn-secondary">Volver</button>
+</div>

@@ -138,6 +138,31 @@ public class ReservaController {
         }
     }
 
+    @PutMapping("/api/{id}")
+    @ResponseBody
+    public ResponseEntity<?> actualizarReservaApi(@PathVariable String id, @RequestBody Reserva reserva) {
+        try {
+            System.out.println("🔄 Actualizando reserva ID: " + id);
+            System.out.println("📦 Datos recibidos: puestoId=" + reserva.getPuestoId() + 
+                              ", fecha=" + reserva.getFecha() + 
+                              ", turno=" + reserva.getTurno());
+            
+            Reserva reservaActualizada = reservaService.actualizarReserva(id, reserva);
+            return ResponseEntity.ok(reservaActualizada);
+        } catch (IllegalArgumentException e) {
+            System.err.println("❌ Error de validación: " + e.getMessage());
+            Map<String, String> errorResponse = new HashMap<>();
+            errorResponse.put("error", e.getMessage());
+            return ResponseEntity.badRequest().body(errorResponse);
+        } catch (Exception e) {
+            System.err.println("💥 Error interno: " + e.getMessage());
+            e.printStackTrace();
+            Map<String, String> errorResponse = new HashMap<>();
+            errorResponse.put("error", "Error interno del servidor: " + e.getMessage());
+            return ResponseEntity.internalServerError().body(errorResponse);
+        }
+    }
+
     @PostMapping("/api/{id}/cancelar")
     @ResponseBody
     public ResponseEntity<?> cancelarReservaApi(@PathVariable String id) {
@@ -190,8 +215,7 @@ public class ReservaController {
     @ResponseBody
     public ResponseEntity<?> obtenerTodasLasReservasApi() {
         try {
-            // Usar obtenerTodasReservas() del JsonManagerReservaPago a través del servicio
-            List<Reserva> reservas = reservaService.obtenerReservasPendientes(); // Temporalmente usar pendientes
+            List<Reserva> reservas = reservaService.obtenerTodasLasReservas();
             return ResponseEntity.ok(reservas);
         } catch (Exception e) {
             Map<String, String> errorResponse = new HashMap<>();
@@ -199,7 +223,18 @@ public class ReservaController {
             return ResponseEntity.badRequest().body(errorResponse);
         }
     }
-
+    @GetMapping("/api/activas")
+    @ResponseBody
+    public ResponseEntity<?> obtenerReservasActivasApi() {
+        try {
+            List<Reserva> reservasActivas = reservaService.obtenerReservasActivas();
+            return ResponseEntity.ok(reservasActivas);
+        } catch (Exception e) {
+            Map<String, String> errorResponse = new HashMap<>();
+            errorResponse.put("error", "Error al obtener reservas activas: " + e.getMessage());
+            return ResponseEntity.internalServerError().body(errorResponse);
+        }
+    }
     @PostMapping("/api/{id}/confirmar")
     @ResponseBody
     public ResponseEntity<?> confirmarReservaApi(@PathVariable String id) {

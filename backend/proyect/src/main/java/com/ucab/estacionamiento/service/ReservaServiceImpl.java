@@ -50,6 +50,9 @@ public class ReservaServiceImpl {
         System.out.println("📅 Fecha: " + request.getFecha() + ", Turno: " + request.getTurno());
         System.out.println("👤 Usuario: " + request.getUsuario() + " (ClienteID: " + request.getClienteId() + ")");
         System.out.println("🅿️  Puesto solicitado: " + request.getPuestoId());
+
+        // Evitar que el puesto ya esté reservado en esa fecha/turno
+        validarReservaDuplicadaPuesto(request.getPuestoId(), request.getFecha(), request.getTurno(), null);
         
         // Validar que el puesto existe
         Optional<Puesto> puestoOpt = jsonManagerPuesto.buscarPuestoPorId(request.getPuestoId());
@@ -314,6 +317,47 @@ public class ReservaServiceImpl {
         return valido;
     }
 
+    private void validarReservaDuplicadaCliente(String clienteId, String usuario, LocalDate fecha, String turno, String reservaIdIgnorar) {
+        List<Reserva> reservas = jsonManagerReservaPago.obtenerTodasReservas();
+
+        for (Reserva r : reservas) {
+            if (reservaIdIgnorar != null && reservaIdIgnorar.equals(r.getId())) {
+                continue;
+            }
+
+            boolean mismoCliente = clienteId != null && clienteId.equals(r.getClienteId());
+            boolean mismoUsuario = usuario != null && usuario.equalsIgnoreCase(r.getUsuario());
+            boolean mismoDiaTurno = r.getFecha().equals(fecha) && r.getTurno().equalsIgnoreCase(turno);
+            boolean activa = r.getEstado() != EstadoReserva.CANCELADA;
+
+            if (mismoDiaTurno && activa && (mismoCliente || mismoUsuario)) {
+                String msg = "El cliente/usuario ya posee una reserva para ese turno y fecha";
+                System.err.println("❌ " + msg + " -> Reserva existente: " + r.getId());
+                throw new IllegalArgumentException(msg);
+            }
+        }
+    }
+
+    private void validarReservaDuplicadaPuesto(String puestoId, LocalDate fecha, String turno, String reservaIdIgnorar) {
+        List<Reserva> reservas = jsonManagerReservaPago.obtenerTodasReservas();
+
+        for (Reserva r : reservas) {
+            if (reservaIdIgnorar != null && reservaIdIgnorar.equals(r.getId())) {
+                continue;
+            }
+
+            boolean mismoPuesto = puestoId != null && puestoId.equals(r.getPuestoId());
+            boolean mismoDiaTurno = r.getFecha().equals(fecha) && r.getTurno().equalsIgnoreCase(turno);
+            boolean activa = r.getEstado() != EstadoReserva.CANCELADA;
+
+            if (mismoPuesto && mismoDiaTurno && activa) {
+                String msg = "El puesto ya está reservado en ese turno (reserva " + r.getId() + ")";
+                System.err.println("❌ " + msg);
+                throw new IllegalArgumentException(msg);
+            }
+        }
+    }
+
     public List<Puesto> obtenerPuestosDisponiblesParaFecha(LocalDate fecha, String turno) {
         System.out.println("\n=== OBTENIENDO PUESTOS DISPONIBLES ===");
         System.out.println("📅 Fecha: " + fecha + ", Turno: " + turno);
@@ -339,16 +383,24 @@ public class ReservaServiceImpl {
     }
 
     public boolean verificarDisponibilidadPuesto(String puestoId, LocalDate fecha, String turno) {
+        return verificarDisponibilidadPuesto(puestoId, fecha, turno, null);
+    }
+
+    public boolean verificarDisponibilidadPuesto(String puestoId, LocalDate fecha, String turno, String reservaIdIgnorar) {
         List<Reserva> reservas = jsonManagerReservaPago.obtenerTodasReservas();
         
         System.out.println("🔍 Verificando disponibilidad de puesto " + puestoId + 
-                          " para " + fecha + " " + turno);
+                          " para " + fecha + " " + turno +
+                          (reservaIdIgnorar != null ? " (ignorando reserva " + reservaIdIgnorar + ")" : ""));
         System.out.println("📋 Total reservas en sistema: " + reservas.size());
         
-        // Verificar si hay reservas activas para este puesto, fecha y turno
         boolean tieneReserva = false;
         
         for (Reserva reserva : reservas) {
+            if (reservaIdIgnorar != null && reservaIdIgnorar.equals(reserva.getId())) {
+                continue; // No bloquear con la misma reserva que se está editando
+            }
+
             if (reserva.getPuestoId().equals(puestoId) &&
                 reserva.getFecha().equals(fecha) &&
                 reserva.getTurno().equalsIgnoreCase(turno)) {
@@ -356,7 +408,6 @@ public class ReservaServiceImpl {
                 System.out.println("   ⚠️  Encontrada reserva: ID=" + reserva.getId() + 
                                  ", Estado=" + reserva.getEstado());
                 
-                // Solo considerar reservas que no estén canceladas
                 if (reserva.getEstado() != EstadoReserva.CANCELADA) {
                     tieneReserva = true;
                     System.out.println("   ❌ Puesto NO disponible por reserva activa");
@@ -371,6 +422,106 @@ public class ReservaServiceImpl {
         System.out.println("📊 Resultado: " + (disponible ? "DISPONIBLE" : "NO DISPONIBLE"));
         
         return disponible;
+    }
+
+    public Reserva actualizarReserva(String reservaId, Reserva request) {
+        System.out.println("\n=== ACTUALIZANDO RESERVA ===");
+        System.out.println("🆔 Reserva: " + reservaId);
+
+        Optional<Reserva> reservaOpt = jsonManagerReservaPago.buscarReservaPorId(reservaId);
+        if (reservaOpt.isEmpty()) {
+            String msg = "Reserva no encontrada: " + reservaId;
+            System.err.println("❌ " + msg);
+            throw new IllegalArgumentException(msg);
+        }
+
+        Reserva existente = reservaOpt.get();
+
+        // Usar valores seguros (no request directo)
+        String nuevoPuestoId = request.getPuestoId() != null ? request.getPuestoId() : existente.getPuestoId();
+        LocalDate nuevaFecha = request.getFecha() != null ? request.getFecha() : existente.getFecha();
+        String nuevoTurno = request.getTurno() != null ? request.getTurno() : existente.getTurno();
+        
+        System.out.println("📊 Cambios solicitados:");
+        System.out.println("   Puesto: " + existente.getPuestoId() + " → " + nuevoPuestoId);
+        System.out.println("   Fecha: " + existente.getFecha() + " → " + nuevaFecha);
+        System.out.println("   Turno: " + existente.getTurno() + " → " + nuevoTurno);
+
+        // Validar que el puesto exista
+        Optional<Puesto> puestoOpt = jsonManagerPuesto.buscarPuestoPorId(nuevoPuestoId);
+        if (puestoOpt.isEmpty()) {
+            String msg = "Puesto no encontrado: " + nuevoPuestoId;
+            System.err.println("❌ " + msg);
+            throw new IllegalArgumentException(msg);
+        }
+
+        Puesto puesto = puestoOpt.get();
+        System.out.println("📍 Nuevo puesto encontrado: " + puesto.getNumero() + 
+                          " - " + puesto.getUbicacion() + 
+                          " (Tipo: " + puesto.getTipoPuesto() + ")");
+
+        // Validar disponibilidad del nuevo puesto (ignorando la reserva actual)
+        if (!verificarDisponibilidadPuesto(nuevoPuestoId, nuevaFecha, nuevoTurno, reservaId)) {
+            String msg = "El puesto no está disponible para la fecha y turno seleccionados";
+            System.err.println("❌ " + msg);
+            throw new IllegalArgumentException(msg);
+        }
+
+        // Evitar que otro cliente ya tenga el puesto reservado
+        validarReservaDuplicadaPuesto(nuevoPuestoId, nuevaFecha, nuevoTurno, reservaId);
+
+        // Evitar que el mismo cliente tenga otra reserva en la misma fecha/turno
+        validarClienteNoTengaOtraReservaMismaFecha(
+            existente.getClienteId(), 
+            existente.getUsuario(), 
+            nuevaFecha, 
+            nuevoTurno, 
+            reservaId
+        );
+
+        // Aplicar cambios
+        existente.setPuestoId(nuevoPuestoId);
+        existente.setFecha(nuevaFecha);
+        existente.setTurno(nuevoTurno);
+
+        // Recalcular horarios por turno
+        setHorariosPorTurno(existente, nuevoTurno);
+
+        // Guardar cambios
+        Reserva actualizada = jsonManagerReservaPago.guardarReserva(existente);
+
+        System.out.println("✅ Reserva actualizada exitosamente:");
+        System.out.println("   ID: " + actualizada.getId());
+        System.out.println("   Cliente: " + actualizada.getUsuario());
+        System.out.println("   Puesto: " + actualizada.getPuestoId());
+        System.out.println("   Fecha: " + actualizada.getFecha());
+        System.out.println("   Turno: " + actualizada.getTurno());
+        System.out.println("   Horario: " + actualizada.getHoraInicio() + " - " + actualizada.getHoraFin());
+
+        return actualizada;
+    }
+
+    private void validarClienteNoTengaOtraReservaMismaFecha(String clienteId, String usuario, 
+                                                           LocalDate fecha, String turno, 
+                                                           String reservaIdIgnorar) {
+        List<Reserva> reservas = jsonManagerReservaPago.obtenerTodasReservas();
+
+        for (Reserva r : reservas) {
+            if (reservaIdIgnorar != null && reservaIdIgnorar.equals(r.getId())) {
+                continue;
+            }
+
+            boolean mismoCliente = clienteId != null && clienteId.equals(r.getClienteId());
+            boolean mismoUsuario = usuario != null && usuario.equalsIgnoreCase(r.getUsuario());
+            boolean mismoDiaTurno = r.getFecha().equals(fecha) && r.getTurno().equalsIgnoreCase(turno);
+            boolean activa = r.getEstado() != EstadoReserva.CANCELADA;
+
+            if (mismoDiaTurno && activa && (mismoCliente || mismoUsuario)) {
+                String msg = "El cliente ya tiene otra reserva para el mismo turno y fecha (Reserva ID: " + r.getId() + ")";
+                System.err.println("❌ " + msg);
+                throw new IllegalArgumentException(msg);
+            }
+        }
     }
 
     public boolean cancelarReserva(String reservaId) {
@@ -496,6 +647,12 @@ public class ReservaServiceImpl {
         List<Reserva> reservasPendientes = jsonManagerReservaPago.buscarReservasPendientes();
         System.out.println("⏳ Reservas pendientes encontradas: " + reservasPendientes.size());
         return reservasPendientes;
+    }
+
+    public List<Reserva> obtenerTodasLasReservas() {
+        List<Reserva> todas = jsonManagerReservaPago.obtenerTodasReservas();
+        System.out.println("📚 Reservas totales: " + todas.size());
+        return todas;
     }
 
     // Métodos adicionales para estadísticas y reporting

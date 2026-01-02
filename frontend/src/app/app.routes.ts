@@ -28,9 +28,9 @@ export const routes: Routes = [
         loadComponent: () => import('./clientes/components/gestionPerfiles/gestion-perfiles.component').then(m => m.GestionPerfilesComponent)
     },
 
-    //Gestion de Vehiculos - Menú principal de vehiculos 
+    //Gestion de Vehiculos - Menú principal de vehiculos
     {
-        path: 'gestion-vehiculos', 
+        path: 'gestion-vehiculos',
         component: CrearVehiculoComponent
     },
 
@@ -81,11 +81,12 @@ export const routes: Routes = [
         path: 'reservas/pagos',
         loadComponent: () => import('./clientes/components/registroPago/registrar-pago.component').then(m => m.RegistrarPagoComponent)
     },
-    /*
+
     {
         path: 'reservas/modificar',
         loadComponent: () => import('./clientes/components/modificarReserva/modificar-reserva.component').then(m => m.ModificarReservaComponent)
     },
+
     {
         path: 'reservas/cancelar',
         loadComponent: () => import('./clientes/components/cancelarReserva/cancelar-reserva.component').then(m => m.CancelarReservaComponent)
@@ -94,7 +95,6 @@ export const routes: Routes = [
         path: 'reservas/activas',
         loadComponent: () => import('./clientes/components/listaReservas/lista-reservas.component').then(m => m.ListaReservasComponent)
     },
-    */
 
 
 
@@ -246,7 +246,7 @@ export const routes: Routes = [
         pathMatch: 'full'
     },
 
-    // Ruta comodín 
+    // Ruta comodín
     {
         path: '**',
         redirectTo: ''

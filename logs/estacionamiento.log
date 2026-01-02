@@ -111,3 +111,120 @@ This generated password is for development use only. Your security configuration
 2026-01-01T22:23:14.723-04:00  WARN 19144 --- [proyect] [http-nio-127.0.0.1-8080-exec-4] .w.s.m.s.DefaultHandlerExceptionResolver : Resolved [org.springframework.http.converter.HttpMessageNotReadableException: JSON parse error: Cannot deserialize value of type `com.ucab.estacionamiento.model.enums.TipoProblema` from String "ROBO_DAÑO": not one of the values accepted for Enum class: [RESERVA, OTROS, PUESTO, PAGO]]
 2026-01-01T22:23:15.273-04:00  WARN 19144 --- [proyect] [http-nio-127.0.0.1-8080-exec-5] .w.s.m.s.DefaultHandlerExceptionResolver : Resolved [org.springframework.http.converter.HttpMessageNotReadableException: JSON parse error: Cannot deserialize value of type `com.ucab.estacionamiento.model.enums.TipoProblema` from String "ROBO_DAÑO": not one of the values accepted for Enum class: [RESERVA, OTROS, PUESTO, PAGO]]
 2026-01-01T22:23:16.085-04:00  WARN 19144 --- [proyect] [http-nio-127.0.0.1-8080-exec-6] .w.s.m.s.DefaultHandlerExceptionResolver : Resolved [org.springframework.http.converter.HttpMessageNotReadableException: JSON parse error: Cannot deserialize value of type `com.ucab.estacionamiento.model.enums.TipoProblema` from String "ROBO_DAÑO": not one of the values accepted for Enum class: [RESERVA, OTROS, PUESTO, PAGO]]
+2026-01-02T11:47:47.522-04:00  INFO 3900 --- [proyect] [main] c.u.e.application.ProyectApplication     : Starting ProyectApplication using Java 21.0.9 with PID 3900 (C:\Users\admin\Pictures\Proyecto-IS---UCAB---FullStack\backend\proyect\target\classes started by admin in C:\Users\admin\Pictures\Proyecto-IS---UCAB---FullStack)
+2026-01-02T11:47:47.524-04:00 DEBUG 3900 --- [proyect] [main] c.u.e.application.ProyectApplication     : Running with Spring Boot v3.5.7, Spring v6.2.12
+2026-01-02T11:47:47.526-04:00  INFO 3900 --- [proyect] [main] c.u.e.application.ProyectApplication     : No active profile set, falling back to 1 default profile: "default"
+2026-01-02T11:47:49.522-04:00  INFO 3900 --- [proyect] [main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat initialized with port 8080 (http)
+2026-01-02T11:47:49.556-04:00  INFO 3900 --- [proyect] [main] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2026-01-02T11:47:49.557-04:00  INFO 3900 --- [proyect] [main] o.apache.catalina.core.StandardEngine    : Starting Servlet engine: [Apache Tomcat/10.1.48]
+2026-01-02T11:47:49.643-04:00  INFO 3900 --- [proyect] [main] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring embedded WebApplicationContext
+2026-01-02T11:47:49.645-04:00  INFO 3900 --- [proyect] [main] w.s.c.ServletWebServerApplicationContext : Root WebApplicationContext: initialization completed in 2048 ms
+2026-01-02T11:47:50.275-04:00  WARN 3900 --- [proyect] [main] .s.s.UserDetailsServiceAutoConfiguration : 
+
+Using generated security password: 5f2e9022-2de2-4a2e-8d55-2c7d61d0738f
+
+This generated password is for development use only. Your security configuration must be updated before running your application in production.
+
+2026-01-02T11:47:50.293-04:00  INFO 3900 --- [proyect] [main] r$InitializeUserDetailsManagerConfigurer : Global AuthenticationManager configured with UserDetailsService bean with name inMemoryUserDetailsManager
+2026-01-02T11:47:50.691-04:00  INFO 3900 --- [proyect] [main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat started on port 8080 (http) with context path '/'
+2026-01-02T11:47:50.709-04:00  INFO 3900 --- [proyect] [main] c.u.e.application.ProyectApplication     : Started ProyectApplication in 3.857 seconds (process running for 5.192)
+2026-01-02T11:53:48.130-04:00  INFO 41304 --- [proyect] [main] c.u.e.application.ProyectApplication     : Starting ProyectApplication using Java 21.0.9 with PID 41304 (C:\Users\admin\Pictures\Proyecto-IS---UCAB---FullStack\backend\proyect\target\classes started by admin in C:\Users\admin\Pictures\Proyecto-IS---UCAB---FullStack)
+2026-01-02T11:53:48.130-04:00 DEBUG 41304 --- [proyect] [main] c.u.e.application.ProyectApplication     : Running with Spring Boot v3.5.7, Spring v6.2.12
+2026-01-02T11:53:48.135-04:00  INFO 41304 --- [proyect] [main] c.u.e.application.ProyectApplication     : No active profile set, falling back to 1 default profile: "default"
+2026-01-02T11:53:49.814-04:00  INFO 41304 --- [proyect] [main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat initialized with port 8080 (http)
+2026-01-02T11:53:49.853-04:00  INFO 41304 --- [proyect] [main] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2026-01-02T11:53:49.853-04:00  INFO 41304 --- [proyect] [main] o.apache.catalina.core.StandardEngine    : Starting Servlet engine: [Apache Tomcat/10.1.48]
+2026-01-02T11:53:50.011-04:00  INFO 41304 --- [proyect] [main] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring embedded WebApplicationContext
+2026-01-02T11:53:50.012-04:00  INFO 41304 --- [proyect] [main] w.s.c.ServletWebServerApplicationContext : Root WebApplicationContext: initialization completed in 1798 ms
+2026-01-02T11:53:50.599-04:00  WARN 41304 --- [proyect] [main] .s.s.UserDetailsServiceAutoConfiguration : 
+
+Using generated security password: 49086a14-5777-47fa-a56b-9e1049d0a554
+
+This generated password is for development use only. Your security configuration must be updated before running your application in production.
+
+2026-01-02T11:53:50.612-04:00  INFO 41304 --- [proyect] [main] r$InitializeUserDetailsManagerConfigurer : Global AuthenticationManager configured with UserDetailsService bean with name inMemoryUserDetailsManager
+2026-01-02T11:53:51.038-04:00  INFO 41304 --- [proyect] [main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat started on port 8080 (http) with context path '/'
+2026-01-02T11:53:51.050-04:00  INFO 41304 --- [proyect] [main] c.u.e.application.ProyectApplication     : Started ProyectApplication in 3.658 seconds (process running for 4.91)
+2026-01-02T11:54:54.684-04:00  INFO 41304 --- [proyect] [http-nio-127.0.0.1-8080-exec-3] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring DispatcherServlet 'dispatcherServlet'
+2026-01-02T11:54:54.684-04:00  INFO 41304 --- [proyect] [http-nio-127.0.0.1-8080-exec-3] o.s.web.servlet.DispatcherServlet        : Initializing Servlet 'dispatcherServlet'
+2026-01-02T11:54:54.684-04:00  INFO 41304 --- [proyect] [http-nio-127.0.0.1-8080-exec-3] o.s.web.servlet.DispatcherServlet        : Completed initialization in 0 ms
+2026-01-02T12:04:42.767-04:00  INFO 32588 --- [proyect] [main] c.u.e.application.ProyectApplication     : Starting ProyectApplication using Java 21.0.9 with PID 32588 (C:\Users\admin\Pictures\Proyecto-IS---UCAB---FullStack\backend\proyect\target\classes started by admin in C:\Users\admin\Pictures\Proyecto-IS---UCAB---FullStack)
+2026-01-02T12:04:42.768-04:00 DEBUG 32588 --- [proyect] [main] c.u.e.application.ProyectApplication     : Running with Spring Boot v3.5.7, Spring v6.2.12
+2026-01-02T12:04:42.773-04:00  INFO 32588 --- [proyect] [main] c.u.e.application.ProyectApplication     : No active profile set, falling back to 1 default profile: "default"
+2026-01-02T12:04:44.696-04:00  INFO 32588 --- [proyect] [main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat initialized with port 8080 (http)
+2026-01-02T12:04:44.738-04:00  INFO 32588 --- [proyect] [main] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2026-01-02T12:04:44.738-04:00  INFO 32588 --- [proyect] [main] o.apache.catalina.core.StandardEngine    : Starting Servlet engine: [Apache Tomcat/10.1.48]
+2026-01-02T12:04:44.854-04:00  INFO 32588 --- [proyect] [main] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring embedded WebApplicationContext
+2026-01-02T12:04:44.855-04:00  INFO 32588 --- [proyect] [main] w.s.c.ServletWebServerApplicationContext : Root WebApplicationContext: initialization completed in 1967 ms
+2026-01-02T12:04:45.495-04:00  WARN 32588 --- [proyect] [main] .s.s.UserDetailsServiceAutoConfiguration : 
+
+Using generated security password: 033aca09-f7dc-48ff-a445-4c291d06b1bf
+
+This generated password is for development use only. Your security configuration must be updated before running your application in production.
+
+2026-01-02T12:04:45.515-04:00  INFO 32588 --- [proyect] [main] r$InitializeUserDetailsManagerConfigurer : Global AuthenticationManager configured with UserDetailsService bean with name inMemoryUserDetailsManager
+2026-01-02T12:04:45.987-04:00  INFO 32588 --- [proyect] [main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat started on port 8080 (http) with context path '/'
+2026-01-02T12:04:46.001-04:00  INFO 32588 --- [proyect] [main] c.u.e.application.ProyectApplication     : Started ProyectApplication in 4.165 seconds (process running for 5.572)
+2026-01-02T12:05:39.556-04:00  INFO 32588 --- [proyect] [http-nio-127.0.0.1-8080-exec-1] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring DispatcherServlet 'dispatcherServlet'
+2026-01-02T12:05:39.556-04:00  INFO 32588 --- [proyect] [http-nio-127.0.0.1-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Initializing Servlet 'dispatcherServlet'
+2026-01-02T12:05:39.556-04:00  INFO 32588 --- [proyect] [http-nio-127.0.0.1-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Completed initialization in 0 ms
+2026-01-02T12:15:26.096-04:00  INFO 16844 --- [proyect] [main] c.u.e.application.ProyectApplication     : Starting ProyectApplication using Java 21.0.9 with PID 16844 (C:\Users\admin\Pictures\Proyecto-IS---UCAB---FullStack\backend\proyect\target\classes started by admin in C:\Users\admin\Pictures\Proyecto-IS---UCAB---FullStack)
+2026-01-02T12:15:26.096-04:00 DEBUG 16844 --- [proyect] [main] c.u.e.application.ProyectApplication     : Running with Spring Boot v3.5.7, Spring v6.2.12
+2026-01-02T12:15:26.096-04:00  INFO 16844 --- [proyect] [main] c.u.e.application.ProyectApplication     : No active profile set, falling back to 1 default profile: "default"
+2026-01-02T12:15:27.726-04:00  INFO 16844 --- [proyect] [main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat initialized with port 8080 (http)
+2026-01-02T12:15:27.773-04:00  INFO 16844 --- [proyect] [main] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2026-01-02T12:15:27.774-04:00  INFO 16844 --- [proyect] [main] o.apache.catalina.core.StandardEngine    : Starting Servlet engine: [Apache Tomcat/10.1.48]
+2026-01-02T12:15:27.870-04:00  INFO 16844 --- [proyect] [main] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring embedded WebApplicationContext
+2026-01-02T12:15:27.871-04:00  INFO 16844 --- [proyect] [main] w.s.c.ServletWebServerApplicationContext : Root WebApplicationContext: initialization completed in 1689 ms
+2026-01-02T12:15:28.509-04:00  WARN 16844 --- [proyect] [main] .s.s.UserDetailsServiceAutoConfiguration : 
+
+Using generated security password: 913ef396-9de1-4328-b093-d52772da1f25
+
+This generated password is for development use only. Your security configuration must be updated before running your application in production.
+
+2026-01-02T12:15:28.521-04:00  INFO 16844 --- [proyect] [main] r$InitializeUserDetailsManagerConfigurer : Global AuthenticationManager configured with UserDetailsService bean with name inMemoryUserDetailsManager
+2026-01-02T12:15:29.040-04:00  INFO 16844 --- [proyect] [main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat started on port 8080 (http) with context path '/'
+2026-01-02T12:15:29.061-04:00  INFO 16844 --- [proyect] [main] c.u.e.application.ProyectApplication     : Started ProyectApplication in 3.737 seconds (process running for 5.027)
+2026-01-02T12:16:25.829-04:00  INFO 16844 --- [proyect] [http-nio-127.0.0.1-8080-exec-5] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring DispatcherServlet 'dispatcherServlet'
+2026-01-02T12:16:25.829-04:00  INFO 16844 --- [proyect] [http-nio-127.0.0.1-8080-exec-5] o.s.web.servlet.DispatcherServlet        : Initializing Servlet 'dispatcherServlet'
+2026-01-02T12:16:25.833-04:00  INFO 16844 --- [proyect] [http-nio-127.0.0.1-8080-exec-5] o.s.web.servlet.DispatcherServlet        : Completed initialization in 0 ms
+2026-01-02T12:23:16.224-04:00  INFO 36496 --- [proyect] [main] c.u.e.application.ProyectApplication     : Starting ProyectApplication using Java 21.0.9 with PID 36496 (C:\Users\admin\Pictures\Proyecto-IS---UCAB---FullStack\backend\proyect\target\classes started by admin in C:\Users\admin\Pictures\Proyecto-IS---UCAB---FullStack)
+2026-01-02T12:23:16.226-04:00 DEBUG 36496 --- [proyect] [main] c.u.e.application.ProyectApplication     : Running with Spring Boot v3.5.7, Spring v6.2.12
+2026-01-02T12:23:16.228-04:00  INFO 36496 --- [proyect] [main] c.u.e.application.ProyectApplication     : No active profile set, falling back to 1 default profile: "default"
+2026-01-02T12:23:18.135-04:00  INFO 36496 --- [proyect] [main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat initialized with port 8080 (http)
+2026-01-02T12:23:18.160-04:00  INFO 36496 --- [proyect] [main] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2026-01-02T12:23:18.160-04:00  INFO 36496 --- [proyect] [main] o.apache.catalina.core.StandardEngine    : Starting Servlet engine: [Apache Tomcat/10.1.48]
+2026-01-02T12:23:18.257-04:00  INFO 36496 --- [proyect] [main] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring embedded WebApplicationContext
+2026-01-02T12:23:18.257-04:00  INFO 36496 --- [proyect] [main] w.s.c.ServletWebServerApplicationContext : Root WebApplicationContext: initialization completed in 1952 ms
+2026-01-02T12:23:18.962-04:00  WARN 36496 --- [proyect] [main] .s.s.UserDetailsServiceAutoConfiguration : 
+
+Using generated security password: a325edf3-444d-49bd-8388-a6eb20e414fe
+
+This generated password is for development use only. Your security configuration must be updated before running your application in production.
+
+2026-01-02T12:23:18.979-04:00  INFO 36496 --- [proyect] [main] r$InitializeUserDetailsManagerConfigurer : Global AuthenticationManager configured with UserDetailsService bean with name inMemoryUserDetailsManager
+2026-01-02T12:23:19.485-04:00  INFO 36496 --- [proyect] [main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat started on port 8080 (http) with context path '/'
+2026-01-02T12:23:19.502-04:00  INFO 36496 --- [proyect] [main] c.u.e.application.ProyectApplication     : Started ProyectApplication in 3.991 seconds (process running for 5.267)
+2026-01-02T12:24:27.592-04:00  INFO 36496 --- [proyect] [http-nio-127.0.0.1-8080-exec-1] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring DispatcherServlet 'dispatcherServlet'
+2026-01-02T12:24:27.593-04:00  INFO 36496 --- [proyect] [http-nio-127.0.0.1-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Initializing Servlet 'dispatcherServlet'
+2026-01-02T12:24:27.595-04:00  INFO 36496 --- [proyect] [http-nio-127.0.0.1-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Completed initialization in 1 ms
+2026-01-02T12:34:28.729-04:00  INFO 27728 --- [proyect] [main] c.u.e.application.ProyectApplication     : Starting ProyectApplication using Java 21.0.9 with PID 27728 (C:\Users\admin\Pictures\Proyecto-IS---UCAB---FullStack\backend\proyect\target\classes started by admin in C:\Users\admin\Pictures\Proyecto-IS---UCAB---FullStack)
+2026-01-02T12:34:28.732-04:00 DEBUG 27728 --- [proyect] [main] c.u.e.application.ProyectApplication     : Running with Spring Boot v3.5.7, Spring v6.2.12
+2026-01-02T12:34:28.734-04:00  INFO 27728 --- [proyect] [main] c.u.e.application.ProyectApplication     : No active profile set, falling back to 1 default profile: "default"
+2026-01-02T12:34:30.612-04:00  INFO 27728 --- [proyect] [main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat initialized with port 8080 (http)
+2026-01-02T12:34:30.637-04:00  INFO 27728 --- [proyect] [main] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2026-01-02T12:34:30.638-04:00  INFO 27728 --- [proyect] [main] o.apache.catalina.core.StandardEngine    : Starting Servlet engine: [Apache Tomcat/10.1.48]
+2026-01-02T12:34:30.716-04:00  INFO 27728 --- [proyect] [main] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring embedded WebApplicationContext
+2026-01-02T12:34:30.716-04:00  INFO 27728 --- [proyect] [main] w.s.c.ServletWebServerApplicationContext : Root WebApplicationContext: initialization completed in 1911 ms
+2026-01-02T12:34:31.344-04:00  WARN 27728 --- [proyect] [main] .s.s.UserDetailsServiceAutoConfiguration : 
+
+Using generated security password: 160f952b-98e5-450a-82ee-938372240713
+
+This generated password is for development use only. Your security configuration must be updated before running your application in production.
+
+2026-01-02T12:34:31.364-04:00  INFO 27728 --- [proyect] [main] r$InitializeUserDetailsManagerConfigurer : Global AuthenticationManager configured with UserDetailsService bean with name inMemoryUserDetailsManager
+2026-01-02T12:34:31.794-04:00  INFO 27728 --- [proyect] [main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat started on port 8080 (http) with context path '/'
+2026-01-02T12:34:31.797-04:00  INFO 27728 --- [proyect] [main] c.u.e.application.ProyectApplication     : Started ProyectApplication in 3.823 seconds (process running for 5.197)
+2026-01-02T12:35:38.949-04:00  INFO 27728 --- [proyect] [http-nio-127.0.0.1-8080-exec-1] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring DispatcherServlet 'dispatcherServlet'
+2026-01-02T12:35:38.949-04:00  INFO 27728 --- [proyect] [http-nio-127.0.0.1-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Initializing Servlet 'dispatcherServlet'
+2026-01-02T12:35:38.949-04:00  INFO 27728 --- [proyect] [http-nio-127.0.0.1-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Completed initialization in 0 ms

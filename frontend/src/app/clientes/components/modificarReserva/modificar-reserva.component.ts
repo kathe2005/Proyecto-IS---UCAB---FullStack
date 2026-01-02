@@ -161,13 +161,13 @@ export class ModificarReservaComponent implements OnInit {
     };
 
     this.reservaService.actualizarReserva(this.seleccionada.id, payload).subscribe({
-      next: (reservaActualizada: Reserva) => {
+      next: (reservaActualizada) => {
         this.exito = 'Reserva actualizada exitosamente.';
         this.guardando = false;
         this.actualizarEnLista(reservaActualizada);
         this.seleccionarReserva(reservaActualizada);
       },
-      error: (err: any) => {
+      error: (err) => {
         console.error('Error al actualizar reserva', err);
         this.error = err.error?.error || 'No se pudo actualizar la reserva.';
         window.alert(this.error);
