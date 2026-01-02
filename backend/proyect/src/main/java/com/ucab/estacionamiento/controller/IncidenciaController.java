@@ -61,4 +61,24 @@ public class IncidenciaController {
             return ResponseEntity.badRequest().body(Map.of("error", "No se encontró la incidencia con ID: " + id));
         }
     }
+    @PutMapping("/api/{id}")
+    @ResponseBody
+    public ResponseEntity<?> actualizarIncidenciaApi(@PathVariable int id, @RequestBody Incidencia incidencia) {
+        try {
+            Incidencia actualizada = incidenciaService.actualizarIncidenciaCompleta(id, incidencia);
+            return ResponseEntity.ok(Map.of(
+                "mensaje", "Incidencia actualizada correctamente",
+                "incidencia", actualizada
+            ));
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(Map.of("error", "Error al actualizar: " + e.getMessage()));
+        }
+    }
+    @GetMapping("/api/{id}")
+    @ResponseBody
+    public ResponseEntity<?> obtenerIncidenciaPorIdApi(@PathVariable int id) {
+        return incidenciaService.buscarIncidenciaPorId(id)
+                .map(ResponseEntity::ok)
+                .orElse(ResponseEntity.notFound().build());
+    }
 }

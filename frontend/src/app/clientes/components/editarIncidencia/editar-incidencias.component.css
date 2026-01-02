@@ -1,0 +1,121 @@
+:host {
+  display: block;
+  min-height: 100vh;
+  background-color: #f8f9fa;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  padding-bottom: 60px;
+}
+
+.container-fluid {
+  background-color: #f8f9fa;
+  min-height: 100vh;
+}
+
+.container-custom {
+  margin: 0 50px;
+  padding: 20px 0;
+}
+
+/* Header */
+.header-section {
+  text-align: center;
+  border-bottom: 2px solid #e9ecef;
+  padding-bottom: 20px;
+  margin-bottom: 30px;
+}
+
+.titulo-principal {
+  color: #1c55ff;
+  font-size: 2rem;
+  margin-bottom: 5px;
+  font-weight: 600;
+}
+
+.subtitulo {
+  color: #666;
+  font-size: 1.1rem;
+  margin: 0;
+}
+
+/* Titulos */
+.section-title {
+  text-align: center;
+  margin-bottom: 30px;
+}
+
+.section-title h2 {
+  color: #333;
+  font-size: 1.8rem;
+  font-weight: 600;
+}
+
+.section-title p {
+  color: #777;
+}
+
+/* Form Card */
+.form-card {
+  background: white;
+  border-radius: 15px;
+  border: none;
+  padding: 30px;
+}
+
+.form-title {
+  font-size: 1.3rem;
+  color: #1c55ff;
+  margin-bottom: 25px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid #eee;
+  font-weight: 500;
+}
+
+/* Inputs y Botones */
+.form-label {
+  font-weight: 500;
+  color: #444;
+  margin-bottom: 8px;
+}
+
+.input-group-text {
+  background-color: #f8f9fa;
+  border-color: #ced4da;
+  color: #6c757d;
+}
+
+.form-control:focus, .form-select:focus {
+  border-color: #1c55ff;
+  box-shadow: 0 0 0 0.2rem rgba(28, 85, 255, 0.25);
+}
+
+.form-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 15px;
+  padding-top: 20px;
+  border-top: 1px solid #eee;
+}
+
+.btn {
+  padding: 10px 25px;
+  border-radius: 8px;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  transition: all 0.3s;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .container-custom {
+    margin: 0 15px;
+  }
+  .form-actions {
+    flex-direction: column-reverse;
+  }
+  .btn {
+    width: 100%;
+    justify-content: center;
+  }
+}

@@ -4,7 +4,7 @@ import { RouterModule, Router } from '@angular/router';
 import { HttpClientModule } from '@angular/common/http'; // <--- AGREGADO IMPORTANTE
 
 // Asegúrate de que la ruta sea correcta según tu estructura de carpetas
-import { IncidenciaService } from '../../services/incidencia.service';
+import { IncidenciaService } from '../../service/incidencia.service';
 import { Incidencia } from '../../models/incidencia.model';
 
 @Component({

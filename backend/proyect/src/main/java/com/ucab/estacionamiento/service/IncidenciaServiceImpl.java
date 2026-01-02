@@ -57,6 +57,25 @@ public class IncidenciaServiceImpl implements IncidenciaService {
         }
     }
 
+// ... tus otros métodos ...
+
+    @Override
+    public Incidencia actualizarIncidenciaCompleta(int id, Incidencia nuevosDatos) {
+        Optional<Incidencia> incidenciaOpt = jsonManagerIncidencias.buscarIncidenciaPorId(id);
+
+        if (incidenciaOpt.isPresent()) {
+            Incidencia incidenciaExistente = incidenciaOpt.get();
+            incidenciaExistente.setClienteAfectado(nuevosDatos.getClienteAfectado());
+            incidenciaExistente.setTipoProblema(nuevosDatos.getTipoProblema());
+            incidenciaExistente.setDescripcion(nuevosDatos.getDescripcion());
+            incidenciaExistente.setEstado(nuevosDatos.getEstado());
+            incidenciaExistente.setFechaRegistro(nuevosDatos.getFechaRegistro());
+            System.out.println("🔄 Actualizando incidencia ID: " + id);
+            return jsonManagerIncidencias.guardarIncidencia(incidenciaExistente);
+        } else {
+            throw new RuntimeException("No se encontró la incidencia con ID: " + id);
+        }
+    }
     @Override
     public boolean eliminarIncidencia(int id) {
         return jsonManagerIncidencias.eliminarIncidencia(id);

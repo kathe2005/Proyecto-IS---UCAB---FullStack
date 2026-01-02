@@ -1,0 +1,95 @@
+<div class="container-fluid p-0">
+  <div class="container-custom">
+    
+    <div class="header-section">
+      <h1 class="titulo-principal">Gestión de Incidencias</h1>
+      <p class="subtitulo">Edición de reporte #{{ idIncidencia }}</p>
+    </div>
+
+    <div *ngIf="cargandoDatos" class="text-center py-5">
+      <div class="spinner-border text-primary" role="status"></div>
+      <p class="mt-2 text-muted">Cargando información...</p>
+    </div>
+
+    <div *ngIf="!cargandoDatos">
+      <div class="section-title">
+        <h2>Editar Detalles</h2>
+        <p>Modifique la información necesaria del reporte</p>
+      </div>
+
+      <div *ngIf="mensaje" [class]="'alert alert-' + mensajeTipo" class="alert shadow-sm">
+        <i class="fas" [class]="{
+          'fa-check-circle': mensajeTipo === 'success',
+          'fa-exclamation-triangle': mensajeTipo === 'warning',
+          'fa-times-circle': mensajeTipo === 'danger'
+        }"></i>
+        {{ mensaje }}
+      </div>
+
+      <div class="row justify-content-center">
+        <div class="col-lg-8 col-md-10">
+          <div class="form-card shadow">
+            <form (ngSubmit)="guardarCambios()">
+              
+              <div class="form-title d-flex justify-content-between align-items-center">
+                <span><i class="fas fa-edit me-2"></i> Información Registrada</span>
+                <span class="badge bg-secondary">{{ incidencia.fechaRegistro | date:'shortDate' }}</span>
+              </div>
+
+              <div class="row g-3">
+                
+                <div class="col-md-6">
+                  <label class="form-label">Cliente Afectado</label>
+                  <input type="text" class="form-control" [(ngModel)]="incidencia.clienteAfectado" name="cliente" required>
+                </div>
+
+                <div class="col-md-6">
+                  <label class="form-label">Tipo de Problema</label>
+                  <select class="form-select" [(ngModel)]="incidencia.tipoProblema" name="tipo">
+                    <option *ngFor="let tipo of tiposProblema" [value]="tipo.valor">{{ tipo.etiqueta }}</option>
+                  </select>
+                </div>
+
+                <div class="col-md-12">
+                  <label class="form-label">Estado Actual</label>
+                  <div class="input-group">
+                    <span class="input-group-text"><i class="fas fa-traffic-light"></i></span>
+                    <select class="form-select" 
+                            [(ngModel)]="incidencia.estado" 
+                            name="estado"
+                            [class.text-danger]="incidencia.estado === 'NO_ATENDIDA'"
+                            [class.text-success]="incidencia.estado === 'ATENDIDA'">
+                      <option *ngFor="let est of estados" [value]="est.valor">{{ est.etiqueta }}</option>
+                    </select>
+                  </div>
+                </div>
+
+                <div class="col-12">
+                  <label class="form-label">Descripción</label>
+                  <textarea class="form-control" rows="4" [(ngModel)]="incidencia.descripcion" name="descripcion" required></textarea>
+                </div>
+
+              </div>
+
+              <div class="form-actions mt-4">
+                <button type="button" (click)="volver()" class="btn btn-secondary">
+                  <i class="fas fa-times"></i> Cancelar
+                </button>
+                <button type="submit" class="btn btn-primary" [disabled]="procesando">
+                  <i class="fas" [class]="procesando ? 'fa-spinner fa-spin' : 'fa-save'"></i>
+                  {{ procesando ? 'Guardar Cambios' : 'Actualizar Incidencia' }}
+                </button>
+              </div>
+
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+  
+  <footer class="footer">
+    © 2025 UCAB Montalbán - Sistema de Gestión de Incidencias
+  </footer>
+</div>

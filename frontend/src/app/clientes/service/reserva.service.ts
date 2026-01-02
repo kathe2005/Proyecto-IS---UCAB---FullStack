@@ -53,6 +53,10 @@ export class ReservaService {
     return this.http.post(`${this.apiUrl}/${id}/activar`, {});
   }
 
+  actualizarReserva(id: string, reserva: { puestoId: string; fecha: string; turno: string }): Observable<Reserva> {
+    return this.http.put<Reserva>(`${this.apiUrl}/${id}`, reserva);
+  }
+
   obtenerReservasPorCliente(clienteId: string): Observable<Reserva[]> {
     return this.http.get<Reserva[]>(`${this.apiUrl}/cliente/${clienteId}`);
   }

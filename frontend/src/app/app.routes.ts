@@ -169,7 +169,7 @@ export const routes: Routes = [
     },
     {
         path: 'incidencias/crear',
-        loadComponent: () => import('./clientes/components/crearIncidencia/crear-incidencias.component').then(m => m.CrearIncidenciasComponent)
+        loadComponent: () => import('./clientes/components/crearIncidencia/crear-incidencias.component').then(m => m.CrearIncidenciaComponent)
     },
     {
         path: 'incidencias/editar/:id',

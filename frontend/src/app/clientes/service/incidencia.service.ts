@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { Incidencia } from '../models/incidencia.model';
 
@@ -8,26 +8,39 @@ import { Incidencia } from '../models/incidencia.model';
 })
 export class IncidenciaService {
 
+  // URL Base: Apunta a la clase Controller (@RequestMapping("/incidencias"))
   private apiUrl = 'http://localhost:8080/incidencias'; 
+
   constructor(private http: HttpClient) { }
-  // METODO 1: Obtener todas las incidencias
+
+  // 1. OBTENER TODAS (GET /incidencias/api)
   obtenerIncidencias(): Observable<Incidencia[]> {
-    return this.http.get<Incidencia[]>(`${this.apiUrl}`);
+    // CORREGIDO: Agregado "/api" para coincidir con tu Java
+    return this.http.get<Incidencia[]>(`${this.apiUrl}/api`);
   }
-  // METODO 2: Eliminar
-  eliminarIncidencia(id: number): Observable<void> {
-    return this.http.delete<void>(`${this.apiUrl}/${id}`);
-  }
-  // METODO 3: Crear
+
+  // 2. REPORTAR / CREAR (POST /incidencias/api/reportar)
   crearIncidencia(incidencia: any): Observable<Incidencia> {
-    return this.http.post<Incidencia>(`${this.apiUrl}`, incidencia);
+    // CORREGIDO: Agregado "/api/reportar" (Aquí estaba tu error de conexión)
+    return this.http.post<Incidencia>(`${this.apiUrl}/api/reportar`, incidencia);
   }
-  // METODO 4: Obtener por ID
-  obtenerIncidenciaPorId(id: number): Observable<Incidencia> {
-    return this.http.get<Incidencia>(`${this.apiUrl}/${id}`);
+
+  // 3. ELIMINAR (DELETE /incidencias/api/eliminar/{id})
+  eliminarIncidencia(id: number): Observable<void> {
+    // CORREGIDO: Agregado "/api/eliminar/"
+    return this.http.delete<void>(`${this.apiUrl}/api/eliminar/${id}`);
   }
-  // METODO 5: Actualizar
+
+  // 4. ACTUALIZAR (PUT /incidencias/api/{id})
   actualizarIncidencia(id: number, incidencia: any): Observable<Incidencia> {
-    return this.http.put<Incidencia>(`${this.apiUrl}/${id}`, incidencia);
+    // CORREGIDO: Agregado "/api/"
+    return this.http.put<Incidencia>(`${this.apiUrl}/api/${id}`, incidencia);
+  }
+
+  // 5. OBTENER POR ID (Necesario para Editar)
+  // NOTA: Para que esto funcione, necesitarás agregar este método en tu Controller Java
+  // (Ver paso 2 abajo si te da error al editar)
+  obtenerIncidenciaPorId(id: number): Observable<Incidencia> {
+    return this.http.get<Incidencia>(`${this.apiUrl}/api/${id}`);
   }
 }
