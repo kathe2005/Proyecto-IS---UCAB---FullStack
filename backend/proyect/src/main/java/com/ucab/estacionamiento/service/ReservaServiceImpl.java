@@ -536,13 +536,15 @@ public class ReservaServiceImpl {
             System.out.println("   Puesto: " + reserva.getPuestoId());
             System.out.println("   Fecha: " + reserva.getFecha() + " " + reserva.getTurno());
             System.out.println("   Estado anterior: " + reserva.getEstado());
-            
-            reserva.setEstado(EstadoReserva.CANCELADA);
-            jsonManagerReservaPago.guardarReserva(reserva);
-            
-            System.out.println("✅ Reserva cancelada exitosamente");
-            System.out.println("🔄 Nuevo estado: " + reserva.getEstado());
-            return true;
+
+            // Eliminar la reserva del archivo para liberar el puesto sin tocar puestos.json
+            boolean eliminada = jsonManagerReservaPago.eliminarReserva(reservaId);
+            if (eliminada) {
+                System.out.println("✅ Registro eliminado de reservas.json. El puesto queda disponible.");
+            } else {
+                System.err.println("❌ No se pudo eliminar la reserva del archivo.");
+            }
+            return eliminada;
         }
         
         System.out.println("❌ Reserva no encontrada: " + reservaId);

@@ -12,4 +12,18 @@
   "tipoPersona" : "VISITANTE",
   "fechaRegistro" : null,
   "estado" : null
+}, {
+  "id" : "2dc6ed4f-da5c-4761-9700-d722d193c085",
+  "usuario" : "Juan321",
+  "contrasena" : "Juan1234",
+  "confirmarContrasena" : "Juan1234",
+  "nombre" : "Juan",
+  "apellido" : "Hernandez",
+  "cedula" : "31779322",
+  "direccion" : "Montalban",
+  "telefono" : "0424-8544643",
+  "email" : "JuanHer.22@est.ucab.edu.ve",
+  "tipoPersona" : "UCAB",
+  "fechaRegistro" : null,
+  "estado" : null
 } ]
