@@ -30,14 +30,22 @@ export class EstadisticasComponent implements OnInit {
   }
 
   cargarEstadisticas() {
-    this.estadisticas = {
-      total: 150,
-      disponibles: 85,
-      ocupados: 45,
-      bloqueados: 15,
-      mantenimiento: 5,
-      porcentajeOcupacion: 30
-    };
+    this.puestoService.obtenerEstadisticas().subscribe({
+      next: (res: any) => {
+        this.estadisticas.total = res.total ?? 0;
+        this.estadisticas.disponibles = res.disponibles ?? (res.puestosDisponibles ?? 0);
+        this.estadisticas.ocupados = res.ocupados ?? 0;
+        this.estadisticas.bloqueados = res.bloqueados ?? 0;
+        this.estadisticas.mantenimiento = res.mantenimiento ?? 0;
+        this.estadisticas.porcentajeOcupacion = this.estadisticas.total > 0
+          ? Math.round((this.estadisticas.ocupados / this.estadisticas.total) * 100 * 10) / 10
+          : 0;
+      },
+      error: (err) => {
+        console.error('Error cargando estadísticas:', err);
+        // Mantener valores por defecto (0) si falla
+      }
+    });
 
   }
 

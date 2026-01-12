@@ -103,3 +103,125 @@ This generated password is for development use only. Your security configuration
 2026-01-02T12:30:08.881-04:00  INFO 19020 --- [proyect] [main] r$InitializeUserDetailsManagerConfigurer : Global AuthenticationManager configured with UserDetailsService bean with name inMemoryUserDetailsManager
 2026-01-02T12:30:09.260-04:00  INFO 19020 --- [proyect] [main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat started on port 8080 (http) with context path '/'
 2026-01-02T12:30:09.276-04:00  INFO 19020 --- [proyect] [main] c.u.e.application.ProyectApplication     : Started ProyectApplication in 3.229 seconds (process running for 4.37)
+2026-01-12T16:19:14.120-04:00  INFO 41456 --- [proyect] [main] c.u.e.application.ProyectApplication     : Starting ProyectApplication using Java 25.0.1 with PID 41456 (C:\Users\admin\Downloads\Proyecto-IS---UCAB---FullStack\backend\proyect\target\classes started by admin in C:\Users\admin\Downloads\Proyecto-IS---UCAB---FullStack\backend\proyect)
+2026-01-12T16:19:14.123-04:00 DEBUG 41456 --- [proyect] [main] c.u.e.application.ProyectApplication     : Running with Spring Boot v3.5.7, Spring v6.2.12
+2026-01-12T16:19:14.124-04:00  INFO 41456 --- [proyect] [main] c.u.e.application.ProyectApplication     : No active profile set, falling back to 1 default profile: "default"
+2026-01-12T16:19:15.627-04:00  INFO 41456 --- [proyect] [main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat initialized with port 8080 (http)
+2026-01-12T16:19:15.660-04:00  INFO 41456 --- [proyect] [main] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2026-01-12T16:19:15.661-04:00  INFO 41456 --- [proyect] [main] o.apache.catalina.core.StandardEngine    : Starting Servlet engine: [Apache Tomcat/10.1.48]
+2026-01-12T16:19:15.755-04:00  INFO 41456 --- [proyect] [main] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring embedded WebApplicationContext
+2026-01-12T16:19:15.756-04:00  INFO 41456 --- [proyect] [main] w.s.c.ServletWebServerApplicationContext : Root WebApplicationContext: initialization completed in 1557 ms
+2026-01-12T16:19:16.285-04:00  WARN 41456 --- [proyect] [main] .s.s.UserDetailsServiceAutoConfiguration : 
+
+Using generated security password: a2d96fe2-483d-4fcf-a306-fd78b729fd8b
+
+This generated password is for development use only. Your security configuration must be updated before running your application in production.
+
+2026-01-12T16:19:16.298-04:00  INFO 41456 --- [proyect] [main] r$InitializeUserDetailsManagerConfigurer : Global AuthenticationManager configured with UserDetailsService bean with name inMemoryUserDetailsManager
+2026-01-12T16:19:16.628-04:00  INFO 41456 --- [proyect] [main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat started on port 8080 (http) with context path '/'
+2026-01-12T16:19:16.645-04:00  INFO 41456 --- [proyect] [main] c.u.e.application.ProyectApplication     : Started ProyectApplication in 3.214 seconds (process running for 4.347)
+2026-01-12T16:19:43.698-04:00  INFO 41456 --- [proyect] [SpringApplicationShutdownHook] o.s.b.w.e.tomcat.GracefulShutdown        : Commencing graceful shutdown. Waiting for active requests to complete
+2026-01-12T16:19:43.709-04:00  INFO 41456 --- [proyect] [tomcat-shutdown] o.s.b.w.e.tomcat.GracefulShutdown        : Graceful shutdown complete
+2026-01-12T16:55:27.697-04:00  INFO 30652 --- [proyect] [main] c.p.p.P.cliente.ClienteControllerTest    : Starting ClienteControllerTest using Java 25.0.1 with PID 30652 (started by admin in C:\Users\admin\Downloads\Proyecto-IS---UCAB---FullStack\backend\proyect)
+2026-01-12T16:55:27.700-04:00  INFO 30652 --- [proyect] [main] c.p.p.P.cliente.ClienteControllerTest    : No active profile set, falling back to 1 default profile: "default"
+2026-01-12T16:55:29.905-04:00  WARN 30652 --- [proyect] [main] .s.s.UserDetailsServiceAutoConfiguration : 
+
+Using generated security password: c7514d3d-5807-4e67-8e85-57ea61b61e3d
+
+This generated password is for development use only. Your security configuration must be updated before running your application in production.
+
+2026-01-12T16:55:29.922-04:00  INFO 30652 --- [proyect] [main] r$InitializeUserDetailsManagerConfigurer : Global AuthenticationManager configured with UserDetailsService bean with name inMemoryUserDetailsManager
+2026-01-12T16:55:30.556-04:00  INFO 30652 --- [proyect] [main] o.s.b.t.m.w.SpringBootMockServletContext : Initializing Spring TestDispatcherServlet ''
+2026-01-12T16:55:30.557-04:00  INFO 30652 --- [proyect] [main] o.s.t.web.servlet.TestDispatcherServlet  : Initializing Servlet ''
+2026-01-12T16:55:30.561-04:00  INFO 30652 --- [proyect] [main] o.s.t.web.servlet.TestDispatcherServlet  : Completed initialization in 3 ms
+2026-01-12T16:55:30.601-04:00  INFO 30652 --- [proyect] [main] c.p.p.P.cliente.ClienteControllerTest    : Started ClienteControllerTest in 3.483 seconds (process running for 5.379)
+2026-01-12T16:55:31.778-04:00  WARN 30652 --- [proyect] [main] o.s.web.servlet.PageNotFound             : No mapping for POST /api/clientes
+2026-01-12T16:55:31.790-04:00  WARN 30652 --- [proyect] [main] o.s.web.servlet.PageNotFound             : No endpoint POST /api/clientes.
+2026-01-12T16:55:31.860-04:00  WARN 30652 --- [proyect] [main] o.s.web.servlet.PageNotFound             : No mapping for POST /api/clientes
+2026-01-12T16:55:31.861-04:00  WARN 30652 --- [proyect] [main] o.s.web.servlet.PageNotFound             : No endpoint POST /api/clientes.
+2026-01-12T16:55:31.886-04:00  WARN 30652 --- [proyect] [main] o.s.web.servlet.PageNotFound             : No mapping for POST /api/clientes
+2026-01-12T16:55:31.888-04:00  WARN 30652 --- [proyect] [main] o.s.web.servlet.PageNotFound             : No endpoint POST /api/clientes.
+2026-01-12T16:55:31.910-04:00  WARN 30652 --- [proyect] [main] o.s.web.servlet.PageNotFound             : No mapping for POST /api/clientes
+2026-01-12T16:55:31.911-04:00  WARN 30652 --- [proyect] [main] o.s.web.servlet.PageNotFound             : No endpoint POST /api/clientes.
+2026-01-12T16:55:31.936-04:00  WARN 30652 --- [proyect] [main] o.s.web.servlet.PageNotFound             : No mapping for POST /api/clientes
+2026-01-12T16:55:31.937-04:00  WARN 30652 --- [proyect] [main] o.s.web.servlet.PageNotFound             : No endpoint POST /api/clientes.
+2026-01-12T16:55:31.967-04:00  WARN 30652 --- [proyect] [main] o.s.web.servlet.PageNotFound             : No mapping for POST /api/clientes
+2026-01-12T16:55:31.968-04:00  WARN 30652 --- [proyect] [main] o.s.web.servlet.PageNotFound             : No endpoint POST /api/clientes.
+2026-01-12T16:55:31.993-04:00  WARN 30652 --- [proyect] [main] o.s.web.servlet.PageNotFound             : No mapping for POST /api/clientes
+2026-01-12T16:55:31.994-04:00  WARN 30652 --- [proyect] [main] o.s.web.servlet.PageNotFound             : No endpoint POST /api/clientes.
+2026-01-12T16:55:32.099-04:00  INFO 30652 --- [proyect] [main] c.p.p.P.vehiculo.VehiculoControllerTest  : Starting VehiculoControllerTest using Java 25.0.1 with PID 30652 (started by admin in C:\Users\admin\Downloads\Proyecto-IS---UCAB---FullStack\backend\proyect)
+2026-01-12T16:55:32.100-04:00  INFO 30652 --- [proyect] [main] c.p.p.P.vehiculo.VehiculoControllerTest  : No active profile set, falling back to 1 default profile: "default"
+2026-01-12T16:55:32.808-04:00  WARN 30652 --- [proyect] [main] .s.s.UserDetailsServiceAutoConfiguration : 
+
+Using generated security password: 450fc024-5f71-49a4-bfeb-2281e950de83
+
+This generated password is for development use only. Your security configuration must be updated before running your application in production.
+
+2026-01-12T16:55:32.810-04:00  INFO 30652 --- [proyect] [main] r$InitializeUserDetailsManagerConfigurer : Global AuthenticationManager configured with UserDetailsService bean with name inMemoryUserDetailsManager
+2026-01-12T16:55:32.905-04:00  INFO 30652 --- [proyect] [main] c.p.p.P.vehiculo.VehiculoControllerTest  : Started VehiculoControllerTest in 0.873 seconds (process running for 7.683)
+2026-01-12T16:55:32.942-04:00  INFO 30652 --- [proyect] [main] c.p.p.P.vehiculo.VehiculoControllerTest  : --------    🎯 Vehículo registrado exitosamente    --------
+2026-01-12T16:55:32.943-04:00  INFO 30652 --- [proyect] [main] c.p.p.P.vehiculo.VehiculoControllerTest  : 📋 Detalles: com.ucab.estacionamiento.model.clases.Vehiculo@76b642aa
+2026-01-12T17:04:08.512-04:00  INFO 38656 --- [proyect] [main] c.p.p.P.cliente.ClienteControllerTest    : Starting ClienteControllerTest using Java 25.0.1 with PID 38656 (started by admin in C:\Users\admin\Downloads\Proyecto-IS---UCAB---FullStack\backend\proyect)
+2026-01-12T17:04:08.516-04:00  INFO 38656 --- [proyect] [main] c.p.p.P.cliente.ClienteControllerTest    : No active profile set, falling back to 1 default profile: "default"
+2026-01-12T17:04:11.089-04:00  WARN 38656 --- [proyect] [main] .s.s.UserDetailsServiceAutoConfiguration : 
+
+Using generated security password: 8e2a7672-6dc7-48fe-a73a-1107630e61f4
+
+This generated password is for development use only. Your security configuration must be updated before running your application in production.
+
+2026-01-12T17:04:11.116-04:00  INFO 38656 --- [proyect] [main] r$InitializeUserDetailsManagerConfigurer : Global AuthenticationManager configured with UserDetailsService bean with name inMemoryUserDetailsManager
+2026-01-12T17:04:11.873-04:00  INFO 38656 --- [proyect] [main] o.s.b.t.m.w.SpringBootMockServletContext : Initializing Spring TestDispatcherServlet ''
+2026-01-12T17:04:11.874-04:00  INFO 38656 --- [proyect] [main] o.s.t.web.servlet.TestDispatcherServlet  : Initializing Servlet ''
+2026-01-12T17:04:11.876-04:00  INFO 38656 --- [proyect] [main] o.s.t.web.servlet.TestDispatcherServlet  : Completed initialization in 1 ms
+2026-01-12T17:04:11.932-04:00  INFO 38656 --- [proyect] [main] c.p.p.P.cliente.ClienteControllerTest    : Started ClienteControllerTest in 3.967 seconds (process running for 5.6)
+2026-01-12T17:04:13.371-04:00  WARN 38656 --- [proyect] [main] o.s.web.servlet.PageNotFound             : No mapping for POST /api/clientes
+2026-01-12T17:04:13.380-04:00  WARN 38656 --- [proyect] [main] o.s.web.servlet.PageNotFound             : No endpoint POST /api/clientes.
+2026-01-12T17:04:13.442-04:00  WARN 38656 --- [proyect] [main] o.s.web.servlet.PageNotFound             : No mapping for POST /api/clientes
+2026-01-12T17:04:13.443-04:00  WARN 38656 --- [proyect] [main] o.s.web.servlet.PageNotFound             : No endpoint POST /api/clientes.
+2026-01-12T17:04:13.463-04:00  WARN 38656 --- [proyect] [main] o.s.web.servlet.PageNotFound             : No mapping for POST /api/clientes
+2026-01-12T17:04:13.465-04:00  WARN 38656 --- [proyect] [main] o.s.web.servlet.PageNotFound             : No endpoint POST /api/clientes.
+2026-01-12T17:04:13.488-04:00  WARN 38656 --- [proyect] [main] o.s.web.servlet.PageNotFound             : No mapping for POST /api/clientes
+2026-01-12T17:04:13.489-04:00  WARN 38656 --- [proyect] [main] o.s.web.servlet.PageNotFound             : No endpoint POST /api/clientes.
+2026-01-12T17:04:13.545-04:00  WARN 38656 --- [proyect] [main] o.s.web.servlet.PageNotFound             : No mapping for POST /api/clientes
+2026-01-12T17:04:13.547-04:00  WARN 38656 --- [proyect] [main] o.s.web.servlet.PageNotFound             : No endpoint POST /api/clientes.
+2026-01-12T17:04:13.594-04:00  WARN 38656 --- [proyect] [main] o.s.web.servlet.PageNotFound             : No mapping for POST /api/clientes
+2026-01-12T17:04:13.595-04:00  WARN 38656 --- [proyect] [main] o.s.web.servlet.PageNotFound             : No endpoint POST /api/clientes.
+2026-01-12T17:04:13.646-04:00  WARN 38656 --- [proyect] [main] o.s.web.servlet.PageNotFound             : No mapping for POST /api/clientes
+2026-01-12T17:04:13.648-04:00  WARN 38656 --- [proyect] [main] o.s.web.servlet.PageNotFound             : No endpoint POST /api/clientes.
+2026-01-12T17:04:13.897-04:00  INFO 38656 --- [proyect] [main] c.p.p.P.vehiculo.VehiculoControllerTest  : Starting VehiculoControllerTest using Java 25.0.1 with PID 38656 (started by admin in C:\Users\admin\Downloads\Proyecto-IS---UCAB---FullStack\backend\proyect)
+2026-01-12T17:04:13.898-04:00  INFO 38656 --- [proyect] [main] c.p.p.P.vehiculo.VehiculoControllerTest  : No active profile set, falling back to 1 default profile: "default"
+2026-01-12T17:04:14.665-04:00  WARN 38656 --- [proyect] [main] .s.s.UserDetailsServiceAutoConfiguration : 
+
+Using generated security password: 97435a10-2813-4871-a6b1-00057f42c24e
+
+This generated password is for development use only. Your security configuration must be updated before running your application in production.
+
+2026-01-12T17:04:14.666-04:00  INFO 38656 --- [proyect] [main] r$InitializeUserDetailsManagerConfigurer : Global AuthenticationManager configured with UserDetailsService bean with name inMemoryUserDetailsManager
+2026-01-12T17:04:14.781-04:00  INFO 38656 --- [proyect] [main] c.p.p.P.vehiculo.VehiculoControllerTest  : Started VehiculoControllerTest in 1.078 seconds (process running for 8.449)
+2026-01-12T17:19:10.927-04:00  INFO 12900 --- [proyect] [main] c.p.p.P.cliente.ClienteControllerTest    : Starting ClienteControllerTest using Java 21.0.9 with PID 12900 (started by admin in C:\Users\admin\Downloads\Proyecto-IS---UCAB---FullStack\backend\proyect)
+2026-01-12T17:19:10.933-04:00  INFO 12900 --- [proyect] [main] c.p.p.P.cliente.ClienteControllerTest    : No active profile set, falling back to 1 default profile: "default"
+2026-01-12T17:19:13.221-04:00  WARN 12900 --- [proyect] [main] .s.s.UserDetailsServiceAutoConfiguration : 
+
+Using generated security password: 2fdebeed-0052-46d9-987e-13e456d38d02
+
+This generated password is for development use only. Your security configuration must be updated before running your application in production.
+
+2026-01-12T17:19:13.249-04:00  INFO 12900 --- [proyect] [main] r$InitializeUserDetailsManagerConfigurer : Global AuthenticationManager configured with UserDetailsService bean with name inMemoryUserDetailsManager
+2026-01-12T17:19:14.042-04:00  INFO 12900 --- [proyect] [main] o.s.b.t.m.w.SpringBootMockServletContext : Initializing Spring TestDispatcherServlet ''
+2026-01-12T17:19:14.043-04:00  INFO 12900 --- [proyect] [main] o.s.t.web.servlet.TestDispatcherServlet  : Initializing Servlet ''
+2026-01-12T17:19:14.045-04:00  INFO 12900 --- [proyect] [main] o.s.t.web.servlet.TestDispatcherServlet  : Completed initialization in 1 ms
+2026-01-12T17:19:14.097-04:00  INFO 12900 --- [proyect] [main] c.p.p.P.cliente.ClienteControllerTest    : Started ClienteControllerTest in 3.786 seconds (process running for 6.281)
+2026-01-12T17:19:15.264-04:00  WARN 12900 --- [proyect] [main] o.s.web.servlet.PageNotFound             : No mapping for POST /api/clientes
+2026-01-12T17:19:15.279-04:00  WARN 12900 --- [proyect] [main] o.s.web.servlet.PageNotFound             : No endpoint POST /api/clientes.
+2026-01-12T17:19:15.386-04:00  WARN 12900 --- [proyect] [main] o.s.web.servlet.PageNotFound             : No mapping for POST /api/clientes
+2026-01-12T17:19:15.387-04:00  WARN 12900 --- [proyect] [main] o.s.web.servlet.PageNotFound             : No endpoint POST /api/clientes.
+2026-01-12T17:19:15.414-04:00  WARN 12900 --- [proyect] [main] o.s.web.servlet.PageNotFound             : No mapping for POST /api/clientes
+2026-01-12T17:19:15.416-04:00  WARN 12900 --- [proyect] [main] o.s.web.servlet.PageNotFound             : No endpoint POST /api/clientes.
+2026-01-12T17:19:15.440-04:00  WARN 12900 --- [proyect] [main] o.s.web.servlet.PageNotFound             : No mapping for POST /api/clientes
+2026-01-12T17:19:15.442-04:00  WARN 12900 --- [proyect] [main] o.s.web.servlet.PageNotFound             : No endpoint POST /api/clientes.
+2026-01-12T17:19:15.472-04:00  WARN 12900 --- [proyect] [main] o.s.web.servlet.PageNotFound             : No mapping for POST /api/clientes
+2026-01-12T17:19:15.474-04:00  WARN 12900 --- [proyect] [main] o.s.web.servlet.PageNotFound             : No endpoint POST /api/clientes.
+2026-01-12T17:19:15.519-04:00  WARN 12900 --- [proyect] [main] o.s.web.servlet.PageNotFound             : No mapping for POST /api/clientes
+2026-01-12T17:19:15.519-04:00  WARN 12900 --- [proyect] [main] o.s.web.servlet.PageNotFound             : No endpoint POST /api/clientes.
+2026-01-12T17:19:15.566-04:00  WARN 12900 --- [proyect] [main] o.s.web.servlet.PageNotFound             : No mapping for POST /api/clientes
+2026-01-12T17:19:15.570-04:00  WARN 12900 --- [proyect] [main] o.s.web.servlet.PageNotFound             : No endpoint POST /api/clientes.

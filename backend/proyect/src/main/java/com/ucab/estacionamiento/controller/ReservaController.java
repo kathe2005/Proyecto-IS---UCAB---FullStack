@@ -1,7 +1,7 @@
 package com.ucab.estacionamiento.controller;
 
 import com.ucab.estacionamiento.model.clases.*;
-import com.ucab.estacionamiento.service.*;
+import com.ucab.estacionamiento.implement.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;

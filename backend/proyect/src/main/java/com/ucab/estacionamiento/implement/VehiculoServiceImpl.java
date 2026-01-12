@@ -1,4 +1,4 @@
-package com.ucab.estacionamiento.service;
+package com.ucab.estacionamiento.implement;
 
 import com.ucab.estacionamiento.model.archivosJson.JsonManagerVehiculo;
 import com.ucab.estacionamiento.model.clases.Vehiculo;

@@ -2,7 +2,7 @@ package com.ucab.estacionamiento.controller;
 
 import com.ucab.estacionamiento.model.clases.Incidencia;
 import com.ucab.estacionamiento.model.enums.EstadoIncidencia;
-import com.ucab.estacionamiento.service.IncidenciaService;
+import com.ucab.estacionamiento.implement.IncidenciaService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
