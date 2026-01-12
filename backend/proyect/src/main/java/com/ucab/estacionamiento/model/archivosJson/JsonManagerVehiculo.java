@@ -149,19 +149,28 @@ public class JsonManagerVehiculo
     //--------    METODO PARA GUARDAR LOS VEHICULOS EN EL ARCHIVO   --------
     private void guardarVehiculosEnArchivo(List<Vehiculo> vehiculos)
     {
-        try{
+
+        String[] rutasDeseadas = {
+                "data/vehiculos.json",
+                "../../data/vehiculos.json"
+        };
+
+        for (String ruta : rutasDeseadas) {
+            try {
+                File archivoDestino = new File(ruta).getAbsoluteFile();
+                File carpeta = archivoDestino.getParentFile();
 
 
-            objectMapper.writeValue(new File(VEHICULOS_FILE),vehiculos);
+                objectMapper.writerWithDefaultPrettyPrinter().writeValue(archivoDestino, vehiculos);
+                System.out.println("🚀 Copia guardada con éxito en: " + archivoDestino.getAbsolutePath());
 
-            System.out.println("✅ Sincronización Dual exitosa.");
-            diagnostico();
-
+            } catch (Exception e) {
+                System.err.println("🚨 No se pudo guardar en la ruta: " + ruta);
+                e.printStackTrace();
+            }
         }
-        catch (Exception e)
-        {
-            e.printStackTrace();
-        }
+        // El diagnóstico lo dejamos al final para la ruta oficial
+        diagnostico();
     }
 
 }

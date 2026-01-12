@@ -78,7 +78,7 @@
             <p>Complete el registro del vehiculo </p>
         </header>
 
-        <form (ngSubmit)="guardar()" #vehiculoForm="ngForm" class="form-modern">
+        <form (ngSubmit)="guardar()" (ngSubmit)="registrar()" #vehiculoForm="ngForm" class="form-modern">
             <div class="form-grid-modern">
                 <div class="input-group-modern">
                     <label>Asignar a Cliente</label>
@@ -121,7 +121,7 @@
                 </div>
             </div>
 
-            <button type="submit" class="btn-submit-orange" [disabled]="vehiculoForm.invalid">
+            <button type="submit" class="btn-submit-orange">
                 Confirmar Registro en Búnker
             </button>
         </form>

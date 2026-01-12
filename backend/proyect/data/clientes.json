@@ -26,4 +26,18 @@
   "tipoPersona" : "VISITANTE",
   "fechaRegistro" : null,
   "estado" : null
+}, {
+  "id" : "98013bb1-7bd1-4486-b8f3-c0d4d46b05db",
+  "usuario" : "cesar16",
+  "contrasena" : "Katheb$23",
+  "confirmarContrasena" : "Katheb$23",
+  "nombre" : "Cesar Eduardo ",
+  "apellido" : "Amaya Lopez",
+  "cedula" : "11201090",
+  "direccion" : "Caricuao",
+  "telefono" : "0424-2357081",
+  "email" : "cesar16@gmail.com",
+  "tipoPersona" : "VISITANTE",
+  "fechaRegistro" : null,
+  "estado" : null
 } ]

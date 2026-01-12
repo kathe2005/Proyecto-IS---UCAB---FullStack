@@ -61,6 +61,8 @@ export class CrearVehiculoComponent
                 
                 console.log("✅ Confirmación recibida:", res);
                 alert('¡Vehículo registrado con éxito!');
+
+                this.listarVehiculos(); 
                 this.limpiarFormulario();
                 this.cambiarVista('menu');
             },
@@ -94,6 +96,7 @@ export class CrearVehiculoComponent
                     mensajeFinal = err.statusText || "Servidor no disponible";
                 }
             
+
                 this.mensajeError = `❌ Error: ${mensajeFinal}`;
             
                 // Pausa táctica: el mensaje se borra tras 8 segundos

@@ -28,6 +28,7 @@ public class VehiculoServiceImpl
 
     }
 
+
     //--------    METODO PARA LISTAR LOS VEHICULOS    --------
     public List<Vehiculo>obtenerTodosVehiculos()
     {

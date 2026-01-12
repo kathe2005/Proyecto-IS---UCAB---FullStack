@@ -15,7 +15,7 @@ export class VehiculoService
     //--------    REGISTRAR VEHICULO    --------
     registrarVehiculo(vehiculo: Vehiculo): Observable<any> 
     {
-        return this.http.post(`${this.baseUrl}/registrar`, vehiculo, { responseType: 'text'}); 
+        return this.http.post(`${this.baseUrl}/registrar`, vehiculo); 
     }
 
     //--------    CONSULTAR TODOS LOS VEHICULOS    --------

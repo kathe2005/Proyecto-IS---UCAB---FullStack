@@ -11,6 +11,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/vehiculos")
@@ -40,7 +41,7 @@ public class VehiculoController
             Vehiculo nuevoVehiculo = vehiculoService.registrarVehiculo(vehiculo);
 
             //--------    RETORNA EL VEHICULO Y UN STATUS 201 (CREATE)    --------
-            return ResponseEntity.status(HttpStatus.CREATED).body(nuevoVehiculo);
+            return ResponseEntity.ok(nuevoVehiculo);
 
         }
         catch (Exception e)
@@ -49,7 +50,7 @@ public class VehiculoController
             error.put("message", e.getMessage());
 
             //--------    RETORNA EL MENSAJE DE ERROR Y UN STATUS 400 (BAD REQUEST)
-            return new ResponseEntity<>(error,HttpStatus.BAD_REQUEST);
+            return ResponseEntity.badRequest().body(Map.of("message", e.getMessage()));
         }
     }
 
