@@ -172,9 +172,12 @@ textarea.form-control {
 }
 
 .footer {
+  background: linear-gradient(135deg, #1c55ff 0%, #0d3fd4 100%);
+  color: white;
   text-align: center;
-  color: #adb5bd;
-  font-size: 0.9rem;
-  margin-top: auto;
   padding: 20px;
+  margin-top: 50px;
+  width: 100%;
+  font-size: 14px;
+  font-weight: 500;
 }
