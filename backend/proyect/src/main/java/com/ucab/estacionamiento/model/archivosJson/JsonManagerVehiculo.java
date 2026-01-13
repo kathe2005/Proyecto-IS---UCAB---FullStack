@@ -9,7 +9,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
-import java.lang.Throwable;
 
 
 public class JsonManagerVehiculo
@@ -158,7 +157,6 @@ public class JsonManagerVehiculo
         for (String ruta : rutasDeseadas) {
             try {
                 File archivoDestino = new File(ruta).getAbsoluteFile();
-                File carpeta = archivoDestino.getParentFile();
 
 
                 objectMapper.writerWithDefaultPrettyPrinter().writeValue(archivoDestino, vehiculos);

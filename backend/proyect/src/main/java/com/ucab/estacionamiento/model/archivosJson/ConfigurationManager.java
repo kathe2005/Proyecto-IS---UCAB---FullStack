@@ -11,9 +11,9 @@ public class ConfigurationManager {
         String currentDir = System.getProperty("user.dir");
         System.out.println("📁 Directorio actual: " + currentDir);
         
-        // Si estamos en un subdirectorio de proyecto, ajustar el path
+        // Si estamos en un subdirectorio de proyecto (backend/proyect), subir a la raíz
         if (currentDir.contains("backend") || currentDir.contains("proyect")) {
-            PROJECT_ROOT = Paths.get(currentDir).toString();
+            PROJECT_ROOT = Paths.get(currentDir, "..", "..").normalize().toString();
         } else {
             PROJECT_ROOT = currentDir;
         }

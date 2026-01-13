@@ -1,1 +1,15 @@
-[]
+[ {
+  "id" : "bcf419ce-81bd-4fae-86ac-067023436f64",
+  "usuario" : "lol",
+  "contrasena" : "Cris12345",
+  "confirmarContrasena" : "Cris12345",
+  "nombre" : "Maximiliano",
+  "apellido" : "Urdaneta",
+  "cedula" : "31123456",
+  "direccion" : "azul",
+  "telefono" : "0426-1230533",
+  "email" : "max23@est.ucab.edu.ve",
+  "tipoPersona" : "UCAB",
+  "fechaRegistro" : null,
+  "estado" : null
+} ]

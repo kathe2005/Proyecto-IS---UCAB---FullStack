@@ -317,27 +317,6 @@ public class ReservaServiceImpl {
         return valido;
     }
 
-    private void validarReservaDuplicadaCliente(String clienteId, String usuario, LocalDate fecha, String turno, String reservaIdIgnorar) {
-        List<Reserva> reservas = jsonManagerReservaPago.obtenerTodasReservas();
-
-        for (Reserva r : reservas) {
-            if (reservaIdIgnorar != null && reservaIdIgnorar.equals(r.getId())) {
-                continue;
-            }
-
-            boolean mismoCliente = clienteId != null && clienteId.equals(r.getClienteId());
-            boolean mismoUsuario = usuario != null && usuario.equalsIgnoreCase(r.getUsuario());
-            boolean mismoDiaTurno = r.getFecha().equals(fecha) && r.getTurno().equalsIgnoreCase(turno);
-            boolean activa = r.getEstado() != EstadoReserva.CANCELADA;
-
-            if (mismoDiaTurno && activa && (mismoCliente || mismoUsuario)) {
-                String msg = "El cliente/usuario ya posee una reserva para ese turno y fecha";
-                System.err.println("❌ " + msg + " -> Reserva existente: " + r.getId());
-                throw new IllegalArgumentException(msg);
-            }
-        }
-    }
-
     private void validarReservaDuplicadaPuesto(String puestoId, LocalDate fecha, String turno, String reservaIdIgnorar) {
         List<Reserva> reservas = jsonManagerReservaPago.obtenerTodasReservas();
 

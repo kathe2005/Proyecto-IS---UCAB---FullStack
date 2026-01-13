@@ -246,6 +246,16 @@ export const routes: Routes = [
         pathMatch: 'full'
     },
 
+    // Rutas faltantes para gestión de perfiles
+    {
+        path: 'perfiles/historial',
+        loadComponent: () => import('./clientes/components/historial/historial.component').then(m => m.HistorialComponent)
+    },
+    {
+        path: 'perfiles/eliminar',
+        loadComponent: () => import('./clientes/components/modificarPerfiles/modificar-perfil.component').then(m => m.ModificarPerfilesComponent)
+    },
+
     // Ruta comodín
     {
         path: '**',

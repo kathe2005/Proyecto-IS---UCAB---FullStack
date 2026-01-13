@@ -240,6 +240,10 @@ export class ConsultarPerfilesComponent implements OnInit {
     this.router.navigate(['/gestion-perfiles']);
   }
 
+  verHistorial(cliente: ClienteCompleto) {
+    this.router.navigate(['/perfiles/historial'], { queryParams: { clienteId: cliente.id } });
+  }
+
   // Obtener clase CSS para el estado
   getEstadoClass(estado: string): string {
     switch (estado) {

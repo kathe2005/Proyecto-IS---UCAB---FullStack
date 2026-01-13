@@ -1,9 +1,11 @@
 package com.ucab.estacionamiento.model.clases;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.ucab.estacionamiento.model.enums.MetodoPago;
 import com.ucab.estacionamiento.model.enums.EstadoPago;
 import java.time.LocalDateTime;
 
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class Pago {
     // Atributos de Pago
     private String id;

@@ -1,60 +1,77 @@
 <div class="container-fluid p-0">
-
   <div class="container-custom">
-    <!-- Información del Puesto -->
-    <div *ngIf="puesto" class="card mb-4">
+    <!-- Información del Cliente -->
+    <div *ngIf="cliente" class="card mb-4">
       <div class="card-header text-white">
         <h4 class="mb-0">
-          <i class="fas fa-history"></i> Historial del Puesto
-          <span>{{ puesto.numero }}</span>
+          <i class="fas fa-user"></i> Historial de Reservas
         </h4>
+        <p class="mb-0 mt-2">{{ cliente.nombre }} {{ cliente.apellido }}</p>
       </div>
       <div class="card-body">
         <div class="row">
           <div class="col-md-6">
-            <p><strong>ID:</strong> <span>{{ puesto.id }}</span></p>
-            <p><strong>Ubicación:</strong> <span>{{ puesto.ubicacion }}</span></p>
+            <p><strong>ID:</strong> <span>{{ cliente.id }}</span></p>
+            <p><strong>Cédula:</strong> <span>{{ cliente.cedula }}</span></p>
+            <p><strong>Email:</strong> <span>{{ cliente.email }}</span></p>
           </div>
           <div class="col-md-6">
-            <p><strong>Tipo:</strong>
-              <span class="badge"
-                    [style.background-color]="getTipoColor(puesto.tipoPuesto)"
-                    style="color: white;">
-                {{ getTipoDescripcion(puesto.tipoPuesto) }}
-              </span>
-            </p>
-            <p><strong>Estado:</strong>
-              <span class="badge"
-                    [style.background-color]="getEstadoColor(puesto.estadoPuesto)"
-                    style="color: white;">
-                {{ getEstadoDescripcion(puesto.estadoPuesto) }}
-              </span>
-            </p>
+            <p><strong>Usuario:</strong> <span>{{ cliente.usuario }}</span></p>
+            <p><strong>Tipo:</strong> <span>{{ cliente.tipoPersona }}</span></p>
+            <p><strong>Teléfono:</strong> <span>{{ cliente.telefono || 'No especificado' }}</span></p>
           </div>
         </div>
       </div>
     </div>
 
-    <!-- Lista de Historial -->
-    <div class="card">
+    <!-- Estado de carga -->
+    <div *ngIf="cargando" class="text-center py-4">
+      <div class="spinner-border text-primary" role="status">
+        <span class="visually-hidden">Cargando...</span>
+      </div>
+      <p class="mt-2">Cargando historial de reservas...</p>
+    </div>
+
+    <!-- Mensaje de error -->
+    <div *ngIf="error" class="alert alert-danger">
+      <i class="fas fa-exclamation-triangle"></i> {{ error }}
+    </div>
+
+    <!-- Lista de Reservas -->
+    <div *ngIf="!cargando && !error" class="card">
       <div class="card-header text-white">
         <h5 class="mb-0">
-          <i class="fas fa-list"></i> Registros de Historial
-          <span class="badge bg-secondary">{{ historial.length }}</span>
+          <i class="fas fa-calendar-check"></i> Reservas del Cliente
+          <span class="badge bg-secondary ms-2">{{ reservas.length }}</span>
         </h5>
       </div>
       <div class="card-body">
-        <div *ngIf="historial.length === 0" class="text-center py-4">
+        <div *ngIf="reservas.length === 0" class="text-center py-4">
           <i class="fas fa-inbox fa-3x text-muted mb-3"></i>
-          <h4 class="text-muted">No hay registros en el historial</h4>
+          <h4 class="text-muted">No hay reservas registradas</h4>
+          <p class="text-muted">Este cliente aún no ha realizado ninguna reserva.</p>
         </div>
 
-        <div *ngIf="historial.length > 0" class="list-group">
-          <div *ngFor="let registro of historial; let i = index"
-               class="list-group-item list-group-item-action">
-            <div class="d-flex w-100 justify-content-between">
-              <h6 class="mb-1">{{ registro }}</h6>
-              <small class="text-muted">#{{ i + 1 }}</small>
+        <div *ngIf="reservas.length > 0" class="row">
+          <div *ngFor="let reserva of reservas" class="col-md-6 mb-3">
+            <div class="card h-100">
+              <div class="card-body">
+                <div class="d-flex justify-content-between align-items-start mb-2">
+                  <h6 class="card-title mb-0">Reserva #{{ reserva.id }}</h6>
+                  <span class="badge"
+                        [style.background-color]="getEstadoColor(reserva.estado)"
+                        style="color: white;">
+                    {{ getEstadoDescripcion(reserva.estado) }}
+                  </span>
+                </div>
+                <div class="card-text">
+                  <p class="mb-1"><strong>Fecha:</strong> {{ reserva.fecha | date:'dd/MM/yyyy' }}</p>
+                  <p class="mb-1"><strong>Turno:</strong> {{ reserva.turno }}</p>
+                  <p class="mb-1"><strong>Puesto:</strong> {{ reserva.puestoId }}</p>
+                  <p class="mb-1"><strong>Usuario:</strong> {{ reserva.usuario }}</p>
+                  <p class="mb-0"><strong>Fecha de creación:</strong> {{ reserva.fechaCreacion | date:'dd/MM/yyyy HH:mm' }}</p>
+                </div>
+              </div>
             </div>
           </div>
         </div>
@@ -63,8 +80,8 @@
 
     <!-- Botones de Navegación -->
     <div class="mt-4">
-      <button routerLink="/puestos" class="btn btn-outline-primary">
-        <i class="fas fa-arrow-left"></i> Volver a Puestos
+      <button (click)="volver()" class="btn btn-outline-primary">
+        <i class="fas fa-arrow-left"></i> Volver
       </button>
     </div>
   </div>

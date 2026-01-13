@@ -27,7 +27,7 @@ public class ProyectApplication {
         inicializarSistema();
         
         // Iniciar Spring Boot
-        var context = SpringApplication.run(ProyectApplication.class, args);
+        SpringApplication.run(ProyectApplication.class, args);
         
         mostrarResumenFinal();
     }
