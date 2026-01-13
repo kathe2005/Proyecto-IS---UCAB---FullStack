@@ -242,6 +242,54 @@ export class ModificarPerfilesComponent implements OnInit {
     }
   }
 
+  eliminarCliente(cliente: Cliente) {
+    if (!cliente.id) {
+      this.mensaje = '❌ Error: El cliente no tiene un ID válido';
+      this.mensajeTipo = 'danger';
+      return;
+    }
+
+    if (confirm(`¿Está seguro de que desea eliminar permanentemente al cliente "${cliente.nombre} ${cliente.apellido}"? Esta acción no se puede deshacer.`)) {
+      this.cargando = true;
+      this.mensaje = 'Eliminando cliente...';
+      this.mensajeTipo = 'info';
+
+      this.clienteService.eliminarCliente(cliente.id).subscribe({
+        next: (response: any) => {
+          console.log('Cliente eliminado exitosamente:', response);
+          this.cargando = false;
+          this.mensajeExito = '✅ Cliente eliminado exitosamente';
+          this.mensajeTipo = 'success';
+          this.mensaje = this.mensajeExito;
+
+          // Remover de la lista local
+          this.clientes = this.clientes.filter(c => c.id !== cliente.id);
+          this.aplicarFiltros();
+
+          // Cerrar formulario si estaba abierto
+          this.cerrarFormulario();
+        },
+        error: (error: any) => {
+          this.cargando = false;
+          console.error('Error eliminando cliente:', error);
+
+          let mensajeError = 'Error al eliminar el cliente';
+          if (error.error?.error) {
+            mensajeError = error.error.error;
+          } else if (error.error?.message) {
+            mensajeError = error.error.message;
+          } else if (error.message) {
+            mensajeError = error.message;
+          }
+
+          this.errorMensaje = '❌ ' + mensajeError;
+          this.mensajeTipo = 'danger';
+          this.mensaje = this.errorMensaje;
+        }
+      });
+    }
+  }
+
   volverAGestion() {
     this.router.navigate(['/gestion-perfiles']);
   }

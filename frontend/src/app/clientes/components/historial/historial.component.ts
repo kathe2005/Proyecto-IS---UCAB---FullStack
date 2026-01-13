@@ -1,16 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule, ActivatedRoute } from '@angular/router';
-import { PuestoService } from '../../service/puesto.service';
-
-// Interfaces temporales
-interface Puesto {
-  id: string;
-  numero: string;
-  tipoPuesto: string;
-  estadoPuesto: string;
-  ubicacion: string;
-}
+import { ReservaService } from '../../service/reserva.service';
+import { Reserva } from '../../models/reserva.model';
+import { ClienteService, Cliente } from '../../service/cliente.service';
 
 @Component({
   selector: 'app-historial',
@@ -20,108 +13,79 @@ interface Puesto {
   styleUrls: ['./historial.component.css']
 })
 export class HistorialComponent implements OnInit {
-  puesto: Puesto | null = null;
-  historial: string[] = [];
-  puestoId: string = '';
-
-  // Datos de ejemplo
-  private datosEjemplo: Puesto[] = [
-    { id: '1', numero: 'A-01', tipoPuesto: 'REGULAR', estadoPuesto: 'DISPONIBLE', ubicacion: 'Zona A' },
-    { id: '2', numero: 'A-02', tipoPuesto: 'DISCAPACITADO', estadoPuesto: 'OCUPADO', ubicacion: 'Zona A' }
-  ];
-
-  private historialEjemplo: {[key: string]: string[]} = {
-    '1': [
-      '2025-01-15 08:30:00 - Puesto ocupado por usuario: juan.perez',
-      '2025-01-15 12:45:00 - Puesto liberado',
-      '2025-01-16 09:15:00 - Puesto ocupado por usuario: maria.garcia',
-      '2025-01-16 17:20:00 - Puesto liberado'
-    ],
-    '2': [
-      '2025-01-14 10:00:00 - Puesto bloqueado por mantenimiento',
-      '2025-01-16 14:30:00 - Puesto desbloqueado',
-      '2025-01-17 08:45:00 - Puesto ocupado por usuario: carlos.lopez'
-    ]
-  };
+  cliente: Cliente | null = null;
+  reservas: Reserva[] = [];
+  clienteId: string = '';
+  cargando: boolean = false;
+  error: string = '';
 
   constructor(
-    private puestoService: PuestoService,
+    private reservaService: ReservaService,
+    private clienteService: ClienteService,
     private route: ActivatedRoute
   ) {}
 
   ngOnInit() {
-    this.route.params.subscribe(params => {
-      this.puestoId = params['id'];
-      this.cargarHistorial();
-    });
-  }
-
-  cargarHistorial() {
-    // Simulación de datos - reemplaza con servicios reales
-    this.puesto = this.datosEjemplo.find(p => p.id === this.puestoId) || null;
-    this.historial = this.historialEjemplo[this.puestoId] || [];
-
-    // Descomenta para usar servicios reales:
-    /*
-    this.puestoService.obtenerPuestoPorId(this.puestoId).subscribe({
-      next: (puesto) => {
-        this.puesto = puesto;
-      },
-      error: (error) => {
-        console.error('Error cargando puesto:', error);
+    this.route.queryParams.subscribe(params => {
+      this.clienteId = params['clienteId'];
+      if (this.clienteId) {
+        this.cargarCliente();
+        this.cargarReservas();
       }
     });
+  }
 
-    this.puestoService.obtenerHistorial(this.puestoId).subscribe({
-      next: (historial) => {
-        this.historial = historial;
+  cargarCliente() {
+    this.cargando = true;
+    this.clienteService.obtenerClientePorId(this.clienteId).subscribe({
+      next: (cliente) => {
+        this.cliente = cliente;
+        this.cargando = false;
       },
       error: (error) => {
-        console.error('Error cargando historial:', error);
+        console.error('Error cargando cliente:', error);
+        this.error = 'Error al cargar la información del cliente';
+        this.cargando = false;
       }
     });
-    */
   }
 
-  getTipoDescripcion(tipo: string): string {
-    const tipos: {[key: string]: string} = {
-      'REGULAR': 'Regular',
-      'DISCAPACITADO': 'Discapacitado',
-      'DOCENTE': 'Docente',
-      'VISITANTE': 'Visitante',
-      'MOTOCICLETA': 'Motocicleta'
-    };
-    return tipos[tipo] || tipo;
-  }
-
-  getTipoColor(tipo: string): string {
-    const colores: {[key: string]: string} = {
-      'REGULAR': '#007bff',
-      'DISCAPACITADO': '#6f42c1',
-      'DOCENTE': '#28a745',
-      'VISITANTE': '#ffc107',
-      'MOTOCICLETA': '#fd7e14'
-    };
-    return colores[tipo] || '#6c757d';
-  }
-
-  getEstadoDescripcion(estado: string): string {
-    const estados: {[key: string]: string} = {
-      'DISPONIBLE': 'Disponible',
-      'OCUPADO': 'Ocupado',
-      'BLOQUEADO': 'Bloqueado',
-      'MANTENIMIENTO': 'Mantenimiento'
-    };
-    return estados[estado] || estado;
+  cargarReservas() {
+    this.cargando = true;
+    this.reservaService.obtenerReservasPorCliente(this.clienteId).subscribe({
+      next: (reservas) => {
+        this.reservas = reservas;
+        this.cargando = false;
+      },
+      error: (error) => {
+        console.error('Error cargando reservas:', error);
+        this.error = 'Error al cargar el historial de reservas';
+        this.cargando = false;
+      }
+    });
   }
 
   getEstadoColor(estado: string): string {
     const colores: {[key: string]: string} = {
-      'DISPONIBLE': '#28a745',
-      'OCUPADO': '#ffc107',
-      'BLOQUEADO': '#6c757d',
-      'MANTENIMIENTO': '#fd7e14'
+      'PENDIENTE': '#ffc107',
+      'CONFIRMADA': '#007bff',
+      'CANCELADA': '#6c757d',
+      'COMPLETADA': '#28a745'
     };
     return colores[estado] || '#6c757d';
+  }
+
+  getEstadoDescripcion(estado: string): string {
+    const estados: {[key: string]: string} = {
+      'PENDIENTE': 'Pendiente',
+      'CONFIRMADA': 'Confirmada',
+      'CANCELADA': 'Cancelada',
+      'COMPLETADA': 'Completada'
+    };
+    return estados[estado] || estado;
+  }
+
+  volver() {
+    window.history.back();
   }
 }

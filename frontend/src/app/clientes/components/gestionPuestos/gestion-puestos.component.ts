@@ -63,6 +63,14 @@ export class GestionPuestosComponent {
     },
     {
       id: 'card6',
+      titulo: 'Buscar Puesto',
+      ruta: '/puestos/buscar',
+      color: 'red',
+      icono: 'fas fa-list',
+      descripcion: 'Localice un puesto específico'
+    },
+    {
+      id: 'card7',
       titulo: 'Estadísticas',
       ruta: '/puestos/estadisticas',
       color: 'teal',

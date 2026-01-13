@@ -1,7 +1,7 @@
 package com.ucab.estacionamiento.controller;
 
 import com.ucab.estacionamiento.model.clases.Cliente;
-import com.ucab.estacionamiento.service.ClienteServiceImpl;
+import com.ucab.estacionamiento.implement.ClienteServiceImpl;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;

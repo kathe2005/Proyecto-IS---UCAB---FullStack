@@ -41,6 +41,10 @@ export class ReservaService {
     return this.http.post(`${this.apiUrl}/crear`, {}, { params });
   }
 
+  actualizarReserva(id: string, payload: { puestoId: string; fecha: string; turno: string }): Observable<Reserva> {
+    return this.http.put<Reserva>(`${this.apiUrl}/${id}`, payload);
+  }
+
   cancelarReserva(id: string): Observable<any> {
     return this.http.post(`${this.apiUrl}/${id}/cancelar`, {});
   }
@@ -63,6 +67,10 @@ export class ReservaService {
 
   obtenerTodasLasReservas(): Observable<Reserva[]> {
     return this.http.get<Reserva[]>(`${this.apiUrl}`);
+  }
+
+  obtenerReservasActivas(): Observable<Reserva[]> {
+    return this.http.get<Reserva[]>(`${this.apiUrl}/activas`);
   }
 
   obtenerTurnos(): { value: string; label: string }[] {

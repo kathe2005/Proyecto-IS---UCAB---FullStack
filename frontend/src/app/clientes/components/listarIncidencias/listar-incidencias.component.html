@@ -1,0 +1,140 @@
+<div class="main-container">
+  <div class="container-custom">
+    
+    <div class="header-section">
+      <h1 class="page-title">Gestión de Incidencias</h1>
+      <p class="page-subtitle">Universidad Católica Andrés Bello - Panel de Control</p>
+    </div>
+
+    <div class="stats-section">
+      <div class="stat-card-small">
+        <i class="fas fa-clipboard-list"></i>
+        <div class="text-wrapper">
+          <h4>{{ incidencias.length }}</h4>
+          <small>Total Reportes</small>
+        </div>
+      </div>
+      
+      <div class="stat-card-small warning">
+        <i class="fas fa-clock"></i>
+        <div class="text-wrapper">
+          <h4>{{ getConteoPorEstado('NO_ATENDIDA') }}</h4>
+          <small>Pendientes</small>
+        </div>
+      </div>
+      
+      <div class="stat-card-small success">
+        <i class="fas fa-check-circle"></i>
+        <div class="text-wrapper">
+          <h4>{{ getConteoPorEstado('ATENDIDA') }}</h4>
+          <small>Resueltas</small>
+        </div>
+      </div>
+    </div>
+
+    <div class="table-card">
+      
+      <div *ngIf="cargando" class="loading-state">
+        <div class="spinner-border text-primary mb-3" role="status" style="width: 3rem; height: 3rem;">
+          <span class="visually-hidden">Cargando...</span>
+        </div>
+        <p class="text-muted fw-bold">Cargando datos...</p>
+      </div>
+
+      <div *ngIf="incidencias.length === 0 && !cargando" class="empty-state">
+        <i class="fas fa-check-double"></i>
+        <h4>Sin novedades</h4>
+        <p>No hay incidencias pendientes de revisión.</p>
+        <button (click)="irACrear()" class="btn-lg-custom btn-primary-ucab mt-3 mx-auto">
+          <i class="fas fa-plus"></i> Reportar Incidencia
+        </button>
+      </div>
+
+      <div *ngIf="incidencias.length > 0 && !cargando" class="table-responsive">
+        <table class="table align-middle">
+          <thead>
+            <tr>
+              <th scope="col">Ticket</th>
+              <th scope="col">Cliente Afectado</th>
+              <th scope="col">Tipo</th>
+              <th scope="col">Fecha</th>
+              <th scope="col">Estado</th>
+              <th scope="col">Descripción</th>
+              <th scope="col" class="text-center">Acciones</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let incidencia of incidencias">
+              <td><span class="fw-bold text-primary">#{{ incidencia.id }}</span></td>
+              
+              <td>
+                <span class="fw-semibold ps-2">{{ incidencia.clienteAfectado }}</span>
+              </td>
+
+              <td><span class="badge bg-light text-dark border">{{ incidencia.tipoProblema }}</span></td>
+
+              <td class="text-muted small">
+                {{ incidencia.fechaRegistro | date:'shortDate' }} <br>
+                <small>{{ incidencia.fechaRegistro | date:'shortTime' }}</small>
+              </td>
+
+              <td>
+                <span class="badge" 
+                  [ngClass]="{
+                    'bg-warning text-dark': incidencia.estado === 'NO_ATENDIDA',
+                    'bg-success': incidencia.estado === 'ATENDIDA',
+                    'bg-secondary': incidencia.estado === 'CANCELADA'
+                  }">
+                  <i class="fas" [ngClass]="{
+                    'fa-clock': incidencia.estado === 'NO_ATENDIDA',
+                    'fa-check': incidencia.estado === 'ATENDIDA',
+                    'fa-ban': incidencia.estado === 'CANCELADA'
+                  }"></i>
+                  {{ incidencia.estado === 'NO_ATENDIDA' ? 'PENDIENTE' : incidencia.estado }}
+                </span>
+              </td>
+
+              <td class="text-muted small text-truncate" style="max-width: 200px;" title="{{incidencia.descripcion}}">
+                {{ incidencia.descripcion }}
+              </td>
+              <td class="text-center">
+                <button (click)="irAEditar(incidencia.id)" 
+                        class="btn-action btn-edit" 
+                        title="Editar">
+                  <i class="fas fa-pen"></i> 
+                </button>
+                <button (click)="eliminar(incidencia.id)" 
+                        class="btn-action btn-delete" 
+                        title="Eliminar">
+                  <i class="fas fa-trash-alt"></i> 
+                </button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+        <div class="action-legend">
+          <span class="legend-title">Guía de Acciones:</span>
+          <div class="legend-item">
+            <div class="color-box box-blue"></div>
+            <span>para Editar</span>
+          </div>
+          <div class="legend-item">
+            <div class="color-box box-red"></div>
+            <span>para Eliminar</span>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="navigation-buttons">
+      <button (click)="volver()" class="btn-lg-custom btn-secondary-ucab">
+        <i class="fas fa-arrow-left"></i> Volver
+      </button>
+      <button (click)="irACrear()" class="btn-lg-custom btn-primary-ucab">
+        <i class="fas fa-plus-circle"></i> Nueva Incidencia
+      </button>
+    </div>
+  </div>
+  <footer class="footer">
+    © 2026 UCAB Montalbán - Sistema de Gestión de Estacionamiento
+  </footer>
+</div>

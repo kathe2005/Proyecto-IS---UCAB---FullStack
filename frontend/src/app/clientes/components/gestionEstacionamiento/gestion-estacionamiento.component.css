@@ -9,14 +9,16 @@
 
 #contenedor {
   width: 1000px;
-  height: 500px;
+  min-height: 500px;
+  height: auto;
   padding: 40px;
   border-radius: 10px;
   box-shadow: 0 0 10px rgb(173, 173, 247);
   background-color: rgb(255, 255, 255);
   display: grid;
   grid-template-columns: repeat(1, 1fr);
-  grid-template-rows: repeat(6, 1fr);
+  grid-template-rows: auto;
+  gap: 10;
   place-items: center;
 }
 
@@ -77,4 +79,10 @@
   border: solid 1px red;
   background-color: rgb(255, 191, 191);
   box-shadow: 0 0 10px red;
+}
+
+#card7:hover {
+  border: solid 1px #0056b3;
+  background-color: #e3f2fd;
+  box-shadow: 0 0 10px #0056b3;
 }

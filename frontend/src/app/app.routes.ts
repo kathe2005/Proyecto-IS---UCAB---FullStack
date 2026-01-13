@@ -1,6 +1,7 @@
 import { Routes } from '@angular/router';
 import { RegistroClienteComponent } from './clientes/components/registroCliente/registro-cliente.component';
 import { GestionEstacionamientoComponent } from './clientes/components/gestionEstacionamiento/gestion-estacionamiento.component';
+import { CrearVehiculoComponent } from './vehiculos/components/crear-vehiculo.component';
 
 export const routes: Routes = [
     // Página principal: Menú de gestión de estacionamiento
@@ -26,6 +27,13 @@ export const routes: Routes = [
         path: 'gestion-perfiles',
         loadComponent: () => import('./clientes/components/gestionPerfiles/gestion-perfiles.component').then(m => m.GestionPerfilesComponent)
     },
+
+    //Gestion de Vehiculos - Menú principal de vehiculos
+    {
+        path: 'gestion-vehiculos',
+        component: CrearVehiculoComponent
+    },
+
 
     // NUEVA RUTA: Gestión de reservas - Menú principal de reservas
     {
@@ -56,6 +64,7 @@ export const routes: Routes = [
         loadComponent: () => import('./clientes/components/modificarPerfiles/modificar-perfil.component').then(m => m.ModificarPerfilesComponent)
     },
 
+
     // NUEVAS RUTAS: Gestión de reservas
     {
         path: 'reservas/consultar-disponibilidad',
@@ -67,15 +76,17 @@ export const routes: Routes = [
         loadComponent: () => import('./clientes/components/reservaPuesto/reservar-puesto.component').then(m => m.ReservarPuestoComponent)
     },
 
+
     {
-      path: 'reservas/pagos',
-      loadComponent: () => import('./clientes/components/registroPago/registrar-pago.component').then(m => m.RegistrarPagoComponent)
+        path: 'reservas/pagos',
+        loadComponent: () => import('./clientes/components/registroPago/registrar-pago.component').then(m => m.RegistrarPagoComponent)
     },
-    /*
+
     {
         path: 'reservas/modificar',
         loadComponent: () => import('./clientes/components/modificarReserva/modificar-reserva.component').then(m => m.ModificarReservaComponent)
     },
+
     {
         path: 'reservas/cancelar',
         loadComponent: () => import('./clientes/components/cancelarReserva/cancelar-reserva.component').then(m => m.CancelarReservaComponent)
@@ -84,7 +95,8 @@ export const routes: Routes = [
         path: 'reservas/activas',
         loadComponent: () => import('./clientes/components/listaReservas/lista-reservas.component').then(m => m.ListaReservasComponent)
     },
-    */
+
+
 
     // Ocupar puestos
     {
@@ -150,6 +162,19 @@ export const routes: Routes = [
         loadComponent: () => import('./clientes/components/home/home.component').then(m => m.HomeComponent)
     },
 
+    // GESTIÓN DE INCIDENCIAS
+    {
+        path: 'incidencias',
+        loadComponent: () => import('./clientes/components/listarIncidencias/listar-incidencias.component').then(m => m.ListarIncidenciasComponent)
+    },
+    {
+        path: 'incidencias/crear',
+        loadComponent: () => import('./clientes/components/crearIncidencia/crear-incidencias.component').then(m => m.CrearIncidenciaComponent)
+    },
+    {
+        path: 'incidencias/editar/:id',
+        loadComponent: () => import('./clientes/components/editarIncidencia/editar-incidencias.component').then(m => m.EditarIncidenciasComponent)
+    },
     // Redirecciones
     {
         path: 'clientes',
@@ -214,8 +239,24 @@ export const routes: Routes = [
         redirectTo: 'reservas/consultar-disponibilidad',
         pathMatch: 'full'
     },
+    // Redirección para gestión de incidencias
+    {
+        path: 'gestion-incidencias',
+        redirectTo: 'incidencias',
+        pathMatch: 'full'
+    },
 
-    // Ruta comodín (si no encuentra ninguna ruta)
+    // Rutas faltantes para gestión de perfiles
+    {
+        path: 'perfiles/historial',
+        loadComponent: () => import('./clientes/components/historial/historial.component').then(m => m.HistorialComponent)
+    },
+    {
+        path: 'perfiles/eliminar',
+        loadComponent: () => import('./clientes/components/modificarPerfiles/modificar-perfil.component').then(m => m.ModificarPerfilesComponent)
+    },
+
+    // Ruta comodín
     {
         path: '**',
         redirectTo: ''

@@ -1,0 +1,30 @@
+<div class="container">
+  <h2>Lista de Reservas Activas</h2>
+  <table *ngIf="reservas.length > 0" class="table">
+    <thead>
+      <tr>
+        <th>ID</th>
+        <th>Cliente ID</th>
+        <th>Puesto ID</th>
+        <th>Fecha</th>
+        <th>Hora Inicio</th>
+        <th>Hora Fin</th>
+        <th>Estado</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let reserva of reservas">
+        <td>{{ reserva.id }}</td>
+        <td>{{ reserva.clienteId }}</td>
+        <td>{{ reserva.puestoId }}</td>
+        <td>{{ reserva.fecha }}</td>
+        <td>{{ reserva.horaInicio }}</td>
+        <td>{{ reserva.horaFin }}</td>
+        <td>{{ reserva.estado }}</td>
+      </tr>
+    </tbody>
+  </table>
+  <p *ngIf="reservas.length === 0 && !mensaje">No hay reservas activas.</p>
+  <p *ngIf="mensaje">{{ mensaje }}</p>
+  <button (click)="volver()" class="btn btn-secondary">Volver</button>
+</div>

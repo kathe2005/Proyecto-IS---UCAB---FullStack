@@ -1,0 +1,210 @@
+.main-container {
+  min-height: 100vh;
+  background-color: aliceblue;
+  padding: 20px;
+  font-family: 'Arial', sans-serif;
+}
+
+.modificar-card {
+  max-width: 1200px;
+  margin: 0 auto;
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 10px 30px rgba(18, 59, 103, 0.1);
+  padding: 24px;
+}
+
+.card-header {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  border-bottom: 2px solid #f0f0f0;
+  padding-bottom: 16px;
+  margin-bottom: 16px;
+}
+
+.eyebrow {
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  font-size: 12px;
+  color: #6c7a90;
+  margin: 0 0 4px 0;
+}
+
+h1 {
+  margin: 0;
+  color: #123B67;
+}
+
+.lead {
+  margin: 4px 0 0;
+  color: #6c7a90;
+}
+
+.grid-summary {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 12px;
+  margin-bottom: 12px;
+}
+
+.summary-item {
+  background: #f8f9fa;
+  border: 1px solid #eaecef;
+  border-radius: 8px;
+  padding: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  color: #123B67;
+}
+
+.alert {
+  padding: 12px;
+  border-radius: 8px;
+  margin-bottom: 12px;
+  border: 1px solid transparent;
+}
+
+.alert.error {
+  background-color: #f8d7da;
+  border-color: #f5c6cb;
+  color: #721c24;
+}
+
+.alert.success {
+  background-color: #d4edda;
+  border-color: #c3e6cb;
+  color: #155724;
+}
+
+.alert.muted {
+  background: #f5f7fb;
+  color: #6c7a90;
+  border-color: #eaecef;
+}
+
+.content-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+
+.panel-left, .panel-right {
+  background: #f8f9fa;
+  border: 1px solid #eaecef;
+  border-radius: 10px;
+  padding: 16px;
+  min-height: 200px;
+}
+
+.panel-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+}
+
+.panel-head h3 {
+  margin: 0;
+  color: #123B67;
+}
+
+.pill {
+  background: #eef2ff;
+  color: #3043d0;
+  padding: 4px 10px;
+  border-radius: 999px;
+  font-size: 12px;
+}
+
+.reservas-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.reserva-card {
+  background: #fff;
+  border: 1px solid #e9ecef;
+  border-radius: 8px;
+  padding: 12px;
+  transition: all 0.2s ease;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.reserva-card:hover { box-shadow: 0 4px 12px rgba(0,0,0,0.05); }
+.reserva-card.active { border-color: #3043d0; box-shadow: 0 6px 16px rgba(48,67,208,0.15); }
+
+.reserva-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.reserva-id { margin: 0; color: #6c7a90; font-size: 12px; }
+.estado-pill { background: #d4edda; color: #155724; padding: 4px 10px; border-radius: 20px; font-size: 12px; }
+
+.reserva-body { display: grid; grid-template-columns: repeat(auto-fit, minmax(120px,1fr)); gap: 8px; }
+.reserva-body small { color: #6c7a90; }
+.reserva-body p { margin: 0; color: #123B67; font-weight: 600; }
+
+.btn.full { width: 100%; }
+
+.form-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 12px;
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.field.full { grid-column: 1 / -1; }
+
+.field label { font-weight: 600; color: #123B67; }
+.field input, .field select, .readonly {
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  padding: 10px;
+  font-size: 14px;
+  color: #123B67;
+  background: #fff;
+}
+
+.readonly { background: #f5f7fb; border-style: dashed; }
+
+.actions {
+  margin-top: 12px;
+  display: flex;
+  justify-content: flex-end;
+}
+
+.btn {
+  padding: 10px 14px;
+  border: none;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.btn:disabled { opacity: 0.6; cursor: not-allowed; }
+.btn-primary { background: #007bff; color: #fff; }
+.btn-primary:hover:not(:disabled) { background: #0056b3; }
+.btn-secondary { background: #6c757d; color: #fff; }
+.btn-secondary:hover:not(:disabled) { background: #545b62; }
+.btn-danger { background: #dc3545; color: #fff; }
+.btn-danger:hover:not(:disabled) { background: #b21f2d; }
+
+.muted { color: #6c7a90; }
+
+@media (max-width: 1024px) {
+  .content-grid { grid-template-columns: 1fr; }
+  .card-header { flex-direction: column; align-items: flex-start; }
+}

@@ -33,14 +33,14 @@ export class GestionEstacionamientoComponent {
     {
       id: 'card4',
       titulo: 'Gestión de Incidencias',
-      ruta: '/puestos/estadisticas',
+      ruta: 'incidencias',
       color: 'info'
     },
     {
       id: 'card5',
       titulo: 'Gestión de Vehiculos',
-      ruta: '/puestos/buscar',
-      color: 'secondary'
+      ruta: '/gestion-vehiculos',
+      color: 'danger'
     },
     {
       id: 'card6',

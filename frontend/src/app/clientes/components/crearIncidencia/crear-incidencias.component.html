@@ -1,0 +1,88 @@
+<div class="main-container">
+  <div class="container-custom">
+    <div class="header-section">
+      <h1 class="page-title">Reportar Incidencia</h1>
+      <p class="page-subtitle">Panel de Control - Universidad Católica Andrés Bello</p>
+    </div>
+    <div *ngIf="mensaje" [class]="'alert alert-' + mensajeTipo + ' mb-4'" role="alert">
+      <i class="fas" [class]="{
+        'fa-check-circle': mensajeTipo === 'success',
+        'fa-exclamation-triangle': mensajeTipo === 'warning',
+        'fa-times-circle': mensajeTipo === 'danger'
+      }"></i>
+      <div>{{ mensaje }}</div>
+    </div>
+    <div class="form-card">
+      <div class="form-section-title">
+        <i class="fas fa-file-alt"></i>
+        <span>Información del Reporte</span>
+      </div>
+      <form (ngSubmit)="crear()" #formIncidencia="ngForm">
+        <div class="row g-4">
+          <div class="col-md-6">
+            <label for="cliente" class="form-label">Cliente Afectado</label>
+            <div class="input-group">
+              <span class="input-group-text bg-light border-end-0 rounded-start-3">
+                <i class="fas fa-user text-primary"></i>
+              </span>
+              <input type="text" 
+                     class="form-control border-start-0 rounded-end-3" 
+                     id="cliente"
+                     [(ngModel)]="incidencia.clienteAfectado" 
+                     name="clienteAfectado"
+                     placeholder="Nombre del usuario o placa"
+                     required>
+            </div>
+            <div class="form-text">Indique quién reporta o el vehículo afectado.</div>
+          </div>
+          <div class="col-md-6">
+            <label for="tipo" class="form-label">Tipo de Problema</label>
+            <div class="input-group">
+              <span class="input-group-text bg-light border-end-0 rounded-start-3">
+                <i class="fas fa-list-ul text-primary"></i>
+              </span>
+              <select class="form-select border-start-0 rounded-end-3" 
+                      id="tipo"
+                      [(ngModel)]="incidencia.tipoProblema" 
+                      name="tipoProblema"
+                      required>
+                <option *ngFor="let tipo of tiposProblema" [value]="tipo.valor">
+                  {{ tipo.etiqueta }}
+                </option>
+              </select>
+            </div>
+            <div class="form-text">Categorice el incidente correctamente.</div>
+          </div>
+          <div class="col-12">
+            <label for="descripcion" class="form-label">Descripción Detallada</label>
+            <textarea class="form-control" 
+                      id="descripcion"
+                      rows="5" 
+                      [(ngModel)]="incidencia.descripcion" 
+                      name="descripcion"
+                      placeholder="Describa los hechos, hora aproximada y cualquier detalle relevante..."
+                      required></textarea>
+          </div>
+        </div>
+        <div class="form-actions">
+          <button type="button" (click)="volver()" class="btn-custom btn-secondary-ucab">
+            <i class="fas fa-arrow-left"></i> Volver
+          </button>
+          <div class="d-flex gap-2">
+            <button type="button" (click)="incidencia = {clienteAfectado: '', tipoProblema: 'PUESTO', descripcion: '', estado: 'NO_ATENDIDA'}" 
+                    class="btn-custom btn-warning-outline">
+              <i class="fas fa-broom"></i> Limpiar
+            </button>
+            <button type="submit" class="btn-custom btn-primary-ucab" [disabled]="procesando">
+              <i class="fas" [class]="procesando ? 'fa-spinner fa-spin' : 'fa-save'"></i>
+              {{ procesando ? 'Guardando...' : 'Registrar Incidencia' }}
+            </button>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+  <footer class="footer">
+    © 2026 UCAB Montalbán - Sistema de Gestión de Estacionamiento
+  </footer>
+</div>

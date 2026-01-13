@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { Router, RouterModule } from '@angular/router'; // Agregar RouterModule
+import { Router, RouterModule, ActivatedRoute } from '@angular/router'; // Agregar RouterModule
 import { PuestoService } from '../../service/puesto.service';
 import { Puesto } from '../../models/puestos.model';
 import { HttpClient, HttpClientModule } from '@angular/common/http';
@@ -23,13 +23,33 @@ export class ListaPuestosComponent implements OnInit {
     private puestoService: PuestoService,
     private router: Router,
     private http: HttpClient,
+    private route: ActivatedRoute
   ) {}
 
   ngOnInit() {
-    this.cargarPuestos();
+    // Escuchar parámetros de consulta para búsquedas desde otros formularios
+    this.route.queryParams.subscribe(params => {
+      const estado = params['estado'];
+      const tipo = params['tipo'];
+      const ubicacion = params['ubicacion'];
+
+      if (estado) {
+        this.cargarPuestosPorEstado(estado);
+      } else if (tipo) {
+        this.cargarPuestosPorTipo(tipo);
+      } else if (ubicacion) {
+        // Cargar todos y filtrar por ubicación localmente
+        this.cargarPuestos(() => {
+          this.filtro = ubicacion;
+          this.aplicarFiltro();
+        });
+      } else {
+        this.cargarPuestos();
+      }
+    });
   }
 
-  cargarPuestos() {
+  cargarPuestos(callback?: () => void) {
     this.cargando = true;
     console.log('🔄 Intentando cargar puestos...');
 
@@ -50,6 +70,7 @@ export class ListaPuestosComponent implements OnInit {
         this.puestos = data;
         this.puestosFiltrados = data;
         this.cargando = false;
+        if (callback) callback();
       },
       error: (error) => {
         console.error('❌ Error en la petición:', error);
@@ -60,6 +81,38 @@ export class ListaPuestosComponent implements OnInit {
           message: error.message
         });
         this.cargando = false;
+      }
+    });
+  }
+
+  cargarPuestosPorEstado(estado: string) {
+    this.cargando = true;
+    this.puestoService.obtenerPuestosPorEstado(estado).subscribe({
+      next: (data: Puesto[]) => {
+        this.puestos = data;
+        this.puestosFiltrados = data;
+        this.criterioBusqueda = `Estado: "${estado}"`;
+        this.cargando = false;
+      },
+      error: (err) => {
+        console.error('Error cargando por estado', err);
+        this.cargarPuestos();
+      }
+    });
+  }
+
+  cargarPuestosPorTipo(tipo: string) {
+    this.cargando = true;
+    this.puestoService.obtenerPuestosPorTipo(tipo).subscribe({
+      next: (data: Puesto[]) => {
+        this.puestos = data;
+        this.puestosFiltrados = data;
+        this.criterioBusqueda = `Tipo: "${tipo}"`;
+        this.cargando = false;
+      },
+      error: (err) => {
+        console.error('Error cargando por tipo', err);
+        this.cargarPuestos();
       }
     });
   }
